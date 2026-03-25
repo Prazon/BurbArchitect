@@ -1,0 +1,258 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>BurbArchitect Documentation</title>
+<style>
+  :root {
+    --bg: #0f1117;
+    --bg-card: #1a1d27;
+    --bg-card-hover: #222638;
+    --text: #e2e8f0;
+    --text-muted: #94a3b8;
+    --accent: #0ea5e9;
+    --accent-hover: #38bdf8;
+    --border: #2d3148;
+    --code-bg: #151822;
+  }
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body {
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+    background: var(--bg);
+    color: var(--text);
+    line-height: 1.6;
+    min-height: 100vh;
+  }
+  .header {
+    background: linear-gradient(135deg, #0f1117 0%, #1a1d27 50%, #0f1117 100%);
+    border-bottom: 1px solid var(--border);
+    padding: 3rem 1.5rem 2.5rem;
+    text-align: center;
+  }
+  .header h1 {
+    font-size: 2.5rem;
+    font-weight: 700;
+    color: var(--text);
+    margin-bottom: 0.5rem;
+    letter-spacing: -0.02em;
+  }
+  .header h1 span { color: var(--accent); }
+  .header .tagline {
+    font-size: 1.15rem;
+    color: var(--text-muted);
+    max-width: 600px;
+    margin: 0 auto;
+  }
+  .header .version {
+    display: inline-block;
+    margin-top: 1rem;
+    padding: 0.25rem 0.75rem;
+    background: var(--bg-card);
+    border: 1px solid var(--border);
+    border-radius: 999px;
+    font-size: 0.8rem;
+    color: var(--text-muted);
+  }
+  .container {
+    max-width: 960px;
+    margin: 0 auto;
+    padding: 2rem 1.5rem 4rem;
+  }
+  .section-label {
+    font-size: 0.75rem;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+    color: var(--accent);
+    margin-bottom: 1rem;
+  }
+  .grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+    gap: 1rem;
+    margin-bottom: 3rem;
+  }
+  .card {
+    background: var(--bg-card);
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    padding: 1.5rem;
+    text-decoration: none;
+    color: var(--text);
+    transition: all 0.2s ease;
+    display: flex;
+    flex-direction: column;
+  }
+  .card:hover {
+    background: var(--bg-card-hover);
+    border-color: var(--accent);
+    transform: translateY(-2px);
+    box-shadow: 0 4px 20px rgba(14, 165, 233, 0.1);
+  }
+  .card .icon {
+    font-size: 1.8rem;
+    margin-bottom: 0.75rem;
+  }
+  .card h3 {
+    font-size: 1.1rem;
+    font-weight: 600;
+    margin-bottom: 0.5rem;
+  }
+  .card p {
+    font-size: 0.9rem;
+    color: var(--text-muted);
+    flex: 1;
+  }
+  .card .arrow {
+    color: var(--accent);
+    font-size: 0.85rem;
+    margin-top: 1rem;
+    opacity: 0;
+    transition: opacity 0.2s ease;
+  }
+  .card:hover .arrow { opacity: 1; }
+
+  .quick-start {
+    background: var(--bg-card);
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    padding: 2rem;
+    margin-bottom: 3rem;
+  }
+  .quick-start h2 {
+    font-size: 1.3rem;
+    margin-bottom: 1rem;
+    color: var(--text);
+  }
+  .quick-start ol {
+    padding-left: 1.5rem;
+    color: var(--text-muted);
+  }
+  .quick-start ol li {
+    margin-bottom: 0.5rem;
+    line-height: 1.5;
+  }
+  .quick-start ol li strong { color: var(--text); }
+  .quick-start code {
+    background: var(--code-bg);
+    padding: 0.15rem 0.4rem;
+    border-radius: 4px;
+    font-size: 0.85rem;
+    color: var(--accent);
+  }
+
+  .features {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+    gap: 0.75rem;
+    margin-bottom: 3rem;
+  }
+  .feature {
+    background: var(--bg-card);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    padding: 0.75rem 1rem;
+    font-size: 0.9rem;
+    color: var(--text-muted);
+    text-align: center;
+  }
+  .feature strong { color: var(--text); display: block; margin-bottom: 0.15rem; }
+
+  .footer {
+    text-align: center;
+    padding: 2rem 1.5rem;
+    border-top: 1px solid var(--border);
+    color: var(--text-muted);
+    font-size: 0.85rem;
+  }
+  .footer a { color: var(--accent); text-decoration: none; }
+  .footer a:hover { text-decoration: underline; }
+</style>
+</head>
+<body>
+
+<div class="header">
+  <h1><span>Burb</span>Architect</h1>
+  <p class="tagline">A Sims-like house building system for Unreal Engine 5. Drag walls, paint floors, place roofs — everything your players need to build their dream home.</p>
+  <span class="version">Unreal Engine 5 Plugin</span>
+</div>
+
+<div class="container">
+
+  <div class="quick-start">
+    <h2>⚡ Quick Start</h2>
+    <ol>
+      <li><strong>Enable the plugin</strong> in your project's Plugins panel</li>
+      <li><strong>Set your GameMode</strong> to <code>BurbGameModeBase</code> (or a Blueprint child)</li>
+      <li><strong>Place a <code>LotManager</code></strong> actor in your level — this is your buildable lot</li>
+      <li><strong>Hit Play</strong> — the build grid appears and tools are ready to use</li>
+      <li>Read the <a href="GettingStarted.html" style="color:var(--accent)">Getting Started guide</a> for full setup details</li>
+    </ol>
+  </div>
+
+  <p class="section-label">📖 User Guides</p>
+  <div class="grid">
+    <a href="GettingStarted.html" class="card">
+      <div class="icon">🚀</div>
+      <h3>Getting Started</h3>
+      <p>Installation, core classes, catalog system, build vs live mode, configuration reference, and common Blueprint workflows.</p>
+      <span class="arrow">→ Read guide</span>
+    </a>
+    <a href="WallsAndRooms.html" class="card">
+      <div class="icon">🧱</div>
+      <h3>Walls & Rooms</h3>
+      <p>Wall drawing tools, room detection, wall patterns, the selection tool, wall graph system, and undo/redo.</p>
+      <span class="arrow">→ Read guide</span>
+    </a>
+    <a href="Roofs.html" class="card">
+      <div class="icon">🏠</div>
+      <h3>Roofs</h3>
+      <p>Gable, hip, and shed roof types. Gizmo controls, rotation, supporting walls, materials, and multi-story roofing.</p>
+      <span class="arrow">→ Read guide</span>
+    </a>
+    <a href="FloorsAndTerrain.html" class="card">
+      <div class="icon">🌍</div>
+      <h3>Floors & Terrain</h3>
+      <p>Floor painting, terrain brushes, basement creation, the level system, floor patterns, and grid configuration.</p>
+      <span class="arrow">→ Read guide</span>
+    </a>
+    <a href="DoorsAndWindows.html" class="card">
+      <div class="icon">🚪</div>
+      <h3>Doors & Windows</h3>
+      <p>Portal placement, wall cutouts, door animations, custom data assets, validation rules, and multiplayer replication.</p>
+      <span class="arrow">→ Read guide</span>
+    </a>
+    <a href="PoolsFencesStairsObjects.html" class="card">
+      <div class="icon">🏊</div>
+      <h3>Pools, Fences, Stairs & Objects</h3>
+      <p>Pool merging, fence/gate integration, stair placement with landings, furniture system, and the full save/load pipeline.</p>
+      <span class="arrow">→ Read guide</span>
+    </a>
+  </div>
+
+  <p class="section-label">✨ Feature Highlights</p>
+  <div class="features">
+    <div class="feature"><strong>20+ Build Tools</strong>Walls, rooms, floors, roofs, stairs, pools, fences, terrain &amp; more</div>
+    <div class="feature"><strong>3 Roof Types</strong>Gable, Hip, Shed with gizmo adjustment</div>
+    <div class="feature"><strong>Auto Room Detection</strong>Closed walls form rooms automatically</div>
+    <div class="feature"><strong>Multi-Story</strong>Multiple floors + basements</div>
+    <div class="feature"><strong>Undo/Redo</strong>Full command history for all operations</div>
+    <div class="feature"><strong>Save/Load</strong>Binary slots, JSON export, data assets</div>
+    <div class="feature"><strong>Data-Driven</strong>Custom items via UE Data Assets</div>
+    <div class="feature"><strong>Multiplayer Ready</strong>Replicated tools and state</div>
+    <div class="feature"><strong>Blueprint API</strong>Every system callable from BP</div>
+    <div class="feature"><strong>Terrain Sculpting</strong>5 brush tools for landscape</div>
+    <div class="feature"><strong>Door Animations</strong>Skeletal mesh bone-driven</div>
+    <div class="feature"><strong>Pool Merging</strong>Adjacent pools combine automatically</div>
+  </div>
+
+</div>
+
+<div class="footer">
+  <p><strong>BurbArchitect</strong> — Sims-like Building for Unreal Engine 5</p>
+  <p style="margin-top:0.5rem">Built with ❤️ for game developers</p>
+</div>
+
+</body>
+</html>

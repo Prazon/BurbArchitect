@@ -1,0 +1,29 @@
+# Unreal Engine generated
+Binaries/
+Intermediate/
+DerivedDataCache/
+Saved/
+*.pdb
+*.exe
+*.dll
+*.lib
+*.exp
+
+# IDE
+.vs/
+.vscode/
+*.sln
+*.suo
+*.user
+*.sdf
+*.opensdf
+*.opendb
+*.VC.db
+*.VC.opendb
+*.vcxproj
+*.vcxproj.filters
+
+# OS
+.DS_Store
+Thumbs.db
+Desktop.ini

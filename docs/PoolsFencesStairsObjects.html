@@ -1,0 +1,1504 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>BurbArchitect — Pools, Fences, Stairs &amp; Objects</title>
+<style>
+  :root {
+    --bg-primary: #1a1a2e;
+    --bg-secondary: #16213e;
+    --bg-tertiary: #0f3460;
+    --bg-code: #111827;
+    --bg-table-even: #1e2a45;
+    --bg-table-odd: #192038;
+    --bg-table-head: #0f3460;
+    --text-primary: #e2e8f0;
+    --text-secondary: #94a3b8;
+    --text-muted: #64748b;
+    --accent: #0ea5e9;
+    --accent-hover: #38bdf8;
+    --border: #334155;
+    --border-light: #1e293b;
+    --success: #22c55e;
+    --warning: #f59e0b;
+  }
+
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  html { scroll-behavior: smooth; scroll-padding-top: 70px; }
+
+  body {
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+    background: var(--bg-primary);
+    color: var(--text-primary);
+    line-height: 1.7;
+    font-size: 15px;
+  }
+
+  /* ── Sticky Breadcrumb ── */
+  .breadcrumb-bar {
+    position: sticky;
+    top: 0;
+    z-index: 100;
+    background: var(--bg-secondary);
+    border-bottom: 1px solid var(--border);
+    padding: 12px 24px;
+    backdrop-filter: blur(12px);
+    -webkit-backdrop-filter: blur(12px);
+    background: rgba(22, 33, 62, 0.95);
+  }
+  .breadcrumb-bar nav {
+    max-width: 900px;
+    margin: 0 auto;
+    font-size: 14px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+  .breadcrumb-bar a {
+    color: var(--accent);
+    text-decoration: none;
+    transition: color 0.15s;
+  }
+  .breadcrumb-bar a:hover { color: var(--accent-hover); }
+  .breadcrumb-sep { color: var(--text-muted); }
+  .breadcrumb-current { color: var(--text-secondary); font-weight: 500; }
+
+  /* ── Main Container ── */
+  .container {
+    max-width: 900px;
+    margin: 0 auto;
+    padding: 40px 24px 80px;
+  }
+
+  /* ── Typography ── */
+  h1 {
+    font-size: 2rem;
+    font-weight: 700;
+    color: #fff;
+    margin-bottom: 8px;
+    letter-spacing: -0.02em;
+  }
+  .subtitle {
+    color: var(--text-secondary);
+    font-size: 0.95rem;
+    margin-bottom: 32px;
+    line-height: 1.6;
+  }
+  .subtitle strong { color: var(--text-primary); font-weight: 600; }
+
+  h2 {
+    font-size: 1.55rem;
+    font-weight: 700;
+    color: var(--accent);
+    margin-top: 56px;
+    margin-bottom: 16px;
+    padding-bottom: 8px;
+    border-bottom: 2px solid var(--border);
+    letter-spacing: -0.01em;
+  }
+  h3 {
+    font-size: 1.2rem;
+    font-weight: 600;
+    color: #e0f2fe;
+    margin-top: 36px;
+    margin-bottom: 12px;
+  }
+  h4 {
+    font-size: 1.05rem;
+    font-weight: 600;
+    color: #bae6fd;
+    margin-top: 28px;
+    margin-bottom: 10px;
+  }
+
+  p { margin-bottom: 14px; }
+
+  a { color: var(--accent); text-decoration: none; transition: color 0.15s; }
+  a:hover { color: var(--accent-hover); text-decoration: underline; }
+
+  strong { color: #f1f5f9; font-weight: 600; }
+  em { color: var(--text-secondary); }
+
+  hr {
+    border: none;
+    border-top: 1px solid var(--border);
+    margin: 48px 0;
+  }
+
+  /* ── Lists ── */
+  ul, ol { margin-bottom: 14px; padding-left: 24px; }
+  li { margin-bottom: 6px; }
+  li > ul, li > ol { margin-top: 6px; margin-bottom: 6px; }
+
+  /* Checklist */
+  ul.checklist { list-style: none; padding-left: 0; }
+  ul.checklist li {
+    position: relative;
+    padding-left: 28px;
+    margin-bottom: 10px;
+  }
+  ul.checklist li::before {
+    content: '';
+    position: absolute;
+    left: 0;
+    top: 5px;
+    width: 16px;
+    height: 16px;
+    border: 2px solid var(--accent);
+    border-radius: 3px;
+    background: transparent;
+  }
+
+  /* ── Blockquote / Callout ── */
+  blockquote {
+    border-left: 4px solid var(--accent);
+    background: rgba(14, 165, 233, 0.08);
+    padding: 14px 18px;
+    margin: 16px 0;
+    border-radius: 0 6px 6px 0;
+    color: var(--text-secondary);
+  }
+  blockquote strong { color: var(--accent); }
+  blockquote p:last-child { margin-bottom: 0; }
+
+  /* ── Code ── */
+  code {
+    font-family: 'JetBrains Mono', 'Fira Code', 'Cascadia Code', 'Consolas', monospace;
+    font-size: 0.88em;
+    background: var(--bg-code);
+    color: #7dd3fc;
+    padding: 2px 6px;
+    border-radius: 4px;
+    border: 1px solid var(--border-light);
+  }
+  pre {
+    background: var(--bg-code);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    padding: 18px 20px;
+    overflow-x: auto;
+    margin: 16px 0;
+    line-height: 1.55;
+  }
+  pre code {
+    background: none;
+    border: none;
+    padding: 0;
+    color: #e2e8f0;
+    font-size: 0.85em;
+  }
+
+  /* ── Tables ── */
+  .table-wrap { overflow-x: auto; margin: 16px 0; }
+  table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 0.9em;
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    overflow: hidden;
+  }
+  thead { background: var(--bg-table-head); }
+  th {
+    text-align: left;
+    padding: 12px 14px;
+    font-weight: 600;
+    color: #bae6fd;
+    border-bottom: 2px solid var(--border);
+    white-space: nowrap;
+  }
+  td {
+    padding: 10px 14px;
+    border-bottom: 1px solid var(--border-light);
+    vertical-align: top;
+  }
+  tr:nth-child(even) { background: var(--bg-table-even); }
+  tr:nth-child(odd) { background: var(--bg-table-odd); }
+  tr:last-child td { border-bottom: none; }
+  td code { font-size: 0.85em; white-space: nowrap; }
+
+  /* ── Table of Contents ── */
+  .toc {
+    background: var(--bg-secondary);
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    padding: 24px 28px;
+    margin-bottom: 40px;
+  }
+  .toc-title {
+    font-size: 1rem;
+    font-weight: 700;
+    color: #fff;
+    margin-bottom: 14px;
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
+    font-size: 0.8rem;
+  }
+  .toc ol { padding-left: 18px; margin-bottom: 0; }
+  .toc li { margin-bottom: 4px; }
+  .toc a { color: var(--text-secondary); font-size: 0.93em; }
+  .toc a:hover { color: var(--accent); }
+  .toc ol ol { margin-top: 4px; padding-left: 16px; }
+  .toc ol ol a { font-size: 0.88em; color: var(--text-muted); }
+  .toc ol ol a:hover { color: var(--accent); }
+
+  /* ── Footer ── */
+  .footer {
+    margin-top: 64px;
+    padding-top: 32px;
+    border-top: 1px solid var(--border);
+    text-align: center;
+  }
+  .footer-nav {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 8px 20px;
+    margin-bottom: 20px;
+  }
+  .footer-nav a {
+    color: var(--text-secondary);
+    font-size: 0.9em;
+    padding: 6px 14px;
+    border: 1px solid var(--border);
+    border-radius: 6px;
+    transition: all 0.15s;
+  }
+  .footer-nav a:hover {
+    color: var(--accent);
+    border-color: var(--accent);
+    background: rgba(14, 165, 233, 0.08);
+    text-decoration: none;
+  }
+  .footer-copy {
+    font-size: 0.8em;
+    color: var(--text-muted);
+  }
+
+  /* ── Anchor links ── */
+  h2[id]::before, h3[id]::before, h4[id]::before {
+    content: '';
+    display: block;
+    height: 0;
+    margin-top: 0;
+  }
+
+  /* ── Responsiveness ── */
+  @media (max-width: 640px) {
+    h1 { font-size: 1.5rem; }
+    h2 { font-size: 1.3rem; }
+    .container { padding: 24px 16px 60px; }
+    th, td { padding: 8px 10px; font-size: 0.85em; }
+    pre { padding: 14px 12px; }
+  }
+
+  /* ── ASCII Diagram ── */
+  .diagram-block {
+    background: var(--bg-code);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    padding: 18px 20px;
+    overflow-x: auto;
+    margin: 16px 0;
+    font-family: 'JetBrains Mono', 'Fira Code', 'Consolas', monospace;
+    font-size: 0.85em;
+    line-height: 1.5;
+    color: #94a3b8;
+    white-space: pre;
+  }
+</style>
+</head>
+<body>
+
+<!-- ── Sticky Breadcrumb ── -->
+<div class="breadcrumb-bar">
+  <nav>
+    <a href="index.html">BurbArchitect Docs</a>
+    <span class="breadcrumb-sep">›</span>
+    <span class="breadcrumb-current">Pools, Fences, Stairs &amp; Objects</span>
+  </nav>
+</div>
+
+<div class="container">
+
+<!-- ── Header ── -->
+<h1>Pools, Fences, Stairs, Objects &amp; Save System</h1>
+<p class="subtitle">
+  <strong>Audience:</strong> Mid-level Unreal Engine 5 developers integrating BurbArchitect into their project.<br>
+  <strong>Version:</strong> Reflects current source as of February 2026.
+</p>
+
+<!-- ── Table of Contents ── -->
+<div class="toc">
+  <div class="toc-title">Table of Contents</div>
+  <ol>
+    <li>
+      <a href="#pools">Pools</a>
+      <ol>
+        <li><a href="#how-pool-creation-works">How Pool Creation Works</a></li>
+        <li><a href="#pool-merging">Pool Merging</a></li>
+        <li><a href="#water-volumes">Water Volumes (UWaterComponent)</a></li>
+        <li><a href="#pool-materials">Pool Materials</a></li>
+      </ol>
+    </li>
+    <li>
+      <a href="#fences-gates">Fences &amp; Gates</a>
+      <ol>
+        <li><a href="#fence-placement">Fence Placement</a></li>
+        <li><a href="#fence-component">Fence Component (UFenceComponent)</a></li>
+        <li><a href="#gate-placement">Gate Placement</a></li>
+        <li><a href="#ufenceitem-data-asset">UFenceItem Data Asset</a></li>
+        <li><a href="#ugateitem-data-asset">UGateItem Data Asset</a></li>
+      </ol>
+    </li>
+    <li>
+      <a href="#stairs">Stairs</a>
+      <ol>
+        <li><a href="#stair-placement">Stair Placement</a></li>
+        <li><a href="#astairsbase">AStairsBase — The Stair Actor</a></li>
+        <li><a href="#stairscomponent">StairsComponent</a></li>
+      </ol>
+    </li>
+    <li>
+      <a href="#furniture-objects">Furniture &amp; Objects (Buy Mode)</a>
+      <ol>
+        <li><a href="#placement-modes">Placement Modes</a></li>
+        <li><a href="#abuyobjecttool">ABuyObjectTool</a></li>
+        <li><a href="#aplaceableobject">APlaceableObject</a></li>
+        <li><a href="#ufurnitureitem-data-asset">UFurnitureItem Data Asset</a></li>
+        <li><a href="#catalog-system">Catalog System</a></li>
+      </ol>
+    </li>
+    <li>
+      <a href="#save-load-system">Save / Load System</a>
+      <ol>
+        <li><a href="#architecture-overview">Architecture Overview</a></li>
+        <li><a href="#lotmanager-save-load">LotManager Save/Load Functions</a></li>
+        <li><a href="#fserializedlotdata">FSerializedLotData</a></li>
+        <li><a href="#ulotserializationsubsystem">ULotSerializationSubsystem</a></li>
+        <li><a href="#ulotdataasset">ULotDataAsset — Pre-Built Lots</a></li>
+        <li><a href="#json-format">JSON Format</a></li>
+      </ol>
+    </li>
+    <li>
+      <a href="#creating-custom-data-assets">Creating Custom Data Assets</a>
+      <ol>
+        <li><a href="#creating-a-custom-fence">Creating a Custom Fence</a></li>
+        <li><a href="#creating-a-custom-gate">Creating a Custom Gate</a></li>
+        <li><a href="#creating-a-custom-furniture-item">Creating a Custom Furniture Item</a></li>
+        <li><a href="#creating-a-pre-built-lot">Creating a Pre-Built Lot</a></li>
+        <li><a href="#catalog-categories-subcategories">Catalog Categories &amp; Subcategories</a></li>
+      </ol>
+    </li>
+    <li>
+      <a href="#blueprint-api-reference">Blueprint API Reference</a>
+      <ol>
+        <li><a href="#api-pool-system">Pool System</a></li>
+        <li><a href="#api-fence-gate-system">Fence &amp; Gate System</a></li>
+        <li><a href="#api-stairs-system">Stairs System</a></li>
+        <li><a href="#api-object-placement">Object Placement System</a></li>
+        <li><a href="#api-save-load">Save/Load System</a></li>
+        <li><a href="#api-catalog">Catalog System</a></li>
+      </ol>
+    </li>
+    <li><a href="#quick-start-checklist">Quick Start Checklist</a></li>
+  </ol>
+</div>
+
+<!-- ═══════════════════════════════════════════════════ -->
+<!-- 1. POOLS -->
+<!-- ═══════════════════════════════════════════════════ -->
+<h2 id="pools">1. Pools</h2>
+
+<p>Pools in BurbArchitect are rooms built one level below the current floor. When viewing the ground floor (Level 1), the pool tool creates geometry at Level 0 — essentially a specialized basement room filled with a water volume.</p>
+
+<h3 id="how-pool-creation-works">1.1 How Pool Creation Works</h3>
+
+<p><code>ABuildPoolTool</code> extends the room drawing tool (<code>ABuildRoomTool</code>). You draw a pool the same way you draw a room — click and drag a rectangular region on the grid. The tool automatically targets one level below the current traced level.</p>
+
+<p><strong>Workflow (runtime):</strong></p>
+<ol>
+  <li>Activate the pool tool (set your active <code>ABuildTool</code> to an instance of <code>ABuildPoolTool</code>).</li>
+  <li>The player clicks and drags on the lot grid. The tool snaps to grid corners and shows wall previews at the target level.</li>
+  <li>On release (<code>BroadcastRelease</code>), pool walls are committed at the sub-level and a water volume is generated.</li>
+</ol>
+
+<h3 id="pool-merging">1.2 Pool Merging</h3>
+
+<p>When a new pool is drawn adjacent to an existing pool, shared wall segments are automatically detected and removed. The <code>PoolWallsToRemove</code> array tracks edge IDs of walls that should be deleted, and <code>PoolRoomsToMerge</code> tracks room IDs whose water volumes need to be regenerated as a single merged volume.</p>
+
+<p>The result is seamless, Sims-style pool merging — draw two adjacent rectangles and they become one L-shaped pool.</p>
+
+<h3 id="water-volumes">1.3 Water Volumes (<code>UWaterComponent</code>)</h3>
+
+<p>Each pool room gets a 3D water volume managed by <code>UWaterComponent</code>, a procedural mesh component. The water mesh consists of:</p>
+
+<ul>
+  <li><strong>Top surface</strong> — a triangulated polygon matching the room boundary vertices</li>
+  <li><strong>Side walls</strong> — quads connecting the top surface to the pool floor</li>
+</ul>
+
+<p>Water volumes are stored in the <code>PoolWaterArray</code> with O(1) lookup via <code>PoolWaterMap</code> (keyed by <code>RoomID</code>).</p>
+
+<p><strong>Key properties on <code>ABuildPoolTool</code>:</strong></p>
+
+<div class="table-wrap">
+<table>
+  <thead>
+    <tr><th>Property</th><th>Type</th><th>Description</th></tr>
+  </thead>
+  <tbody>
+    <tr><td><code>DefaultWaterMaterial</code></td><td><code>UMaterialInstance*</code></td><td>Material applied to the water mesh. Assign your custom water shader here.</td></tr>
+    <tr><td><code>PoolFloorPattern</code></td><td><code>UFloorPattern*</code></td><td>Pattern used for pool bottom tiles.</td></tr>
+    <tr><td><code>PoolFloorMaterial</code></td><td><code>UMaterialInstance*</code></td><td>Material for the pool floor surface.</td></tr>
+    <tr><td><code>WaterSurfaceZOffset</code></td><td><code>float</code></td><td>Vertical offset of the water surface relative to ground level (default: <code>-5.0</code>). Negative values lower the surface below the surrounding ground.</td></tr>
+  </tbody>
+</table>
+</div>
+
+<p><strong>Key <code>UWaterComponent</code> functions (all BlueprintCallable):</strong></p>
+
+<div class="table-wrap">
+<table>
+  <thead>
+    <tr><th>Function</th><th>Description</th></tr>
+  </thead>
+  <tbody>
+    <tr><td><code>GeneratePoolWater(RoomID, BoundaryVertices, WaterSurfaceZ, PoolFloorZ, BaseMaterial)</code></td><td>Creates a new water volume. Returns <code>FPoolWaterData</code>.</td></tr>
+    <tr><td><code>UpdatePoolWater(RoomID, BoundaryVertices)</code></td><td>Updates an existing pool when its room polygon changes.</td></tr>
+    <tr><td><code>RemovePoolWater(RoomID)</code></td><td>Destroys water mesh for the given room.</td></tr>
+    <tr><td><code>HasPoolWater(RoomID)</code></td><td>Returns <code>true</code> if a water volume exists for this room.</td></tr>
+    <tr><td><code>DestroyAllWater()</code></td><td>Removes every water volume on the lot.</td></tr>
+  </tbody>
+</table>
+</div>
+
+<h3 id="pool-materials">1.4 Pool Materials</h3>
+
+<p>To customize the water appearance:</p>
+<ol>
+  <li>Create a Material Instance based on your water material (translucent, depth fade, etc.).</li>
+  <li>Assign it to <code>DefaultWaterMaterial</code> on your <code>ABuildPoolTool</code> instance.</li>
+  <li>At runtime, the component creates a <code>UMaterialInstanceDynamic</code> per pool from your base material, stored in <code>FPoolWaterData::WaterMaterial</code>. You can modify per-pool parameters dynamically.</li>
+</ol>
+
+<hr>
+
+<!-- ═══════════════════════════════════════════════════ -->
+<!-- 2. FENCES & GATES -->
+<!-- ═══════════════════════════════════════════════════ -->
+<h2 id="fences-gates">2. Fences &amp; Gates</h2>
+
+<p>Fences are <strong>decorative only</strong> — they do not participate in room detection. They use static meshes (panels + posts) instead of procedural wall geometry.</p>
+
+<h3 id="fence-placement">2.1 Fence Placement</h3>
+
+<p><code>ABuildFenceTool</code> extends <code>ABuildHalfWallTool</code> to inherit the drag/snap behavior along grid edges. During the drag phase, the tool spawns preview panel and post meshes. On release, actual <code>FFenceSegmentData</code> entries are committed to the <code>UFenceComponent</code>.</p>
+
+<p><strong>Runtime workflow:</strong></p>
+<ol>
+  <li>Set <code>CurrentFenceItem</code> on the tool to a <code>UFenceItem</code> data asset.</li>
+  <li>Player clicks a grid corner and drags to define the fence line.</li>
+  <li>Preview meshes appear along the path showing panels and posts.</li>
+  <li>On release, the tool calls <code>UFenceComponent::GenerateFenceSegment()</code> to commit.</li>
+</ol>
+
+<h3 id="fence-component">2.2 Fence Component (<code>UFenceComponent</code>)</h3>
+
+<p>The <code>UFenceComponent</code> is a scene component that manages all fence segments on a lot, parallel in architecture to the <code>WallComponent</code> for walls.</p>
+
+<p>Each fence segment (<code>FFenceSegmentData</code>) stores:</p>
+<ul>
+  <li>Start/end world locations</li>
+  <li>Floor level</li>
+  <li>Reference to the <code>UFenceItem</code> data asset</li>
+  <li>Arrays of spawned panel and post mesh components</li>
+  <li>Array of gates placed on this segment</li>
+  <li>Commit state</li>
+</ul>
+
+<p><strong>Key functions (BlueprintCallable):</strong></p>
+
+<div class="table-wrap">
+<table>
+  <thead>
+    <tr><th>Function</th><th>Description</th></tr>
+  </thead>
+  <tbody>
+    <tr><td><code>GenerateFenceSegment(Level, StartLoc, EndLoc, FenceItem)</code></td><td>Creates a fence segment. Returns its index.</td></tr>
+    <tr><td><code>RemoveFenceSegment(FenceIndex)</code></td><td>Destroys a segment and all its meshes.</td></tr>
+    <tr><td><code>FindFenceSegmentAtLocation(Location, Tolerance)</code></td><td>Finds the nearest segment index. Returns <code>-1</code> if none found.</td></tr>
+    <tr><td><code>AddGateToFence(FenceIndex, GateLocation, GateWidth, Gate)</code></td><td>Inserts a gate, regenerating panels/posts around it.</td></tr>
+    <tr><td><code>RemoveGateFromFence(FenceIndex, Gate)</code></td><td>Removes a gate and regenerates the fence.</td></tr>
+  </tbody>
+</table>
+</div>
+
+<h3 id="gate-placement">2.3 Gate Placement</h3>
+
+<p><code>ABuildGateTool</code> extends <code>ABuildDoorTool</code> but detects <strong>fences</strong> instead of walls. It uses <code>FenceComponent-&gt;FindFenceSegmentAtLocation()</code> to find the target fence, then spawns an <code>AGateBase</code> actor.</p>
+
+<p><strong>How gates integrate with fences:</strong></p>
+<ol>
+  <li>Gate tool hovers — <code>DetectFenceSegment()</code> checks if the cursor is over a fence.</li>
+  <li>Position snaps along the fence segment via <code>SnapToFence()</code>.</li>
+  <li>Rotation auto-aligns to the fence direction via <code>CalculateFenceRotation()</code>.</li>
+  <li>On placement, <code>AGateBase::OnGatePlaced()</code> tells the <code>FenceComponent</code> to:
+    <ul>
+      <li>Force posts on each side of the gate opening.</li>
+      <li>Regenerate panels with a cutout for the gate.</li>
+    </ul>
+  </li>
+  <li>On deletion, <code>AGateBase::OnDeleted_Implementation()</code> regenerates the fence without the cutout.</li>
+</ol>
+
+<p><code>AGateBase</code> extends <code>ADoorBase</code>, so gates inherit the full door animation system (open/close skeletal mesh animations).</p>
+
+<h3 id="ufenceitem-data-asset">2.4 UFenceItem Data Asset</h3>
+
+<p><code>UFenceItem</code> extends <code>UArchitectureItem</code> (which extends <code>UCatalogItem</code>). It defines:</p>
+
+<div class="table-wrap">
+<table>
+  <thead>
+    <tr><th>Property</th><th>Type</th><th>Description</th></tr>
+  </thead>
+  <tbody>
+    <tr><td><code>FencePanelMesh</code></td><td><code>TSoftObjectPtr&lt;UStaticMesh&gt;</code></td><td>The repeating panel mesh.</td></tr>
+    <tr><td><code>FencePostMesh</code></td><td><code>TSoftObjectPtr&lt;UStaticMesh&gt;</code></td><td>The post mesh (corners, ends, junctions).</td></tr>
+    <tr><td><code>PostSpacing</code></td><td><code>int32</code></td><td>Tiles between intermediate posts. <code>0</code> = no intermediate posts.</td></tr>
+    <tr><td><code>bPostsAtCorners</code></td><td><code>bool</code></td><td>Force posts at fence corners.</td></tr>
+    <tr><td><code>bPostsAtEnds</code></td><td><code>bool</code></td><td>Force posts at fence endpoints.</td></tr>
+    <tr><td><code>bPostsAtJunctions</code></td><td><code>bool</code></td><td>Force posts at T-intersections / crosses.</td></tr>
+    <tr><td><code>FenceHeight</code></td><td><code>float</code></td><td>Height in units (default <code>200</code>).</td></tr>
+    <tr><td><code>PanelWidth</code></td><td><code>float</code></td><td>Width of one panel mesh for spacing calculations.</td></tr>
+  </tbody>
+</table>
+</div>
+
+<p><strong>Inherited from <code>UCatalogItem</code>:</strong></p>
+
+<div class="table-wrap">
+<table>
+  <thead>
+    <tr><th>Property</th><th>Type</th><th>Description</th></tr>
+  </thead>
+  <tbody>
+    <tr><td><code>DisplayName</code></td><td><code>FText</code></td><td>Name shown in catalog UI.</td></tr>
+    <tr><td><code>Icon</code></td><td><code>FSlateBrush</code></td><td>Thumbnail icon.</td></tr>
+    <tr><td><code>Cost</code></td><td><code>float</code></td><td>In-game price.</td></tr>
+    <tr><td><code>Category</code></td><td><code>UCatalogCategory*</code></td><td>Root catalog category.</td></tr>
+    <tr><td><code>Subcategory</code></td><td><code>UCatalogSubcategory*</code></td><td>Optional subcategory.</td></tr>
+  </tbody>
+</table>
+</div>
+
+<h3 id="ugateitem-data-asset">2.5 UGateItem Data Asset</h3>
+
+<p><code>UGateItem</code> extends <code>UDoorItem</code> (which extends <code>UArchitectureItem</code>). In addition to inherited portal properties (size, offset, snapping), it adds:</p>
+
+<div class="table-wrap">
+<table>
+  <thead>
+    <tr><th>Property</th><th>Type</th><th>Description</th></tr>
+  </thead>
+  <tbody>
+    <tr><td><code>GateSkeletalMesh</code></td><td><code>TSoftObjectPtr&lt;USkeletalMesh&gt;</code></td><td>Skeletal mesh for animation. Can reuse a door skeleton.</td></tr>
+    <tr><td><code>GateStaticMesh</code></td><td><code>TSoftObjectPtr&lt;UStaticMesh&gt;</code></td><td>Gate panel static mesh.</td></tr>
+    <tr><td><code>GateFrameMesh</code></td><td><code>TSoftObjectPtr&lt;UStaticMesh&gt;</code></td><td>Gate frame static mesh.</td></tr>
+  </tbody>
+</table>
+</div>
+
+<p>Inherited portal properties from <code>UDoorItem</code>: <code>PortalSize</code>, <code>PortalOffset</code>, <code>HorizontalSnap</code>, <code>VerticalSnap</code>, <code>bSnapsToFloor</code>, <code>ClassToSpawn</code>.</p>
+
+<hr>
+
+<!-- ═══════════════════════════════════════════════════ -->
+<!-- 3. STAIRS -->
+<!-- ═══════════════════════════════════════════════════ -->
+<h2 id="stairs">3. Stairs</h2>
+
+<p>Stairs connect two adjacent floor levels. BurbArchitect's stair system supports straight runs, 90° turns (left/right), and landings, all adjustable after placement via on-screen gizmo tools.</p>
+
+<h3 id="stair-placement">3.1 Stair Placement</h3>
+
+<p><code>ABuildStairsTool</code> is the build tool. It creates a preview staircase that the player positions and rotates before committing.</p>
+
+<p><strong>Runtime workflow:</strong></p>
+<ol>
+  <li>Activate the stairs tool.</li>
+  <li>The tool spawns a preview <code>AStairsBase</code> actor (<code>DragCreateStairs</code>).</li>
+  <li>Player moves the cursor — the preview snaps to valid grid positions.</li>
+  <li><code>RotateLeft</code> / <code>RotateRight</code> rotate the preview by 90°.</li>
+  <li>Clicking commits the stairs via <code>CreateStairs()</code>.</li>
+</ol>
+
+<p><strong>Key <code>ABuildStairsTool</code> properties:</strong></p>
+
+<div class="table-wrap">
+<table>
+  <thead>
+    <tr><th>Property</th><th>Type</th><th>Description</th></tr>
+  </thead>
+  <tbody>
+    <tr><td><code>StairsActorClass</code></td><td><code>TSubclassOf&lt;AStairsBase&gt;</code></td><td>Blueprint class to spawn. Override this for custom stair actors.</td></tr>
+    <tr><td><code>StairTreadMesh</code></td><td><code>UStaticMesh*</code></td><td>Mesh for individual stair treads.</td></tr>
+    <tr><td><code>StairLandingMesh</code></td><td><code>UStaticMesh*</code></td><td>Mesh for landing platforms.</td></tr>
+    <tr><td><code>DefaultStairsMaterial</code></td><td><code>UMaterialInstance*</code></td><td>Default material applied to stair meshes.</td></tr>
+    <tr><td><code>TreadsCount</code></td><td><code>int</code></td><td>Number of treads to span one level (default: <code>12</code>). At 25 units rise per tread, 12 treads = 300 units (one standard wall height).</td></tr>
+    <tr><td><code>Height</code></td><td><code>float</code></td><td>Total vertical travel (default: <code>300</code>).</td></tr>
+    <tr><td><code>StairsThickness</code></td><td><code>float</code></td><td>Thickness of the stair underside (default: <code>15</code>).</td></tr>
+    <tr><td><code>TreadSize</code></td><td><code>int</code></td><td>Depth of each tread (default: <code>25</code>).</td></tr>
+    <tr><td><code>LandingSize</code></td><td><code>int</code></td><td>Depth of landing platforms (default: <code>95</code>).</td></tr>
+  </tbody>
+</table>
+</div>
+
+<blockquote>
+  <p><strong>Mesh Socket Convention:</strong> Stair tread meshes must have <code>Front_Socket</code> and <code>Back_Socket</code>. The offset between them should be approximately <code>(25, 0, 25)</code> for standard rise. The tool chains treads via these sockets.</p>
+</blockquote>
+
+<h3 id="astairsbase">3.2 AStairsBase — The Stair Actor</h3>
+
+<p><code>AStairsBase</code> is an abstract actor that encapsulates a complete staircase. It manages:</p>
+
+<ul>
+  <li><strong>Stair mesh generation</strong> via an embedded <code>UStairsComponent</code> (procedural mesh)</li>
+  <li><strong>Adjustment gizmos</strong> for post-placement editing</li>
+  <li><strong>Floor cutaway</strong> at the upper level</li>
+  <li><strong>Validation</strong> (both levels must exist, landing tiles must be present)</li>
+  <li><strong>Deletion</strong> via the <code>IDeletable</code> interface (DEL key support)</li>
+</ul>
+
+<h4 id="stair-modules">3.2.1 Stair Modules</h4>
+
+<p>Each staircase is defined as an array of <code>FStairModuleStructure</code>:</p>
+
+<pre><code>USTRUCT(BlueprintType)
+struct FStairModuleStructure
+{
+    EStairModuleType StairType;    // Tread or Landing
+    ETurningSocket TurningSocket;  // Idle, Right, or Left
+};</code></pre>
+
+<p>A straight 12-tread staircase is 12 entries of <code>{Tread, Idle}</code>. To add a 90° turn, insert a <code>{Landing, Right}</code> or <code>{Landing, Left}</code> at the desired step.</p>
+
+<p>The <code>StepsPerSection</code> property (default: <code>4</code>) sets the minimum number of treads before a landing/turn can occur. Landings snap to multiples of this value.</p>
+
+<h4 id="adjustment-gizmos">3.2.2 Adjustment Gizmos</h4>
+
+<p>After placing stairs, clicking them enters <strong>Edit Mode</strong> with three gizmo handles:</p>
+
+<div class="table-wrap">
+<table>
+  <thead>
+    <tr><th>Gizmo</th><th>Type</th><th>What It Does</th></tr>
+  </thead>
+  <tbody>
+    <tr><td><code>AdjustmentTool_StartingStep</code></td><td>Starting step</td><td>Drag to extend or shorten the bottom of the staircase.</td></tr>
+    <tr><td><code>AdjustmentTool_EndingStep</code></td><td>Ending step</td><td>Drag to extend or shorten the top of the staircase.</td></tr>
+    <tr><td><code>AdjustmentTool_LandingTool</code></td><td>Landing/turn</td><td>Drag left or right to insert a 90° turn at that position.</td></tr>
+  </tbody>
+</table>
+</div>
+
+<p><strong>Blueprint API for edit mode:</strong></p>
+
+<div class="table-wrap">
+<table>
+  <thead>
+    <tr><th>Function</th><th>Description</th></tr>
+  </thead>
+  <tbody>
+    <tr><td><code>EnterEditMode()</code></td><td>Shows gizmo handles.</td></tr>
+    <tr><td><code>ExitEditMode()</code></td><td>Hides gizmo handles.</td></tr>
+    <tr><td><code>ToggleEditMode()</code></td><td>Toggles.</td></tr>
+    <tr><td><code>RotateLeft()</code> / <code>RotateRight()</code></td><td>Rotates the entire staircase 90°.</td></tr>
+    <tr><td><code>UpdateStairStructure(TurnSocket, LandingIndex)</code></td><td>Programmatically insert a turn at a specific step.</td></tr>
+  </tbody>
+</table>
+</div>
+
+<h4 id="floor-cutaway">3.2.3 Floor Cutaway</h4>
+
+<p>When stairs are committed (<code>CommitStairs()</code>), the system automatically cuts a hole in the upper floor where the staircase emerges. This uses <code>CutAwayStairOpening()</code>, which:</p>
+
+<ol>
+  <li>Calculates the stair footprint at the top level via <code>GetTopLevelFootprint()</code>.</li>
+  <li>Removes floor/terrain tiles at those grid positions.</li>
+  <li>Stores removed tiles in <code>RemovedFloorTiles</code> / <code>RemovedTerrainTiles</code> for undo support.</li>
+</ol>
+
+<p>If stairs are deleted, <code>RestoreStairOpening()</code> puts those tiles back.</p>
+
+<h4 id="validation">3.2.4 Validation</h4>
+
+<p>Before committing, <code>ValidatePlacement()</code> checks:</p>
+
+<ul>
+  <li>Both the start level and end level (<code>Level</code> and <code>Level + 1</code>) exist within the lot's floor/basement range.</li>
+  <li>Floor or terrain exists at the bottom landing tile.</li>
+  <li>Floor or terrain exists at the top landing tile.</li>
+</ul>
+
+<p>The <code>bValidPlacement</code> property and <code>ValidationError</code> string are updated for UI feedback.</p>
+
+<h3 id="stairscomponent">3.3 StairsComponent</h3>
+
+<p><code>UStairsComponent</code> is the procedural mesh component that generates the actual stair geometry. It manages an array of <code>FStairsSegmentData</code> entries. Most interaction goes through <code>AStairsBase</code>, but you can also use the component directly:</p>
+
+<div class="table-wrap">
+<table>
+  <thead>
+    <tr><th>Function</th><th>Description</th></tr>
+  </thead>
+  <tbody>
+    <tr><td><code>GenerateStairsMeshSection(InStairsData)</code></td><td>Generates mesh for a single stair segment.</td></tr>
+    <tr><td><code>CommitStairsSection(InStairsData, TreadsMaterial, LandingsMaterial)</code></td><td>Finalizes a segment with materials.</td></tr>
+    <tr><td><code>DestroyStairsSection(InStairsData)</code></td><td>Removes a specific section.</td></tr>
+    <tr><td><code>FindExistingStairsSection(TileCornerStart, Structures, OutStairs)</code></td><td>Checks if stairs already exist at a location.</td></tr>
+  </tbody>
+</table>
+</div>
+
+<hr>
+
+<!-- ═══════════════════════════════════════════════════ -->
+<!-- 4. FURNITURE & OBJECTS -->
+<!-- ═══════════════════════════════════════════════════ -->
+<h2 id="furniture-objects">4. Furniture &amp; Objects (Buy Mode)</h2>
+
+<p>The object placement system handles furniture, decorations, and fixtures. It supports four placement modes: Floor, Wall Hanging, Ceiling Fixture, and Surface.</p>
+
+<h3 id="placement-modes">4.1 Placement Modes</h3>
+
+<pre><code>UENUM(BlueprintType)
+enum class EObjectPlacementMode : uint8
+{
+    Floor,           // Chairs, tables — snaps to floor grid
+    WallHanging,     // Posters, shelves — snaps to wall surfaces
+    CeilingFixture,  // Chandeliers — snaps to ceiling
+    Surface          // (Future) — on countertops, desks
+};</code></pre>
+
+<h3 id="abuyobjecttool">4.2 ABuyObjectTool</h3>
+
+<p><code>ABuyObjectTool</code> is the build tool for placing objects. It reads placement rules from the <code>CurrentCatalogItem</code> (<code>UFurnitureItem*</code>) and delegates to the appropriate handler.</p>
+
+<p><strong>Key properties:</strong></p>
+
+<div class="table-wrap">
+<table>
+  <thead>
+    <tr><th>Property</th><th>Type</th><th>Description</th></tr>
+  </thead>
+  <tbody>
+    <tr><td><code>CurrentCatalogItem</code></td><td><code>UFurnitureItem*</code></td><td>The furniture item being placed. Set this before activating the tool.</td></tr>
+    <tr><td><code>bValidPlacement</code></td><td><code>bool</code> (read-only)</td><td>Whether the current position is a valid placement. Use for visual feedback (green vs red ghost).</td></tr>
+    <tr><td><code>CurrentPlacementMode</code></td><td><code>EObjectPlacementMode</code> (read-only)</td><td>Derived from the catalog item's <code>PlacementRules</code>.</td></tr>
+  </tbody>
+</table>
+</div>
+
+<p><strong>Placement helpers (all BlueprintCallable):</strong></p>
+
+<div class="table-wrap">
+<table>
+  <thead>
+    <tr><th>Function</th><th>Description</th></tr>
+  </thead>
+  <tbody>
+    <tr><td><code>TraceForWall(FromLocation, OutHit)</code></td><td>Raycasts for a wall mesh. Returns <code>true</code> if hit.</td></tr>
+    <tr><td><code>CalculateWallMountPosition(WallHit, HeightAboveFloor, WallOffset, Level)</code></td><td>Calculates world position on a wall surface.</td></tr>
+    <tr><td><code>CalculateWallMountRotation(WallNormal)</code></td><td>Calculates rotation facing away from wall.</td></tr>
+    <tr><td><code>CheckAdjacentWalls(Row, Col, Level, OutWallNormal)</code></td><td>O(1) grid check for adjacent walls.</td></tr>
+    <tr><td><code>GetAdjacentWallNormals(Row, Col, Level)</code></td><td>Returns all wall normals adjacent to a tile.</td></tr>
+    <tr><td><code>CalculateCeilingHeight(Level)</code></td><td>Returns world Z of the ceiling at a level.</td></tr>
+    <tr><td><code>CheckCeilingExists(Row, Col, Level)</code></td><td>Returns <code>true</code> if a ceiling (roof or upper floor) exists.</td></tr>
+  </tbody>
+</table>
+</div>
+
+<h3 id="aplaceableobject">4.3 APlaceableObject</h3>
+
+<p><code>APlaceableObject</code> is the base class for all placed furniture/decor actors. It's replicated for multiplayer and stores placement metadata for serialization.</p>
+
+<p><strong>Properties:</strong></p>
+
+<div class="table-wrap">
+<table>
+  <thead>
+    <tr><th>Property</th><th>Type</th><th>Description</th></tr>
+  </thead>
+  <tbody>
+    <tr><td><code>CurrentFloor</code></td><td><code>int32</code></td><td>Floor level this object is on. Replicated + SaveGame.</td></tr>
+    <tr><td><code>PlacementMode</code></td><td><code>EObjectPlacementMode</code></td><td>How this object was placed. Replicated + SaveGame.</td></tr>
+    <tr><td><code>PlacedRow</code> / <code>PlacedColumn</code></td><td><code>int32</code></td><td>Grid coordinates for floor/ceiling objects. Replicated + SaveGame.</td></tr>
+    <tr><td><code>WallNormal</code></td><td><code>FVector</code></td><td>For wall-mounted objects, the wall's outward normal. Replicated + SaveGame.</td></tr>
+  </tbody>
+</table>
+</div>
+
+<p>All your custom furniture Blueprints should extend <code>APlaceableObject</code> (or a Blueprint subclass of it).</p>
+
+<h3 id="ufurnitureitem-data-asset">4.4 UFurnitureItem Data Asset</h3>
+
+<p><code>UFurnitureItem</code> extends <code>UCatalogItem</code> and adds:</p>
+
+<div class="table-wrap">
+<table>
+  <thead>
+    <tr><th>Property</th><th>Type</th><th>Description</th></tr>
+  </thead>
+  <tbody>
+    <tr><td><code>ClassToSpawn</code></td><td><code>TSoftClassPtr&lt;APlaceableObject&gt;</code></td><td>The Blueprint class spawned when this item is placed.</td></tr>
+    <tr><td><code>PlacementRules</code></td><td><code>FPlacementConstraints</code></td><td>Defines how and where this item can be placed.</td></tr>
+  </tbody>
+</table>
+</div>
+
+<h4>FPlacementConstraints</h4>
+
+<p>The constraints struct is the core of the placement validation system:</p>
+
+<p><strong>General:</strong></p>
+
+<div class="table-wrap">
+<table>
+  <thead>
+    <tr><th>Property</th><th>Default</th><th>Description</th></tr>
+  </thead>
+  <tbody>
+    <tr><td><code>PlacementMode</code></td><td><code>Floor</code></td><td>Determines snap behavior — Floor, WallHanging, CeilingFixture, or Surface.</td></tr>
+    <tr><td><code>bCanPlaceOutdoors</code></td><td><code>true</code></td><td>Whether the object can be placed outside of enclosed rooms.</td></tr>
+    <tr><td><code>GridSize</code></td><td><code>(1, 1, 1)</code></td><td>Footprint in tiles (X × Y × Z).</td></tr>
+  </tbody>
+</table>
+</div>
+
+<p><strong>Floor placement:</strong></p>
+
+<div class="table-wrap">
+<table>
+  <thead>
+    <tr><th>Property</th><th>Default</th><th>Description</th></tr>
+  </thead>
+  <tbody>
+    <tr><td><code>bMustBeAgainstWall</code></td><td><code>false</code></td><td>Requires an adjacent wall (toilets, beds against walls).</td></tr>
+    <tr><td><code>bAutoRotateFromWall</code></td><td><code>true</code></td><td>Auto-faces away from the wall when placed against one.</td></tr>
+    <tr><td><code>bRequiresFloor</code></td><td><code>true</code></td><td>Must have a floor tile underneath.</td></tr>
+  </tbody>
+</table>
+</div>
+
+<p><strong>Wall hanging:</strong></p>
+
+<div class="table-wrap">
+<table>
+  <thead>
+    <tr><th>Property</th><th>Default</th><th>Description</th></tr>
+  </thead>
+  <tbody>
+    <tr><td><code>WallMountHeight</code></td><td><code>150.0</code></td><td>Height above floor in cm.</td></tr>
+    <tr><td><code>bCanRotateOnWall</code></td><td><code>true</code></td><td>Allow 360° rotation on the wall surface.</td></tr>
+    <tr><td><code>WallOffset</code></td><td><code>5.0</code></td><td>Distance from wall surface in cm.</td></tr>
+  </tbody>
+</table>
+</div>
+
+<p><strong>Ceiling fixture:</strong></p>
+
+<div class="table-wrap">
+<table>
+  <thead>
+    <tr><th>Property</th><th>Default</th><th>Description</th></tr>
+  </thead>
+  <tbody>
+    <tr><td><code>CeilingOffset</code></td><td><code>20.0</code></td><td>Distance from ceiling surface in cm.</td></tr>
+  </tbody>
+</table>
+</div>
+
+<blockquote>
+  <p><strong>Tip:</strong> The Editor uses <code>EditCondition</code> and <code>EditConditionHides</code> metadata so only relevant properties show in the Details panel based on the selected <code>PlacementMode</code>.</p>
+</blockquote>
+
+<h3 id="catalog-system">4.5 Catalog System</h3>
+
+<p>All catalog items (furniture, fences, gates, architecture) are auto-discovered by the <code>UCatalogSubsystem</code> at game startup. It scans the Asset Registry for all <code>UCatalogItem</code> subclass assets — <strong>regardless of directory</strong> — making it mod-friendly.</p>
+
+<p><strong>Getting items in Blueprint:</strong></p>
+
+<pre><code>// Get the subsystem
+UCatalogSubsystem* Catalog = GetGameInstance()-&gt;GetSubsystem&lt;UCatalogSubsystem&gt;();
+
+// Browse categories
+TArray&lt;UCatalogCategory*&gt; Categories = Catalog-&gt;GetRootCategories();
+
+// Get items in a category (loads on demand)
+TArray&lt;UCatalogItem*&gt; Items = Catalog-&gt;GetItemsInCategory(MyCategory);
+
+// Search by name
+TArray&lt;UCatalogItem*&gt; Results = Catalog-&gt;SearchItemsByName("Chair");</code></pre>
+
+<p>The catalog uses <strong>lazy loading</strong> — items are stored as <code>FSoftObjectPath</code> and only loaded when requested. For UI lists that just need counts/names, use <code>GetItemPathsInCategory()</code> / <code>SearchItemPathsByName()</code>.</p>
+
+<hr>
+
+<!-- ═══════════════════════════════════════════════════ -->
+<!-- 5. SAVE / LOAD SYSTEM -->
+<!-- ═══════════════════════════════════════════════════ -->
+<h2 id="save-load-system">5. Save / Load System</h2>
+
+<p>BurbArchitect provides a complete serialization pipeline with multiple output formats.</p>
+
+<h3 id="architecture-overview">5.1 Architecture Overview</h3>
+
+<div class="diagram-block">LotManager                          (high-level API - BlueprintCallable)
+  └─ ULotSerializationSubsystem    (GameInstance subsystem - does the work)
+       ├─ SerializeLot()            → FSerializedLotData
+       ├─ DeserializeLot()          ← FSerializedLotData
+       ├─ ExportToJSON()            → .json file
+       └─ ImportFromJSON()          ← .json file
+
+ULotSaveGame (USaveGame)            (binary .sav files in Saved/SaveGames/)
+ULotDataAsset (UDataAsset)          (packaged assets for default/shipped lots)</div>
+
+<h3 id="lotmanager-save-load">5.2 LotManager Save/Load Functions</h3>
+
+<p>All of these are <code>BlueprintCallable</code> and available on any <code>ALotManager</code> reference:</p>
+
+<div class="table-wrap">
+<table>
+  <thead>
+    <tr><th>Function</th><th>Description</th></tr>
+  </thead>
+  <tbody>
+    <tr><td><code>SaveLotToSlot(SlotName)</code></td><td>Saves to Unreal's binary SaveGame system. Files land in <code>Saved/SaveGames/&lt;SlotName&gt;.sav</code>. Returns <code>true</code> on success.</td></tr>
+    <tr><td><code>LoadLotFromSlot(SlotName)</code></td><td>Loads from a save slot. Clears the current lot first, then rebuilds everything. Returns <code>true</code> on success.</td></tr>
+    <tr><td><code>ExportLotToFile(FilePath)</code></td><td>Exports to a human-readable JSON file at the given absolute path. Great for sharing lots or debugging.</td></tr>
+    <tr><td><code>ImportLotFromFile(FilePath)</code></td><td>Imports a lot from a JSON file.</td></tr>
+    <tr><td><code>LoadDefaultLot(LotAsset)</code></td><td>Loads a pre-built lot from a <code>ULotDataAsset</code>. Use for starter homes, pre-furnished lots, etc.</td></tr>
+    <tr><td><code>SaveAsDataAsset(AssetName, PackagePath)</code></td><td><strong>Editor only.</strong> Creates a <code>ULotDataAsset</code> in your Content Browser that can be packaged with the game.</td></tr>
+  </tbody>
+</table>
+</div>
+
+<h3 id="fserializedlotdata">5.3 FSerializedLotData</h3>
+
+<p>This is the master struct containing everything needed to reconstruct a lot:</p>
+
+<div class="table-wrap">
+<table>
+  <thead>
+    <tr><th>Field</th><th>Type</th><th>What It Stores</th></tr>
+  </thead>
+  <tbody>
+    <tr><td><code>GridConfig</code></td><td><code>FLotGridConfig</code></td><td>Grid dimensions, tile size, floor/basement count, current level.</td></tr>
+    <tr><td><code>WallNodes</code></td><td><code>TArray&lt;FSerializedWallNode&gt;</code></td><td>Wall graph vertices (node ID, row, col, level).</td></tr>
+    <tr><td><code>WallEdges</code></td><td><code>TArray&lt;FSerializedWallEdge&gt;</code></td><td>Wall segments connecting nodes (edge ID, rooms, height, pattern/material paths).</td></tr>
+    <tr><td><code>FloorTiles</code></td><td><code>TArray&lt;FSerializedFloorTile&gt;</code></td><td>Individual floor tiles (row, col, level, pattern/material, active sections bitmask).</td></tr>
+    <tr><td><code>Roofs</code></td><td><code>TArray&lt;FSerializedRoofData&gt;</code></td><td>Roof structures (class, location, dimensions, pitch, material).</td></tr>
+    <tr><td><code>Stairs</code></td><td><code>TArray&lt;FSerializedStairsData&gt;</code></td><td>Staircases (class, location, direction, modules, meshes).</td></tr>
+    <tr><td><code>Terrain</code></td><td><code>FSerializedTerrainData</code></td><td>Terrain tiles with corner heights.</td></tr>
+    <tr><td><code>Portals</code></td><td><code>TArray&lt;FSerializedPortalData&gt;</code></td><td>Doors and windows (class, location, rotation, attached wall edge).</td></tr>
+    <tr><td><code>PlacedObjects</code></td><td><code>TArray&lt;FSerializedPlacedObject&gt;</code></td><td>Furniture/decor (class path, transform, level).</td></tr>
+    <tr><td><code>PoolWater</code></td><td><code>TArray&lt;FSerializedPoolWater&gt;</code></td><td>Pool water volumes (room ID, boundary vertices, surface/floor Z, material).</td></tr>
+    <tr><td><code>Fences</code></td><td><code>TArray&lt;FSerializedFenceSegment&gt;</code></td><td>Fence segments (start/end locations, level, fence item asset path).</td></tr>
+    <tr><td><code>TileRoomIDs</code></td><td><code>TArray&lt;int32&gt;</code></td><td>Flattened room ID grid: <code>[Level * GridSizeX * GridSizeY + Row * GridSizeX + Col]</code>.</td></tr>
+    <tr><td><code>UpperFloorTiles</code></td><td><code>TArray&lt;int32&gt;</code></td><td>Packed tile references: <code>(Level &lt;&lt; 24) | (Row &lt;&lt; 12) | Column</code>.</td></tr>
+    <tr><td><code>LotName</code></td><td><code>FString</code></td><td>User-friendly lot name.</td></tr>
+    <tr><td><code>Description</code></td><td><code>FString</code></td><td>Optional description.</td></tr>
+    <tr><td><code>SaveTimestamp</code></td><td><code>FDateTime</code></td><td>When the lot was saved.</td></tr>
+  </tbody>
+</table>
+</div>
+
+<h3 id="ulotserializationsubsystem">5.4 ULotSerializationSubsystem</h3>
+
+<p>This <code>UGameInstanceSubsystem</code> handles all the actual serialization work. Access it from any Blueprint or C++:</p>
+
+<pre><code>ULotSerializationSubsystem* Serializer = GetGameInstance()-&gt;GetSubsystem&lt;ULotSerializationSubsystem&gt;();
+
+// Serialize the entire lot
+FSerializedLotData Data = Serializer-&gt;SerializeLot(LotManager);
+
+// Validate data
+bool bValid = Serializer-&gt;ValidateLotData(Data);
+
+// Export to JSON
+Serializer-&gt;ExportToJSON(Data, TEXT("C:/MyLots/TestHouse.json"));
+
+// Import from JSON
+FSerializedLotData ImportedData;
+Serializer-&gt;ImportFromJSON(TEXT("C:/MyLots/TestHouse.json"), ImportedData);
+
+// Apply to a lot
+Serializer-&gt;DeserializeLot(LotManager, ImportedData);</code></pre>
+
+<p>The subsystem serializes each component independently:</p>
+
+<div class="table-wrap">
+<table>
+  <thead>
+    <tr><th>Serialize Function</th><th>Deserialize Function</th><th>What</th></tr>
+  </thead>
+  <tbody>
+    <tr><td><code>SerializeWallGraph()</code></td><td><code>DeserializeWallGraph()</code></td><td>Wall nodes + edges</td></tr>
+    <tr><td><code>SerializeFloorComponent()</code></td><td><code>DeserializeFloorComponent()</code></td><td>Floor tiles</td></tr>
+    <tr><td><code>SerializeRoofComponent()</code></td><td><code>DeserializeRoofComponent()</code></td><td>Roof actors</td></tr>
+    <tr><td><code>SerializeStairsComponent()</code></td><td><code>DeserializeStairsComponent()</code></td><td>Staircase actors</td></tr>
+    <tr><td><code>SerializeTerrainComponent()</code></td><td><code>DeserializeTerrainComponent()</code></td><td>Terrain heightmap</td></tr>
+    <tr><td><code>SerializeWaterComponent()</code></td><td><code>DeserializeWaterComponent()</code></td><td>Pool water volumes</td></tr>
+    <tr><td><code>SerializeFenceComponent()</code></td><td><code>DeserializeFenceComponent()</code></td><td>Fence segments</td></tr>
+    <tr><td><code>SerializePortals()</code></td><td><code>DeserializePortals()</code></td><td>Doors + windows</td></tr>
+    <tr><td><code>SerializePlacedObjects()</code></td><td><code>DeserializePlacedObjects()</code></td><td>Furniture/decor</td></tr>
+    <tr><td><code>SerializeRoomIDs()</code></td><td><code>DeserializeRoomIDs()</code></td><td>Room assignment grid</td></tr>
+  </tbody>
+</table>
+</div>
+
+<h3 id="ulotdataasset">5.5 ULotDataAsset — Pre-Built Lots</h3>
+
+<p><code>ULotDataAsset</code> is a <code>UDataAsset</code> containing an <code>FSerializedLotData</code>. Use it for default/starter lots shipped with your game.</p>
+
+<p><strong>Properties:</strong></p>
+
+<div class="table-wrap">
+<table>
+  <thead>
+    <tr><th>Property</th><th>Type</th><th>Description</th></tr>
+  </thead>
+  <tbody>
+    <tr><td><code>LotData</code></td><td><code>FSerializedLotData</code></td><td>The complete serialized lot.</td></tr>
+    <tr><td><code>Thumbnail</code></td><td><code>UTexture2D*</code></td><td>Preview image for menus.</td></tr>
+    <tr><td><code>Category</code></td><td><code>FString</code></td><td>Organizational category (e.g., "Starter", "Large").</td></tr>
+    <tr><td><code>Tags</code></td><td><code>TArray&lt;FString&gt;</code></td><td>Filter tags (e.g., "Modern", "Colonial").</td></tr>
+    <tr><td><code>Price</code></td><td><code>int32</code></td><td>Cost to place this lot (<code>0</code> = free).</td></tr>
+  </tbody>
+</table>
+</div>
+
+<p><strong>Functions:</strong></p>
+
+<div class="table-wrap">
+<table>
+  <thead>
+    <tr><th>Function</th><th>Description</th></tr>
+  </thead>
+  <tbody>
+    <tr><td><code>ValidateLotData()</code></td><td>Returns <code>true</code> if the stored data is valid.</td></tr>
+    <tr><td><code>GetLotName()</code></td><td>Returns <code>LotData.LotName</code> if set, otherwise the asset name.</td></tr>
+    <tr><td><code>GetDescription()</code></td><td>Returns <code>LotData.Description</code>.</td></tr>
+  </tbody>
+</table>
+</div>
+
+<h3 id="json-format">5.6 JSON Format</h3>
+
+<p>The JSON export uses Unreal's <code>FJsonObjectConverter</code> to serialize <code>FSerializedLotData</code>. The resulting file is human-readable and diff-friendly, making it ideal for:</p>
+
+<ul>
+  <li><strong>Lot sharing</strong> between players or developers</li>
+  <li><strong>Version control</strong> (JSON diffs are meaningful)</li>
+  <li><strong>Debugging</strong> serialization issues</li>
+  <li><strong>External tools</strong> that generate or modify lots</li>
+</ul>
+
+<hr>
+
+<!-- ═══════════════════════════════════════════════════ -->
+<!-- 6. CREATING CUSTOM DATA ASSETS -->
+<!-- ═══════════════════════════════════════════════════ -->
+<h2 id="creating-custom-data-assets">6. Creating Custom Data Assets</h2>
+
+<h3 id="creating-a-custom-fence">6.1 Creating a Custom Fence</h3>
+
+<ol>
+  <li><strong>Prepare meshes:</strong>
+    <ul>
+      <li>Create a <strong>panel mesh</strong> — one repeating fence section. The mesh width should match your intended <code>PanelWidth</code> value.</li>
+      <li>Create a <strong>post mesh</strong> — the vertical element placed at corners, ends, and intermediate points.</li>
+    </ul>
+  </li>
+  <li><strong>Create the data asset:</strong>
+    <ul>
+      <li>In the Content Browser, right-click → <strong>Miscellaneous → Data Asset</strong>.</li>
+      <li>Select <strong>FenceItem</strong> as the class.</li>
+      <li>Name it descriptively (e.g., <code>FI_WoodPicket</code>).</li>
+    </ul>
+  </li>
+  <li><strong>Configure properties:</strong>
+    <ul>
+      <li>Set <code>FencePanelMesh</code> and <code>FencePostMesh</code> to your static meshes.</li>
+      <li>Set <code>PanelWidth</code> to match your mesh (e.g., <code>100.0</code> for a 1-tile-wide panel).</li>
+      <li>Set <code>FenceHeight</code> (default <code>200</code>).</li>
+      <li>Configure <code>PostSpacing</code> — <code>1</code> means a post every tile, <code>2</code> every other tile, etc.</li>
+      <li>Enable <code>bPostsAtCorners</code>, <code>bPostsAtEnds</code>, <code>bPostsAtJunctions</code> as needed.</li>
+    </ul>
+  </li>
+  <li><strong>Set catalog properties:</strong>
+    <ul>
+      <li>Set <code>DisplayName</code>, <code>Icon</code>, and <code>Cost</code>.</li>
+      <li>Assign a <code>Category</code> (create a <code>UCatalogCategory</code> data asset if you don't have one).</li>
+      <li>Optionally assign a <code>Subcategory</code>.</li>
+    </ul>
+  </li>
+  <li><strong>Done!</strong> The <code>CatalogSubsystem</code> will auto-discover your asset on next game launch. Assign it to <code>ABuildFenceTool::CurrentFenceItem</code> to use it.</li>
+</ol>
+
+<h3 id="creating-a-custom-gate">6.2 Creating a Custom Gate</h3>
+
+<ol>
+  <li><strong>Prepare meshes:</strong>
+    <ul>
+      <li>Create gate panel, frame, and optionally skeletal meshes.</li>
+      <li>Gates reuse the door animation skeleton — your skeletal mesh should have the same bone structure as doors if you want open/close animations.</li>
+    </ul>
+  </li>
+  <li><strong>Create the data asset:</strong>
+    <ul>
+      <li>Right-click → <strong>Miscellaneous → Data Asset → GateItem</strong> (e.g., <code>GI_IronGate</code>).</li>
+    </ul>
+  </li>
+  <li><strong>Configure:</strong>
+    <ul>
+      <li>Set <code>GateSkeletalMesh</code>, <code>GateStaticMesh</code>, <code>GateFrameMesh</code>.</li>
+      <li>Set <code>PortalSize</code> (width × height of the gate opening).</li>
+      <li>Set <code>HorizontalSnap</code> for placement snapping along the fence.</li>
+      <li>Set <code>ClassToSpawn</code> to your gate Blueprint class (must extend <code>AGateBase</code> or its Blueprint equivalent).</li>
+      <li>Set catalog properties (DisplayName, Icon, Cost, Category).</li>
+    </ul>
+  </li>
+</ol>
+
+<h3 id="creating-a-custom-furniture-item">6.3 Creating a Custom Furniture Item</h3>
+
+<ol>
+  <li><strong>Create the actor Blueprint:</strong>
+    <ul>
+      <li>Create a new Blueprint extending <code>APlaceableObject</code> (or a child class).</li>
+      <li>Add your static/skeletal mesh components, collision, interaction logic, etc.</li>
+    </ul>
+  </li>
+  <li><strong>Create the data asset:</strong>
+    <ul>
+      <li>Right-click → <strong>Miscellaneous → Data Asset → FurnitureItem</strong> (e.g., <code>FI_DiningChair</code>).</li>
+    </ul>
+  </li>
+  <li><strong>Configure:</strong>
+    <ul>
+      <li>Set <code>ClassToSpawn</code> to your Blueprint class.</li>
+      <li>Configure <code>PlacementRules</code>:
+        <ul>
+          <li><strong>Floor item</strong> (chair, table): <code>PlacementMode = Floor</code>, set <code>GridSize</code>, <code>bRequiresFloor = true</code>.</li>
+          <li><strong>Wall item</strong> (painting, shelf): <code>PlacementMode = WallHanging</code>, set <code>WallMountHeight</code>, <code>WallOffset</code>.</li>
+          <li><strong>Against-wall item</strong> (toilet, bed): <code>PlacementMode = Floor</code>, <code>bMustBeAgainstWall = true</code>, <code>bAutoRotateFromWall = true</code>.</li>
+          <li><strong>Ceiling item</strong> (chandelier): <code>PlacementMode = CeilingFixture</code>, set <code>CeilingOffset</code>.</li>
+        </ul>
+      </li>
+      <li>Set catalog properties (DisplayName, Icon, Cost, Category).</li>
+    </ul>
+  </li>
+  <li><strong>Test:</strong>
+    <ul>
+      <li>Launch PIE, open buy mode, find your item in the catalog.</li>
+      <li>Verify placement rules (snapping, validation, rotation).</li>
+    </ul>
+  </li>
+</ol>
+
+<h3 id="creating-a-pre-built-lot">6.4 Creating a Pre-Built Lot</h3>
+
+<ol>
+  <li><strong>Build the lot in-game</strong> using the build tools (walls, floors, roofs, furniture, etc.).</li>
+  <li><strong>Export as data asset (Editor only):</strong>
+    <ul>
+      <li>In the LotManager Details panel, use <code>SaveAsDataAsset("DA_StarterHome", "/Game/DefaultLots/")</code>.</li>
+      <li>This creates a <code>ULotDataAsset</code> in your Content Browser.</li>
+    </ul>
+  </li>
+  <li><strong>Or export as JSON:</strong>
+    <ul>
+      <li>Call <code>LotManager-&gt;ExportLotToFile("C:/MyLots/StarterHome.json")</code>.</li>
+      <li>Import later with <code>ImportLotFromFile()</code>.</li>
+    </ul>
+  </li>
+  <li><strong>Customize the asset:</strong>
+    <ul>
+      <li>Set <code>Thumbnail</code>, <code>Category</code>, <code>Tags</code>, and <code>Price</code> on the data asset.</li>
+    </ul>
+  </li>
+  <li><strong>Load at runtime:</strong>
+<pre><code>// In Blueprint or C++
+ULotDataAsset* StarterHome = LoadObject&lt;ULotDataAsset&gt;(nullptr, TEXT("/Game/DefaultLots/DA_StarterHome"));
+LotManager-&gt;LoadDefaultLot(StarterHome);</code></pre>
+  </li>
+</ol>
+
+<h3 id="catalog-categories-subcategories">6.5 Catalog Categories &amp; Subcategories</h3>
+
+<p>To organize items in your catalog UI:</p>
+
+<ol>
+  <li><strong>Create a category:</strong> Right-click → Data Asset → <strong>CatalogCategory</strong> (e.g., <code>CC_Seating</code>).
+    <ul>
+      <li>Set <code>DisplayName</code>, <code>Icon</code>, <code>SortOrder</code> (lower numbers appear first).</li>
+    </ul>
+  </li>
+  <li><strong>Create subcategories</strong> (optional): Right-click → Data Asset → <strong>CatalogSubcategory</strong>.
+    <ul>
+      <li>Set <code>DisplayName</code>, <code>SortOrder</code>.</li>
+    </ul>
+  </li>
+  <li><strong>Assign to items:</strong> On each <code>UCatalogItem</code>, set <code>Category</code> and optionally <code>Subcategory</code>.</li>
+  <li>The <code>CatalogSubsystem</code> auto-discovers and organizes everything.</li>
+</ol>
+
+<hr>
+
+<!-- ═══════════════════════════════════════════════════ -->
+<!-- 7. BLUEPRINT API REFERENCE -->
+<!-- ═══════════════════════════════════════════════════ -->
+<h2 id="blueprint-api-reference">7. Blueprint API Reference</h2>
+
+<h3 id="api-pool-system">7.1 Pool System</h3>
+
+<p><strong>ABuildPoolTool</strong> (extends ABuildRoomTool):</p>
+
+<div class="table-wrap">
+<table>
+  <thead>
+    <tr><th>Node</th><th>Description</th></tr>
+  </thead>
+  <tbody>
+    <tr><td><code>DefaultWaterMaterial</code></td><td>Set the water material for new pools.</td></tr>
+    <tr><td><code>PoolFloorPattern</code> / <code>PoolFloorMaterial</code></td><td>Set the pool bottom appearance.</td></tr>
+    <tr><td><code>WaterSurfaceZOffset</code></td><td>Adjust how far below ground the water surface sits.</td></tr>
+  </tbody>
+</table>
+</div>
+
+<p><strong>UWaterComponent</strong> (on LotManager):</p>
+
+<div class="table-wrap">
+<table>
+  <thead>
+    <tr><th>Node</th><th>Description</th></tr>
+  </thead>
+  <tbody>
+    <tr><td><code>Generate Pool Water</code></td><td>Create a water volume for a room.</td></tr>
+    <tr><td><code>Update Pool Water</code></td><td>Update when room shape changes.</td></tr>
+    <tr><td><code>Remove Pool Water</code></td><td>Delete a pool's water.</td></tr>
+    <tr><td><code>Has Pool Water</code></td><td>Check if a room has water.</td></tr>
+    <tr><td><code>Destroy All Water</code></td><td>Nuclear option — removes all water.</td></tr>
+  </tbody>
+</table>
+</div>
+
+<h3 id="api-fence-gate-system">7.2 Fence &amp; Gate System</h3>
+
+<p><strong>ABuildFenceTool</strong>:</p>
+
+<div class="table-wrap">
+<table>
+  <thead>
+    <tr><th>Node</th><th>Description</th></tr>
+  </thead>
+  <tbody>
+    <tr><td><code>Current Fence Item</code></td><td>Set before placement to define which fence to build.</td></tr>
+  </tbody>
+</table>
+</div>
+
+<p><strong>UFenceComponent</strong> (on LotManager):</p>
+
+<div class="table-wrap">
+<table>
+  <thead>
+    <tr><th>Node</th><th>Description</th></tr>
+  </thead>
+  <tbody>
+    <tr><td><code>Generate Fence Segment</code></td><td>Create a fence between two points. Returns index.</td></tr>
+    <tr><td><code>Remove Fence Segment</code></td><td>Delete a fence by index.</td></tr>
+    <tr><td><code>Find Fence Segment At Location</code></td><td>Look up a fence near a world position.</td></tr>
+    <tr><td><code>Add Gate To Fence</code></td><td>Place a gate on a fence (regenerates panels).</td></tr>
+    <tr><td><code>Remove Gate From Fence</code></td><td>Remove a gate (regenerates panels).</td></tr>
+  </tbody>
+</table>
+</div>
+
+<p><strong>AGateBase</strong>:</p>
+
+<div class="table-wrap">
+<table>
+  <thead>
+    <tr><th>Node</th><th>Description</th></tr>
+  </thead>
+  <tbody>
+    <tr><td><code>On Gate Placed</code></td><td>Call after spawning to integrate with fence.</td></tr>
+  </tbody>
+</table>
+</div>
+
+<h3 id="api-stairs-system">7.3 Stairs System</h3>
+
+<p><strong>ABuildStairsTool</strong>:</p>
+
+<div class="table-wrap">
+<table>
+  <thead>
+    <tr><th>Node</th><th>Description</th></tr>
+  </thead>
+  <tbody>
+    <tr><td><code>Create Stairs Preview</code></td><td>Spawn the ghost staircase for placement.</td></tr>
+    <tr><td><code>Create Stairs</code></td><td>Commit the preview stairs to the lot.</td></tr>
+    <tr><td><code>Stairs Actor Class</code></td><td>Set to your custom stairs Blueprint class.</td></tr>
+  </tbody>
+</table>
+</div>
+
+<p><strong>AStairsBase</strong>:</p>
+
+<div class="table-wrap">
+<table>
+  <thead>
+    <tr><th>Node</th><th>Description</th></tr>
+  </thead>
+  <tbody>
+    <tr><td><code>Initialize Stairs</code></td><td>Set up with location, direction, modules, meshes.</td></tr>
+    <tr><td><code>Generate Stairs Mesh</code></td><td>Build the procedural mesh.</td></tr>
+    <tr><td><code>Update Stairs Mesh</code></td><td>Rebuild after configuration changes.</td></tr>
+    <tr><td><code>Commit Stairs</code></td><td>Finalize placement and cut floor opening.</td></tr>
+    <tr><td><code>Destroy Stairs</code></td><td>Remove the staircase entirely.</td></tr>
+    <tr><td><code>Enter Edit Mode</code> / <code>Exit Edit Mode</code></td><td>Show/hide adjustment gizmos.</td></tr>
+    <tr><td><code>Rotate Left</code> / <code>Rotate Right</code></td><td>90° rotation.</td></tr>
+    <tr><td><code>Validate Placement</code></td><td>Check if current position is valid.</td></tr>
+    <tr><td><code>Cut Away Stair Opening</code></td><td>Manually cut the upper floor.</td></tr>
+    <tr><td><code>Restore Stair Opening</code></td><td>Undo the floor cut (for deletion).</td></tr>
+    <tr><td><code>Get Bottom Landing Tile</code> / <code>Get Top Landing Tile</code></td><td>Grid positions for validation.</td></tr>
+    <tr><td><code>Get Bottom Level Footprint</code> / <code>Get Top Level Footprint</code></td><td>All tiles occupied by the staircase.</td></tr>
+  </tbody>
+</table>
+</div>
+
+<h3 id="api-object-placement">7.4 Object Placement System</h3>
+
+<p><strong>ABuyObjectTool</strong>:</p>
+
+<div class="table-wrap">
+<table>
+  <thead>
+    <tr><th>Node</th><th>Description</th></tr>
+  </thead>
+  <tbody>
+    <tr><td><code>Current Catalog Item</code></td><td>Set the <code>UFurnitureItem</code> to place.</td></tr>
+    <tr><td><code>bValid Placement</code></td><td>Read to check if current position is valid.</td></tr>
+    <tr><td><code>Trace For Wall</code></td><td>Raycast for wall surfaces.</td></tr>
+    <tr><td><code>Calculate Wall Mount Position</code></td><td>Get world position on a wall.</td></tr>
+    <tr><td><code>Calculate Wall Mount Rotation</code></td><td>Get rotation facing away from wall.</td></tr>
+    <tr><td><code>Check Adjacent Walls</code></td><td>Check if tile has a wall next to it.</td></tr>
+    <tr><td><code>Get Adjacent Wall Normals</code></td><td>Get all wall normals near a tile.</td></tr>
+    <tr><td><code>Calculate Ceiling Height</code></td><td>Get ceiling Z for a level.</td></tr>
+    <tr><td><code>Check Ceiling Exists</code></td><td>Verify ceiling at a tile.</td></tr>
+  </tbody>
+</table>
+</div>
+
+<h3 id="api-save-load">7.5 Save/Load System</h3>
+
+<p><strong>ALotManager</strong>:</p>
+
+<div class="table-wrap">
+<table>
+  <thead>
+    <tr><th>Node</th><th>Description</th></tr>
+  </thead>
+  <tbody>
+    <tr><td><code>Save Lot To Slot</code></td><td>Save to binary .sav file.</td></tr>
+    <tr><td><code>Load Lot From Slot</code></td><td>Load from binary .sav file.</td></tr>
+    <tr><td><code>Export Lot To File</code></td><td>Export to JSON.</td></tr>
+    <tr><td><code>Import Lot From File</code></td><td>Import from JSON.</td></tr>
+    <tr><td><code>Load Default Lot</code></td><td>Load a <code>ULotDataAsset</code>.</td></tr>
+  </tbody>
+</table>
+</div>
+
+<p><strong>ULotSerializationSubsystem</strong> (GameInstance subsystem):</p>
+
+<div class="table-wrap">
+<table>
+  <thead>
+    <tr><th>Node</th><th>Description</th></tr>
+  </thead>
+  <tbody>
+    <tr><td><code>Serialize Lot</code></td><td>Convert a lot to <code>FSerializedLotData</code>.</td></tr>
+    <tr><td><code>Deserialize Lot</code></td><td>Apply <code>FSerializedLotData</code> to a lot.</td></tr>
+    <tr><td><code>Validate Lot Data</code></td><td>Check data integrity.</td></tr>
+    <tr><td><code>Export To JSON</code></td><td>Write serialized data to a JSON file.</td></tr>
+    <tr><td><code>Import From JSON</code></td><td>Read serialized data from a JSON file.</td></tr>
+  </tbody>
+</table>
+</div>
+
+<h3 id="api-catalog">7.6 Catalog System</h3>
+
+<p><strong>UCatalogSubsystem</strong> (GameInstance subsystem):</p>
+
+<div class="table-wrap">
+<table>
+  <thead>
+    <tr><th>Node</th><th>Description</th></tr>
+  </thead>
+  <tbody>
+    <tr><td><code>Get Root Categories</code></td><td>All top-level categories (sorted).</td></tr>
+    <tr><td><code>Get Subcategories</code></td><td>Subcategories under a category.</td></tr>
+    <tr><td><code>Get Items In Category</code></td><td>All items in a category (loads on demand).</td></tr>
+    <tr><td><code>Get Items In Subcategory</code></td><td>Items in a specific subcategory.</td></tr>
+    <tr><td><code>Get Item Paths In Category</code></td><td>Fast — returns paths without loading.</td></tr>
+    <tr><td><code>Search Items By Name</code></td><td>Case-insensitive partial match.</td></tr>
+    <tr><td><code>Load Item</code> / <code>Load Items</code></td><td>Load catalog items on demand from paths.</td></tr>
+    <tr><td><code>Refresh Catalog</code></td><td>Rescan Asset Registry (useful in editor).</td></tr>
+  </tbody>
+</table>
+</div>
+
+<hr>
+
+<!-- ═══════════════════════════════════════════════════ -->
+<!-- QUICK START CHECKLIST -->
+<!-- ═══════════════════════════════════════════════════ -->
+<h2 id="quick-start-checklist">Quick Start Checklist</h2>
+
+<ul class="checklist">
+  <li><strong>Pools:</strong> Assign <code>DefaultWaterMaterial</code> and <code>PoolFloorMaterial</code> on your <code>ABuildPoolTool</code> instance</li>
+  <li><strong>Fences:</strong> Create at least one <code>UFenceItem</code> data asset with panel + post meshes</li>
+  <li><strong>Gates:</strong> Create <code>UGateItem</code> data assets for any gate styles; ensure skeleton matches door rig</li>
+  <li><strong>Stairs:</strong> Set <code>StairsActorClass</code>, <code>StairTreadMesh</code>, and <code>StairLandingMesh</code> on <code>ABuildStairsTool</code>; verify mesh sockets</li>
+  <li><strong>Furniture:</strong> Extend <code>APlaceableObject</code> for each item; create <code>UFurnitureItem</code> with <code>PlacementRules</code></li>
+  <li><strong>Catalog:</strong> Create <code>UCatalogCategory</code> assets and assign them to all your catalog items</li>
+  <li><strong>Save/Load:</strong> Test <code>SaveLotToSlot</code> / <code>LoadLotFromSlot</code> round-trip early in development</li>
+  <li><strong>Default Lots:</strong> Use <code>SaveAsDataAsset</code> in Editor to create <code>ULotDataAsset</code> for shipped lots</li>
+</ul>
+
+<p><em>This document covers BurbArchitect's pool, fence, stair, object, and save systems. For walls, floors, roofs, and terrain, see the companion user guides.</em></p>
+
+<!-- ── Footer ── -->
+<div class="footer">
+  <div class="footer-nav">
+    <a href="GettingStarted.html">Getting Started</a>
+    <a href="WallsAndRooms.html">Walls &amp; Rooms</a>
+    <a href="Roofs.html">Roofs</a>
+    <a href="FloorsAndTerrain.html">Floors &amp; Terrain</a>
+    <a href="DoorsAndWindows.html">Doors &amp; Windows</a>
+    <a href="index.html">← Back to Index</a>
+  </div>
+  <p class="footer-copy">BurbArchitect Documentation · February 2026</p>
+</div>
+
+</div><!-- /.container -->
+</body>
+</html>

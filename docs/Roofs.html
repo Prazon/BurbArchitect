@@ -1,0 +1,961 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Roofs — BurbArchitect Documentation</title>
+<style>
+  :root {
+    --bg-primary: #1a1a2e;
+    --bg-secondary: #16213e;
+    --bg-card: #1e2a45;
+    --bg-code: #0f1729;
+    --bg-table-header: #162040;
+    --bg-table-row-alt: #1a2540;
+    --text-primary: #e0e0e8;
+    --text-secondary: #a0a8c0;
+    --text-muted: #6b7394;
+    --accent: #0ea5e9;
+    --accent-hover: #38bdf8;
+    --accent-dim: #0c7ab8;
+    --border: #2a3555;
+    --border-light: #334170;
+    --green-check: #4ade80;
+    --red-cross: #f87171;
+    --shadow: 0 2px 12px rgba(0,0,0,0.3);
+  }
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+  html { scroll-behavior: smooth; scroll-padding-top: 80px; }
+  body {
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+    background: var(--bg-primary);
+    color: var(--text-primary);
+    line-height: 1.7;
+    font-size: 15px;
+  }
+  /* ─── Top Bar ─── */
+  .topbar {
+    position: sticky; top: 0; z-index: 100;
+    background: var(--bg-secondary);
+    border-bottom: 1px solid var(--border);
+    padding: 12px 24px;
+    backdrop-filter: blur(10px);
+    box-shadow: 0 1px 8px rgba(0,0,0,0.4);
+  }
+  .topbar-inner {
+    max-width: 940px; margin: 0 auto;
+    display: flex; align-items: center; gap: 8px;
+    font-size: 14px;
+  }
+  .topbar a {
+    color: var(--accent);
+    text-decoration: none;
+    font-weight: 500;
+  }
+  .topbar a:hover { color: var(--accent-hover); text-decoration: underline; }
+  .topbar .sep { color: var(--text-muted); margin: 0 4px; }
+  .topbar .current { color: var(--text-primary); font-weight: 600; }
+
+  /* ─── Container ─── */
+  .container {
+    max-width: 900px;
+    margin: 0 auto;
+    padding: 40px 24px 60px;
+  }
+
+  /* ─── Headings ─── */
+  h1 {
+    font-size: 2rem;
+    font-weight: 700;
+    color: #ffffff;
+    margin-bottom: 8px;
+    letter-spacing: -0.02em;
+  }
+  .subtitle {
+    color: var(--text-secondary);
+    font-size: 0.95rem;
+    margin-bottom: 32px;
+    line-height: 1.6;
+  }
+  .subtitle strong { color: var(--text-primary); }
+  h2 {
+    font-size: 1.5rem;
+    font-weight: 700;
+    color: var(--accent);
+    margin-top: 56px;
+    margin-bottom: 16px;
+    padding-bottom: 8px;
+    border-bottom: 2px solid var(--border);
+    letter-spacing: -0.01em;
+  }
+  h2:first-of-type { margin-top: 0; }
+  h3 {
+    font-size: 1.15rem;
+    font-weight: 600;
+    color: #c8d4f0;
+    margin-top: 36px;
+    margin-bottom: 12px;
+  }
+  h2 .anchor, h3 .anchor {
+    color: var(--text-muted);
+    text-decoration: none;
+    margin-left: 6px;
+    opacity: 0;
+    transition: opacity 0.2s;
+    font-weight: 400;
+  }
+  h2:hover .anchor, h3:hover .anchor { opacity: 1; }
+
+  /* ─── Paragraph & Lists ─── */
+  p { margin-bottom: 14px; }
+  ul, ol { margin: 0 0 16px 24px; }
+  li { margin-bottom: 6px; }
+  li code, p code, td code {
+    background: var(--bg-code);
+    border: 1px solid var(--border);
+    border-radius: 4px;
+    padding: 1px 6px;
+    font-family: 'JetBrains Mono', 'Fira Code', 'Consolas', 'Courier New', monospace;
+    font-size: 0.88em;
+    color: #7dd3fc;
+  }
+  strong { color: #ffffff; }
+  em { color: var(--text-secondary); font-style: italic; }
+
+  /* ─── Links ─── */
+  a { color: var(--accent); text-decoration: none; transition: color 0.15s; }
+  a:hover { color: var(--accent-hover); text-decoration: underline; }
+
+  /* ─── Blockquote / Tip ─── */
+  blockquote {
+    background: var(--bg-card);
+    border-left: 4px solid var(--accent);
+    border-radius: 0 8px 8px 0;
+    padding: 14px 20px;
+    margin: 16px 0 20px;
+    color: var(--text-secondary);
+  }
+  blockquote strong { color: var(--accent); }
+  blockquote p { margin-bottom: 0; }
+
+  /* ─── Code Blocks ─── */
+  pre {
+    background: var(--bg-code);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    padding: 18px 20px;
+    overflow-x: auto;
+    margin: 16px 0 20px;
+    line-height: 1.55;
+  }
+  pre code {
+    font-family: 'JetBrains Mono', 'Fira Code', 'Consolas', 'Courier New', monospace;
+    font-size: 0.87em;
+    color: #c8d4f0;
+    background: none;
+    border: none;
+    padding: 0;
+  }
+
+  /* ─── Tables ─── */
+  .table-wrap { overflow-x: auto; margin: 16px 0 20px; border-radius: 8px; }
+  table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 0.9rem;
+    background: var(--bg-card);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    overflow: hidden;
+  }
+  th {
+    background: var(--bg-table-header);
+    color: var(--accent);
+    font-weight: 600;
+    text-align: left;
+    padding: 12px 16px;
+    border-bottom: 2px solid var(--border);
+    font-size: 0.85rem;
+    text-transform: uppercase;
+    letter-spacing: 0.04em;
+  }
+  td {
+    padding: 10px 16px;
+    border-bottom: 1px solid var(--border);
+    vertical-align: top;
+  }
+  tr:last-child td { border-bottom: none; }
+  tr:nth-child(even) td { background: var(--bg-table-row-alt); }
+  td:first-child { white-space: nowrap; }
+  .center { text-align: center; }
+
+  /* ─── Horizontal Rule ─── */
+  hr {
+    border: none;
+    border-top: 1px solid var(--border);
+    margin: 40px 0;
+  }
+
+  /* ─── TOC ─── */
+  .toc {
+    background: var(--bg-card);
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    padding: 24px 28px;
+    margin-bottom: 40px;
+  }
+  .toc h2 {
+    font-size: 1rem;
+    color: var(--text-muted);
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    margin: 0 0 14px;
+    padding: 0;
+    border: none;
+  }
+  .toc ol {
+    list-style: none;
+    counter-reset: toc-counter;
+    margin: 0;
+    padding: 0;
+  }
+  .toc > ol > li {
+    counter-increment: toc-counter;
+    margin-bottom: 4px;
+  }
+  .toc > ol > li::before {
+    content: counter(toc-counter) ".";
+    color: var(--text-muted);
+    font-weight: 600;
+    margin-right: 8px;
+    font-size: 0.9em;
+    display: inline-block;
+    min-width: 24px;
+  }
+  .toc a { font-weight: 500; }
+  .toc .sub {
+    margin-left: 32px;
+    margin-top: 4px;
+    list-style: none;
+    padding: 0;
+  }
+  .toc .sub li { margin-bottom: 2px; }
+  .toc .sub li::before { content: "—"; color: var(--text-muted); margin-right: 8px; }
+
+  /* ─── Check/cross marks ─── */
+  .check { color: var(--green-check); font-weight: bold; }
+  .cross { color: var(--red-cross); font-weight: bold; }
+
+  /* ─── Footer ─── */
+  .footer {
+    margin-top: 64px;
+    padding-top: 32px;
+    border-top: 1px solid var(--border);
+  }
+  .footer-nav {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+    gap: 10px;
+    margin-bottom: 24px;
+  }
+  .footer-nav a {
+    display: block;
+    background: var(--bg-card);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    padding: 12px 16px;
+    color: var(--text-primary);
+    font-weight: 500;
+    font-size: 0.9rem;
+    text-decoration: none;
+    transition: border-color 0.2s, background 0.2s;
+  }
+  .footer-nav a:hover {
+    border-color: var(--accent);
+    background: var(--bg-secondary);
+    text-decoration: none;
+  }
+  .footer-nav a span {
+    display: block;
+    color: var(--text-muted);
+    font-size: 0.8rem;
+    font-weight: 400;
+    margin-top: 2px;
+  }
+  .footer-meta {
+    text-align: center;
+    color: var(--text-muted);
+    font-size: 0.82rem;
+    padding: 16px 0;
+  }
+
+  /* ─── Responsive ─── */
+  @media (max-width: 640px) {
+    h1 { font-size: 1.5rem; }
+    h2 { font-size: 1.25rem; }
+    pre { padding: 14px; font-size: 0.82em; }
+    .toc { padding: 18px 20px; }
+    .footer-nav { grid-template-columns: 1fr 1fr; }
+  }
+</style>
+</head>
+<body>
+
+<!-- ═══ Top Bar / Breadcrumb ═══ -->
+<nav class="topbar">
+  <div class="topbar-inner">
+    <a href="index.html">BurbArchitect Docs</a>
+    <span class="sep">›</span>
+    <span class="current">Roofs</span>
+  </div>
+</nav>
+
+<div class="container">
+
+<!-- ═══ Title ═══ -->
+<h1>BurbArchitect — Roofs User Guide</h1>
+<div class="subtitle">
+  <strong>Audience:</strong> Game developers integrating BurbArchitect into a Sims-style building game.<br>
+  <strong>Engine:</strong> Unreal Engine 5<br>
+  <strong>Plugin version:</strong> See your installed BurbArchitect package for the exact build.
+</div>
+
+<hr>
+
+<!-- ═══ Table of Contents ═══ -->
+<div class="toc">
+  <h2>Table of Contents</h2>
+  <ol>
+    <li><a href="#overview">Overview</a></li>
+    <li><a href="#roof-types">Roof Types</a>
+      <ul class="sub">
+        <li><a href="#gable-roof">Gable Roof</a></li>
+        <li><a href="#hip-roof">Hip Roof</a></li>
+        <li><a href="#shed-roof">Shed Roof</a></li>
+        <li><a href="#quick-comparison">Quick Comparison</a></li>
+      </ul>
+    </li>
+    <li><a href="#placing-a-roof">Placing a Roof</a>
+      <ul class="sub">
+        <li><a href="#build-tools">Build Tools</a></li>
+        <li><a href="#placement-workflow">Placement Workflow</a></li>
+        <li><a href="#tool-properties">Tool Properties</a></li>
+        <li><a href="#level-detection">Level Detection</a></li>
+      </ul>
+    </li>
+    <li><a href="#editing-a-placed-roof">Editing a Placed Roof</a></li>
+    <li><a href="#gizmo-controls-scale-tools">Gizmo Controls (Scale Tools)</a>
+      <ul class="sub">
+        <li><a href="#available-gizmos">Available Gizmos</a></li>
+        <li><a href="#how-drag-works">How Drag Works</a></li>
+        <li><a href="#gizmo-availability-per-roof-type">Gizmo Availability Per Roof Type</a></li>
+        <li><a href="#shed-roof-height-gizmo">Shed Roof Height Gizmo</a></li>
+      </ul>
+    </li>
+    <li><a href="#rotation">Rotation</a>
+      <ul class="sub">
+        <li><a href="#during-placement">During Placement</a></li>
+        <li><a href="#after-placement-edit-mode">After Placement (Edit Mode)</a></li>
+        <li><a href="#diagonal-roofs">Diagonal Roofs</a></li>
+      </ul>
+    </li>
+    <li><a href="#supporting-walls">Supporting Walls</a>
+      <ul class="sub">
+        <li><a href="#how-it-works">How It Works</a></li>
+        <li><a href="#wall-flags">Wall Flags</a></li>
+        <li><a href="#wall-pattern">Wall Pattern</a></li>
+        <li><a href="#room-detection">Room Detection</a></li>
+        <li><a href="#wall-cleanup">Wall Cleanup</a></li>
+      </ul>
+    </li>
+    <li><a href="#roof-materials">Roof Materials</a>
+      <ul class="sub">
+        <li><a href="#setting-the-material">Setting the Material</a></li>
+        <li><a href="#preview-material">Preview Material</a></li>
+        <li><a href="#material-sections">Material Sections</a></li>
+      </ul>
+    </li>
+    <li><a href="#multi-story-roofing">Multi-Story Roofing</a>
+      <ul class="sub">
+        <li><a href="#level-assignment">Level Assignment</a></li>
+        <li><a href="#stacking-roofs">Stacking Roofs</a></li>
+        <li><a href="#basement-restriction">Basement Restriction</a></li>
+      </ul>
+    </li>
+    <li><a href="#deleting-roofs">Deleting Roofs</a></li>
+    <li><a href="#undo-redo">Undo / Redo</a></li>
+    <li><a href="#blueprint-api-reference">Blueprint API Reference</a>
+      <ul class="sub">
+        <li><a href="#aroofbase">ARoofBase</a></li>
+        <li><a href="#froofdimensions">FRoofDimensions</a></li>
+        <li><a href="#uroofcomponent">URoofComponent</a></li>
+        <li><a href="#buildrooftool">ABuildRoofTool</a></li>
+        <li><a href="#alotmanager">ALotManager</a></li>
+      </ul>
+    </li>
+    <li><a href="#extending-with-custom-roof-types">Extending with Custom Roof Types</a></li>
+    <li><a href="#known-limitations">Known Limitations</a></li>
+  </ol>
+</div>
+
+<!-- ═══ Overview ═══ -->
+<h2 id="overview">Overview <a class="anchor" href="#overview">#</a></h2>
+
+<p>BurbArchitect's roof system lets players place, resize, rotate, and delete roofs at runtime — similar to <em>The Sims</em>' roof tools. Every roof is a self-contained <strong>Actor</strong> (<code>ARoofBase</code> subclass) that owns:</p>
+
+<div class="table-wrap"><table>
+  <thead><tr><th>Component</th><th>Purpose</th></tr></thead>
+  <tbody>
+    <tr><td><code>URoofComponent</code></td><td>Procedural mesh generation (extends <code>UProceduralMeshComponent</code>)</td></tr>
+    <tr><td><code>UFootprintComponent</code></td><td>Grid-aligned boundary lines shown during placement &amp; editing</td></tr>
+    <tr><td><code>UGizmoComponent</code> × 5</td><td>Interactive drag handles for height and each extent direction</td></tr>
+  </tbody>
+</table></div>
+
+<p>Roofs snap to the <strong>LotManager</strong> grid. When committed they automatically generate supporting walls and trigger room/floor detection so the space beneath functions as an enclosed room.</p>
+
+<hr>
+
+<!-- ═══ Roof Types ═══ -->
+<h2 id="roof-types">Roof Types <a class="anchor" href="#roof-types">#</a></h2>
+
+<h3 id="gable-roof">Gable Roof (<code>AGableRoof</code>)</h3>
+
+<pre><code>        /\
+       /  \
+      /    \
+     /______\
+     |      |</code></pre>
+
+<ul>
+  <li>Two opposing slopes meeting at a central <strong>ridge</strong>.</li>
+  <li>Triangular <strong>gable end walls</strong> auto-generated at the front and back.</li>
+  <li>Supports independent overhang control on all four sides (front/back rakes and left/right eaves).</li>
+  <li><strong>Best for:</strong> Traditional houses, rectangular rooms, A-frame cabins.</li>
+</ul>
+
+<h3 id="hip-roof">Hip Roof (<code>AHipRoof</code>)</h3>
+
+<pre><code>       ____
+      /    \
+     / ---- \
+    /________\</code></pre>
+
+<ul>
+  <li>All four sides slope inward toward a ridge (or a single peak if the footprint is roughly square).</li>
+  <li><strong>No vertical gable end walls</strong> — every face is sloped.</li>
+  <li>Overhang gizmos for individual rakes/eaves are disabled; overhangs are set uniformly.</li>
+  <li>Automatically detects a square footprint (length ≈ width within 10%) and builds a <strong>pyramid</strong> instead of a ridged hip.</li>
+  <li><strong>Best for:</strong> Ranch-style homes, buildings that need weather protection on all sides.</li>
+</ul>
+
+<h3 id="shed-roof">Shed Roof (<code>AShedRoof</code>)</h3>
+
+<pre><code>     ________
+    /        |
+   /         |
+  /__________|</code></pre>
+
+<ul>
+  <li>A single sloped surface — high edge at the front, low edge at the back.</li>
+  <li>Auto-generates <strong>triangular side walls</strong> on left and right plus the tall front wall.</li>
+  <li>Slope direction follows <code>RoofDirection</code>; rotating the roof changes which side is high.</li>
+  <li>Individual rake/eave gizmos are disabled; only extent and height gizmos are shown.</li>
+  <li><strong>Best for:</strong> Modern/contemporary architecture, lean-tos, carports, asymmetric designs.</li>
+</ul>
+
+<h3 id="quick-comparison">Quick Comparison</h3>
+
+<div class="table-wrap"><table>
+  <thead><tr><th>Feature</th><th class="center">Gable</th><th class="center">Hip</th><th class="center">Shed</th></tr></thead>
+  <tbody>
+    <tr><td>Sloped faces</td><td class="center">2</td><td class="center">4</td><td class="center">1</td></tr>
+    <tr><td>Auto-generated gable walls</td><td class="center"><span class="check">✔</span> (front &amp; back)</td><td class="center"><span class="cross">✘</span></td><td class="center"><span class="check">✔</span> (sides + front)</td></tr>
+    <tr><td>Perimeter walls</td><td class="center"><span class="check">✔</span></td><td class="center"><span class="cross">✘</span></td><td class="center"><span class="cross">✘</span></td></tr>
+    <tr><td>Individual overhang gizmos</td><td class="center"><span class="check">✔</span></td><td class="center"><span class="cross">✘</span></td><td class="center"><span class="cross">✘</span></td></tr>
+    <tr><td>Pyramid mode</td><td class="center">—</td><td class="center"><span class="check">✔</span> (if square)</td><td class="center">—</td></tr>
+  </tbody>
+</table></div>
+
+<hr>
+
+<!-- ═══ Placing a Roof ═══ -->
+<h2 id="placing-a-roof">Placing a Roof <a class="anchor" href="#placing-a-roof">#</a></h2>
+
+<h3 id="build-tools">Build Tools</h3>
+
+<p>Each roof type has a dedicated build tool:</p>
+
+<div class="table-wrap"><table>
+  <thead><tr><th>Tool Class</th><th>Spawns</th></tr></thead>
+  <tbody>
+    <tr><td><code>ABuildGableRoofTool</code></td><td><code>AGableRoof</code></td></tr>
+    <tr><td><code>ABuildHipRoofTool</code></td><td><code>AHipRoof</code></td></tr>
+    <tr><td><code>ABuildShedRoofTool</code></td><td><code>AShedRoof</code></td></tr>
+  </tbody>
+</table></div>
+
+<p>All three inherit from <code>ABuildRoofTool</code>, which itself extends <code>ABuildTool</code>. The only thing each subclass overrides is <code>GetRoofType()</code> — so wiring up a new roof style in the UI is trivial.</p>
+
+<h3 id="placement-workflow">Placement Workflow</h3>
+
+<ol>
+  <li><strong>Activate the tool</strong> — e.g. from a UI button that tells the <code>BurbPawn</code> to equip <code>ABuildGableRoofTool</code>.</li>
+  <li><strong>Move the cursor</strong> — the tool creates a live <strong>preview roof</strong> that follows the mouse, snapping to the LotManager grid. The preview uses a translucent material (<code>LotManager-&gt;ValidPreviewMaterial</code>).</li>
+  <li><strong>Click to place</strong> — <code>Click_Implementation()</code> calls <code>CreateRoof()</code> which:
+    <ul>
+      <li>Applies the final <code>DefaultRoofMaterial</code>.</li>
+      <li>Calls <code>CommitRoof()</code> on the preview actor (generates supporting walls, applies material, marks committed).</li>
+      <li>Immediately enters <strong>edit mode</strong> so the player can adjust gizmos right away.</li>
+      <li>The build tool then returns to the default tool (one-shot usage).</li>
+    </ul>
+  </li>
+</ol>
+
+<h3 id="tool-properties">Tool Properties (Editable in Blueprint Defaults)</h3>
+
+<div class="table-wrap"><table>
+  <thead><tr><th>Property</th><th>Type</th><th>Default</th><th>Description</th></tr></thead>
+  <tbody>
+    <tr><td><code>DefaultRoofMaterial</code></td><td><code>UMaterialInstance*</code></td><td>—</td><td>Material applied on commit</td></tr>
+    <tr><td><code>RoofThickness</code></td><td><code>float</code></td><td><code>15.0</code></td><td>Thickness of the roof slab</td></tr>
+    <tr><td><code>GableThickness</code></td><td><code>float</code></td><td><code>20.0</code></td><td>Thickness of auto-generated gable end walls</td></tr>
+    <tr><td><code>Height</code></td><td><code>float</code></td><td><code>298.0</code> (wall height)</td><td>Peak height; defaults to <code>LotManager-&gt;DefaultWallHeight</code> at BeginPlay</td></tr>
+    <tr><td><code>FrontUnits</code> / <code>BackUnits</code></td><td><code>float</code></td><td><code>3.0</code></td><td>Extent in grid tiles (front/back)</td></tr>
+    <tr><td><code>LeftUnits</code> / <code>RightUnits</code></td><td><code>float</code></td><td><code>3.0</code></td><td>Extent in grid tiles (left/right)</td></tr>
+    <tr><td><code>FrontRake</code> / <code>BackRake</code></td><td><code>float</code></td><td><code>50.0</code></td><td>Overhang beyond the wall line (front/back)</td></tr>
+    <tr><td><code>LeftEve</code> / <code>RightEve</code></td><td><code>float</code></td><td><code>50.0</code></td><td>Overhang beyond the wall line (left/right)</td></tr>
+    <tr><td><code>RoofActorClass</code></td><td><code>TSubclassOf&lt;ARoofBase&gt;</code></td><td><em>(auto)</em></td><td>Override with a Blueprint subclass if needed</td></tr>
+  </tbody>
+</table></div>
+
+<blockquote><p><strong>Tip:</strong> If you leave <code>RoofActorClass</code> empty, the tool automatically selects the correct C++ class (<code>AGableRoof</code>, <code>AHipRoof</code>, or <code>AShedRoof</code>). Set it only if you've created a custom Blueprint subclass.</p></blockquote>
+
+<h3 id="level-detection">Level Detection</h3>
+
+<ul>
+  <li>The tool traces under the cursor. If the cursor hits a <strong>wall</strong>, the roof is placed one level above that wall's level.</li>
+  <li>Otherwise, the traced level from the camera is used.</li>
+  <li><strong>Roofs cannot be placed on Level 0 (basement).</strong> The tool silently blocks this.</li>
+</ul>
+
+<hr>
+
+<!-- ═══ Editing a Placed Roof ═══ -->
+<h2 id="editing-a-placed-roof">Editing a Placed Roof <a class="anchor" href="#editing-a-placed-roof">#</a></h2>
+
+<p>After a roof is committed (placed), players interact with it directly:</p>
+
+<div class="table-wrap"><table>
+  <thead><tr><th>Action</th><th>Result</th></tr></thead>
+  <tbody>
+    <tr><td><strong>Click on a committed roof</strong></td><td>Enters <strong>edit mode</strong> — shows gizmo handles and footprint lines, highlights the roof with custom depth stencil</td></tr>
+    <tr><td><strong>Click away from the roof</strong></td><td>Exits edit mode — hides gizmos and footprint</td></tr>
+    <tr><td><strong>Press DEL</strong> (while selected)</td><td>Deletes the roof (see <a href="#deleting-roofs">Deleting Roofs</a>)</td></tr>
+    <tr><td><strong>Rotate keys</strong> (while selected or during placement)</td><td>Rotates by 45° increments (see <a href="#rotation">Rotation</a>)</td></tr>
+  </tbody>
+</table></div>
+
+<p>Edit mode is tracked by the <code>bInEditMode</code> flag and registered with <code>BurbPawn-&gt;CurrentEditModeActor</code> so only one actor is edited at a time.</p>
+
+<hr>
+
+<!-- ═══ Gizmo Controls ═══ -->
+<h2 id="gizmo-controls-scale-tools">Gizmo Controls (Scale Tools) <a class="anchor" href="#gizmo-controls-scale-tools">#</a></h2>
+
+<p>When a roof enters edit mode, interactive <strong>gizmo spheres</strong> appear on its geometry. Drag any gizmo to adjust the corresponding dimension.</p>
+
+<h3 id="available-gizmos">Available Gizmos</h3>
+
+<div class="table-wrap"><table>
+  <thead><tr><th>Gizmo</th><th>Axis</th><th>Behavior</th><th>Snapping</th></tr></thead>
+  <tbody>
+    <tr><td><strong>Height</strong> (peak)</td><td>Z-axis (vertical)</td><td>Raises/lowers the ridge or peak</td><td>Free (no grid snap) — minimum 50 units</td></tr>
+    <tr><td><strong>Front Extent</strong></td><td>Along <code>RoofDirection</code></td><td>Extends/shrinks the front edge</td><td>Snaps to grid tile size on release</td></tr>
+    <tr><td><strong>Back Extent</strong></td><td>Opposite <code>RoofDirection</code></td><td>Extends/shrinks the back edge</td><td>Snaps to grid tile size on release</td></tr>
+    <tr><td><strong>Left Extent</strong></td><td>Perpendicular left</td><td>Extends/shrinks the left edge</td><td>Snaps to grid tile size on release</td></tr>
+    <tr><td><strong>Right Extent</strong></td><td>Perpendicular right</td><td>Extends/shrinks the right edge</td><td>Snaps to grid tile size on release</td></tr>
+  </tbody>
+</table></div>
+
+<h3 id="how-drag-works">How Drag Works</h3>
+
+<ol>
+  <li><strong>Click a gizmo</strong> — the system records the starting dimensions (<code>OriginalDragDimensions</code>) and projects the mouse ray onto the gizmo's constrained axis.</li>
+  <li><strong>Drag</strong> — the roof mesh updates <strong>smoothly</strong> in real-time (no snapping during drag). Meanwhile, a separate <code>SnappedDimensions</code> struct tracks the nearest grid-snapped value. The <strong>footprint lines update only when the snapped value crosses a tile boundary</strong>, giving the player clear visual feedback.</li>
+  <li><strong>Release</strong> — the snapped dimensions are applied as the final values. The mesh regenerates to the clean grid-aligned size, gizmos reposition, and supporting walls are regenerated.</li>
+</ol>
+
+<h3 id="gizmo-availability-per-roof-type">Gizmo Availability Per Roof Type</h3>
+
+<p>Not every roof type exposes every gizmo. The <code>IsScaleToolValid()</code> override on each subclass controls which gizmos appear:</p>
+
+<div class="table-wrap"><table>
+  <thead><tr><th>Gizmo</th><th class="center">Gable</th><th class="center">Hip</th><th class="center">Shed</th></tr></thead>
+  <tbody>
+    <tr><td>Height</td><td class="center"><span class="check">✔</span></td><td class="center"><span class="check">✔</span></td><td class="center"><span class="check">✔</span></td></tr>
+    <tr><td>Front Extent</td><td class="center"><span class="check">✔</span></td><td class="center"><span class="check">✔</span></td><td class="center"><span class="check">✔</span></td></tr>
+    <tr><td>Back Extent</td><td class="center"><span class="check">✔</span></td><td class="center"><span class="check">✔</span></td><td class="center"><span class="check">✔</span></td></tr>
+    <tr><td>Left Extent</td><td class="center"><span class="check">✔</span></td><td class="center"><span class="check">✔</span></td><td class="center"><span class="check">✔</span></td></tr>
+    <tr><td>Right Extent</td><td class="center"><span class="check">✔</span></td><td class="center"><span class="check">✔</span></td><td class="center"><span class="check">✔</span></td></tr>
+    <tr><td>Individual Overhangs (Rake/Eave)</td><td class="center"><span class="check">✔</span></td><td class="center"><span class="cross">✘</span></td><td class="center"><span class="cross">✘</span></td></tr>
+  </tbody>
+</table></div>
+
+<blockquote><p><strong>Note:</strong> Overhang gizmos (<code>FrontRake</code>, <code>BackRake</code>, <code>RightEve</code>, <code>LeftEve</code>) are currently defined in the enum but their physical gizmo components have been removed from the base class — only the five extent/height gizmos exist as <code>UGizmoComponent</code> sub-objects. Overhang values can still be set via Blueprint or C++ on <code>FRoofDimensions</code>.</p></blockquote>
+
+<h3 id="shed-roof-height-gizmo">Shed Roof Height Gizmo</h3>
+
+<p>The shed roof overrides <code>SetupScaleTools()</code> to position the height gizmo at the <strong>high edge</strong> (front), since the slope runs from front to back.</p>
+
+<hr>
+
+<!-- ═══ Rotation ═══ -->
+<h2 id="rotation">Rotation <a class="anchor" href="#rotation">#</a></h2>
+
+<p>Roofs can be rotated in <strong>45-degree increments</strong>, both during placement preview and after being committed.</p>
+
+<h3 id="during-placement">During Placement</h3>
+
+<p>The <code>BuildRoofTool</code>'s <code>RotateLeft_Implementation()</code> / <code>RotateRight_Implementation()</code> respond to your game's rotate input. They:</p>
+<ul>
+  <li>Update the internal <code>RoofDirection</code> vector via a 2D rotation matrix.</li>
+  <li>Rotate the preview actor's yaw by ±45°.</li>
+  <li>Refresh the footprint lines.</li>
+</ul>
+
+<h3 id="after-placement-edit-mode">After Placement (Edit Mode)</h3>
+
+<p>If a committed roof is selected, the same rotate input is forwarded to <code>ARoofBase::RotateLeft()</code> / <code>RotateRight()</code>. This:</p>
+<ul>
+  <li>Uses <strong>quaternion math</strong> for numerical stability (avoids floating-point drift over many rotations).</li>
+  <li>Snaps yaw to exact 45° multiples and normalizes to <code>[0, 360)</code>.</li>
+  <li>Regenerates the mesh, supporting walls, footprint, and gizmo positions.</li>
+</ul>
+
+<blockquote><p><strong>Important:</strong> Rotation changes <code>RoofDirection</code>, but the <code>FRoofDimensions</code> values (FrontDistance, BackDistance, etc.) stay constant. The same dimensions produce a visually rotated roof because vertex calculation is relative to <code>RoofDirection</code>.</p></blockquote>
+
+<h3 id="diagonal-roofs">Diagonal Roofs</h3>
+
+<p>Because rotation snaps to 45° increments, you can place roofs at diagonal angles (45°, 135°, etc.). The procedural mesh generation handles arbitrary direction vectors, so diagonal roofs render correctly — but keep in mind that diagonal roofs may align imperfectly with the orthogonal wall grid.</p>
+
+<hr>
+
+<!-- ═══ Supporting Walls ═══ -->
+<h2 id="supporting-walls">Supporting Walls <a class="anchor" href="#supporting-walls">#</a></h2>
+
+<p>When a roof is committed, it can auto-generate walls that close the space beneath into a proper room.</p>
+
+<h3 id="how-it-works">How It Works</h3>
+
+<p>Each roof subclass overrides <code>GenerateSupportingWalls()</code>:</p>
+
+<div class="table-wrap"><table>
+  <thead><tr><th>Roof Type</th><th>Walls Generated</th></tr></thead>
+  <tbody>
+    <tr><td><strong>Gable</strong></td><td>4 perimeter walls (rectangular base) + 2 triangular gable end walls at front and back</td></tr>
+    <tr><td><strong>Hip</strong></td><td>None — all four sides slope to the ground, so no vertical walls are needed</td></tr>
+    <tr><td><strong>Shed</strong></td><td>Triangular side walls (left + right) via <code>GenerateShedEndWalls()</code></td></tr>
+  </tbody>
+</table></div>
+
+<h3 id="wall-flags">Wall Flags</h3>
+
+<p>The <code>ERoofWallFlags</code> bitmask (<code>Front</code>, <code>Back</code>, <code>Left</code>, <code>Right</code>) stored in <code>FRoofDimensions::WallFlags</code> controls which sides get walls. Default values are set automatically:</p>
+
+<ul>
+  <li><strong>Gable:</strong> <code>Front | Back</code></li>
+  <li><strong>Shed:</strong> <code>Front | Left | Right</code></li>
+  <li><strong>Hip:</strong> <code>None</code> (0)</li>
+</ul>
+
+<h3 id="wall-pattern">Wall Pattern</h3>
+
+<p>Roofs accept a <code>DefaultWallPattern</code> (type <code>UWallPattern*</code>) that is applied to auto-generated walls. Set this on the roof actor or build tool to control the look of supporting walls.</p>
+
+<h3 id="room-detection">Room Detection</h3>
+
+<p>After walls are generated, the system:</p>
+<ol>
+  <li>Detects enclosed rooms at the roof's level via <code>RoomManagerComponent</code>.</li>
+  <li>Marks them as <strong>roof rooms</strong> (<code>bIsRoofRoom = true</code>).</li>
+  <li>Generates floor tiles for those rooms but <strong>skips ceiling generation</strong> (since the roof itself provides the ceiling).</li>
+</ol>
+
+<h3 id="wall-cleanup">Wall Cleanup</h3>
+
+<p>Walls are tracked in <code>CreatedWallIndices</code> on the roof actor. They are automatically cleaned up when:</p>
+<ul>
+  <li>The roof is deleted</li>
+  <li>The roof is resized (old walls removed, new walls regenerated)</li>
+  <li>The roof is rotated</li>
+  <li>Undo is triggered</li>
+</ul>
+
+<hr>
+
+<!-- ═══ Roof Materials ═══ -->
+<h2 id="roof-materials">Roof Materials <a class="anchor" href="#roof-materials">#</a></h2>
+
+<h3 id="setting-the-material">Setting the Material</h3>
+
+<ul>
+  <li><strong>During placement:</strong> The build tool's <code>DefaultRoofMaterial</code> property (<code>UMaterialInstance*</code>) is applied when the roof is committed.</li>
+  <li><strong>At runtime via Blueprint:</strong> Set <code>ARoofBase::RoofMaterial</code> then call <code>UpdateRoofMesh()</code> — the material is applied to mesh section 0.</li>
+  <li><strong>In the Blueprint editor:</strong> Set <code>RoofMaterial</code> in the details panel; <code>OnConstruction</code> generates a preview mesh with that material.</li>
+</ul>
+
+<h3 id="preview-material">Preview Material</h3>
+
+<p>Before a roof is committed, it renders with <code>LotManager-&gt;ValidPreviewMaterial</code> — typically a translucent green material indicating valid placement. On commit, it switches to the real <code>RoofMaterial</code>.</p>
+
+<h3 id="material-sections">Material Sections</h3>
+
+<p>The procedural mesh is generated as a <strong>single mesh section</strong> (section index 0). Apply your material to that section. If you need per-face materials (e.g., different materials for each slope), you would need to extend the mesh generation in a subclass.</p>
+
+<hr>
+
+<!-- ═══ Multi-Story Roofing ═══ -->
+<h2 id="multi-story-roofing">Multi-Story Roofing <a class="anchor" href="#multi-story-roofing">#</a></h2>
+
+<h3 id="level-assignment">Level Assignment</h3>
+
+<p>Each roof stores its floor level in <code>ARoofBase::Level</code>. The build tool auto-detects the correct level:</p>
+<ul>
+  <li>If the cursor hits a wall, the roof is placed <strong>one level above</strong> that wall.</li>
+  <li>Otherwise, the current camera trace level is used.</li>
+</ul>
+
+<h3 id="stacking-roofs">Stacking Roofs</h3>
+
+<p>You can place separate roofs on different levels. Each roof independently generates its own supporting walls and room detection. The room system intelligently handles floor/ceiling relationships:</p>
+
+<ul>
+  <li>Floor tiles generated by a roof room on Level 2 can simultaneously serve as ceiling tiles for a room on Level 1.</li>
+  <li>When a roof is deleted, floor tiles that serve as ceilings for rooms below are <strong>preserved</strong> — only "pure roof floors" are removed.</li>
+</ul>
+
+<h3 id="basement-restriction">Basement Restriction</h3>
+
+<p>Roofs <strong>cannot be placed on Level 0</strong> (basement). Both the build tool and the wall generation functions enforce this restriction.</p>
+
+<hr>
+
+<!-- ═══ Deleting Roofs ═══ -->
+<h2 id="deleting-roofs">Deleting Roofs <a class="anchor" href="#deleting-roofs">#</a></h2>
+
+<p>Roofs implement the <code>IDeletable</code> interface, enabling DEL-key deletion.</p>
+
+<h3>Requirements</h3>
+
+<ul>
+  <li>The roof must be <strong>committed</strong> (<code>bCommitted == true</code>).</li>
+  <li>The roof must be <strong>selected</strong> (in edit mode / <code>bInEditMode == true</code>).</li>
+</ul>
+
+<p>Uncommitted preview roofs are cleaned up by the build tool's <code>EndPlay</code>, not by the delete system.</p>
+
+<h3>What Happens on Deletion</h3>
+
+<p><code>OnDeleted_Implementation()</code> performs a multi-step cleanup:</p>
+
+<ol>
+  <li><strong>Identifies roof walls</strong> — collects <code>WallEdgeID</code> values from all walls created by this roof.</li>
+  <li><strong>Finds roof rooms</strong> — scans for rooms at the same level whose boundary edges match the roof's walls.</li>
+  <li><strong>Removes floor tiles</strong> — deletes floor tiles belonging to those roof rooms, <strong>except</strong> tiles that also serve as ceilings for rooms on the level below.</li>
+  <li><strong>Removes walls</strong> — calls <code>CleanupWalls()</code> to remove all auto-generated walls.</li>
+  <li><strong>Invalidates rooms</strong> — removes the roof rooms from the <code>RoomManager</code>.</li>
+  <li><strong>Exits edit mode</strong> — clears selection state and unregisters from <code>BurbPawn</code>.</li>
+</ol>
+
+<p>After <code>OnDeleted()</code> completes, <code>RequestDeletion()</code> (from <code>IDeletable</code>) destroys the actor.</p>
+
+<hr>
+
+<!-- ═══ Undo / Redo ═══ -->
+<h2 id="undo-redo">Undo / Redo <a class="anchor" href="#undo-redo">#</a></h2>
+
+<p>Roof operations are wrapped in the command pattern via <code>URoofCommand</code>:</p>
+
+<div class="table-wrap"><table>
+  <thead><tr><th>Action</th><th>Method</th></tr></thead>
+  <tbody>
+    <tr><td><strong>Create</strong></td><td><code>Commit()</code> — spawns a roof actor via <code>LotManager-&gt;SpawnRoofActor()</code>, then calls <code>CommitRoof()</code></td></tr>
+    <tr><td><strong>Undo</strong></td><td><code>Undo()</code> — removes the roof actor via <code>LotManager-&gt;RemoveRoofActor()</code> (walls cleaned up automatically)</td></tr>
+    <tr><td><strong>Redo</strong></td><td><code>Redo()</code> — re-spawns and re-commits the roof with the same parameters</td></tr>
+  </tbody>
+</table></div>
+
+<p>The command stores all necessary state: location, direction, dimensions, thickness values, and material reference.</p>
+
+<hr>
+
+<!-- ═══ Blueprint API Reference ═══ -->
+<h2 id="blueprint-api-reference">Blueprint API Reference <a class="anchor" href="#blueprint-api-reference">#</a></h2>
+
+<p>All major functions are exposed as <code>UFUNCTION(BlueprintCallable)</code>. Here's a quick reference for the most useful ones:</p>
+
+<h3 id="aroofbase">ARoofBase (and subclasses)</h3>
+
+<pre><code>// Initialize a roof with all parameters
+void InitializeRoof(ALotManager* InLotManager, const FVector&amp; Location,
+    const FVector&amp; Direction, const FRoofDimensions&amp; InDimensions,
+    float InRoofThickness = 15.0f, float InGableThickness = 20.0f);
+
+// Regenerate the procedural mesh
+void GenerateRoofMesh();
+void UpdateRoofMesh();
+
+// Finalize placement (applies material, generates walls, detects rooms)
+void CommitRoof();
+
+// Edit mode
+void EnterEditMode();
+void ExitEditMode();
+void ToggleEditMode();
+
+// Rotation (45° increments)
+void RotateLeft();
+void RotateRight();
+
+// Gizmo management
+void SetupScaleTools();
+void ShowScaleTools();
+void HideScaleTools();
+
+// Wall management
+void GenerateSupportingWalls();  // virtual — overridden per roof type
+void CleanupWalls();
+
+// Footprint visualization
+void DrawFootprintLines(const FRoofDimensions* CustomDimensions = nullptr);
+void ClearFootprintLines();
+
+// Query
+ERoofType GetRoofType() const;           // BlueprintPure
+bool IsScaleToolValid(EScaleToolType ToolType) const;  // BlueprintPure</code></pre>
+
+<h3 id="froofdimensions">FRoofDimensions (Blueprint Struct)</h3>
+
+<pre><code>ERoofType RoofType;           // Gable, Hip, or Shed
+int32 WallFlags;              // Bitmask: Front|Back|Left|Right
+float FrontDistance;           // Extent forward from center (world units)
+float BackDistance;            // Extent backward from center
+float RightDistance;           // Extent right from center
+float LeftDistance;            // Extent left from center
+float FrontRake;              // Front overhang beyond the wall line
+float BackRake;               // Back overhang
+float RightEve;               // Right eave overhang
+float LeftEve;                // Left eave overhang
+float Height;                 // Peak height above base
+float Pitch;                  // Slope angle in degrees (alternative to Height)
+bool bUsePitchInsteadOfHeight; // If true, Height is calculated from Pitch
+
+// Helpers
+float GetWidth();   // LeftDistance + RightDistance
+float GetLength();  // FrontDistance + BackDistance</code></pre>
+
+<h3 id="uroofcomponent">URoofComponent</h3>
+
+<pre><code>// Static helpers
+static FRoofVertices CalculateRoofVertices(const FVector&amp; Location,
+    const FVector&amp; FrontDirection, const FRoofDimensions&amp; Dimensions);
+static float CalculateHeightFromPitch(float Pitch, float Width);
+static float CalculatePitchFromHeight(float Height, float Width);</code></pre>
+
+<h3 id="buildrooftool">ABuildRoofTool</h3>
+
+<pre><code>void CreateRoofPreview();       // Spawn a translucent preview actor
+void CreateRoof();              // Commit the preview, apply material, enter edit mode
+void AdjustRoofPosition(...);   // Snap preview to grid under cursor</code></pre>
+
+<h3 id="alotmanager">ALotManager</h3>
+
+<pre><code>ARoofBase* SpawnRoofActor(const FVector&amp; Location, const FVector&amp; Direction,
+    const FRoofDimensions&amp; Dims, float RoofThickness, float GableThickness,
+    UMaterialInstance* Material);
+void RemoveRoofActor(ARoofBase* RoofActor);
+int32 GetRoofActorCount() const;</code></pre>
+
+<hr>
+
+<!-- ═══ Extending with Custom Roof Types ═══ -->
+<h2 id="extending-with-custom-roof-types">Extending with Custom Roof Types <a class="anchor" href="#extending-with-custom-roof-types">#</a></h2>
+
+<p>To create a new roof shape:</p>
+
+<ol>
+  <li><strong>Subclass <code>ARoofBase</code></strong> in C++ or Blueprint.</li>
+  <li>Override:
+    <ul>
+      <li><code>GenerateRoofMesh()</code> — call your custom mesh generation on <code>RoofMeshComponent</code>.</li>
+      <li><code>GenerateSupportingWalls()</code> — generate the right walls for your shape.</li>
+      <li><code>GetRoofType()</code> — return the appropriate <code>ERoofType</code> (or extend the enum).</li>
+      <li><code>IsScaleToolValid()</code> — declare which gizmos are relevant.</li>
+      <li>Optionally <code>SetupScaleTools()</code> to reposition gizmo handles for your geometry.</li>
+    </ul>
+  </li>
+  <li><strong>Create a build tool subclass</strong> from <code>ABuildRoofTool</code>, override <code>GetRoofType()</code>, and/or set <code>RoofActorClass</code> in Blueprint defaults to point at your new class.</li>
+</ol>
+
+<p>The plugin's architecture is intentionally modular: each roof type is a thin subclass that only implements shape-specific logic.</p>
+
+<hr>
+
+<!-- ═══ Known Limitations ═══ -->
+<h2 id="known-limitations">Known Limitations <a class="anchor" href="#known-limitations">#</a></h2>
+
+<div class="table-wrap"><table>
+  <thead><tr><th>Limitation</th><th>Details</th></tr></thead>
+  <tbody>
+    <tr><td><strong>No basement roofs</strong></td><td>Roofs cannot be placed on Level 0. The build tool and wall generation both enforce this.</td></tr>
+    <tr><td><strong>Single mesh section</strong></td><td>Each roof generates one procedural mesh section. Per-slope materials require subclass customization.</td></tr>
+    <tr><td><strong>No auto-trim to room shape</strong></td><td>Roofs are always rectangular. L-shaped or complex floorplans require multiple overlapping roofs (manual placement).</td></tr>
+    <tr><td><strong>Diagonal alignment</strong></td><td>45° rotated roofs work geometrically but may not align perfectly with the orthogonal wall grid, creating small visual gaps at wall junctions.</td></tr>
+    <tr><td><strong>Overhang gizmos not wired</strong></td><td><code>FrontRake</code>, <code>BackRake</code>, <code>RightEve</code>, and <code>LeftEve</code> values exist in <code>FRoofDimensions</code> and affect mesh generation, but the corresponding interactive gizmo components have been removed from the base class. Adjust overhangs via Blueprint properties or C++ for now.</td></tr>
+    <tr><td><strong>Hip roofs generate no walls</strong></td><td>Hip roofs slope on all sides, so no supporting walls are auto-created. If your design needs a short knee-wall under a hip roof, you'll need to place walls manually.</td></tr>
+    <tr><td><strong>No dormers or skylights</strong></td><td>The roof system generates solid sloped surfaces. Cut-outs for dormers, skylights, or chimneys are not supported natively.</td></tr>
+    <tr><td><strong>Pitch-based height</strong></td><td><code>bUsePitchInsteadOfHeight</code> and <code>Pitch</code> are defined in <code>FRoofDimensions</code> and helper functions exist (<code>CalculateHeightFromPitch</code>), but the gizmo system always operates on <code>Height</code> directly. Pitch-based editing would need custom UI.</td></tr>
+    <tr><td><strong>No multi-select</strong></td><td>Only one roof can be in edit mode at a time (tracked by <code>BurbPawn-&gt;CurrentEditModeActor</code>).</td></tr>
+  </tbody>
+</table></div>
+
+<hr>
+
+<!-- ═══ Footer ═══ -->
+<div class="footer">
+  <div class="footer-nav">
+    <a href="index.html">
+      ← Index
+      <span>Back to documentation home</span>
+    </a>
+    <a href="GettingStarted.html">
+      Getting Started
+      <span>Installation &amp; setup</span>
+    </a>
+    <a href="WallsAndRooms.html">
+      Walls &amp; Rooms
+      <span>Wall placement &amp; room detection</span>
+    </a>
+    <a href="FloorsAndTerrain.html">
+      Floors &amp; Terrain
+      <span>Floor tiles &amp; terrain tools</span>
+    </a>
+    <a href="DoorsAndWindows.html">
+      Doors &amp; Windows
+      <span>Openings &amp; cutouts</span>
+    </a>
+    <a href="PoolsFencesStairsObjects.html">
+      Pools, Fences, Stairs &amp; Objects
+      <span>Lot features &amp; object placement</span>
+    </a>
+  </div>
+  <div class="footer-meta">
+    <p>Last updated: February 2026 — BurbArchitect Roof System Documentation</p>
+    <p style="margin-top:4px;">BurbArchitect Plugin for Unreal Engine 5</p>
+  </div>
+</div>
+
+</div><!-- /.container -->
+</body>
+</html>

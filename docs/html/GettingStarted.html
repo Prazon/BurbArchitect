@@ -1,0 +1,991 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Getting Started &amp; Overview — BurbArchitect Documentation</title>
+<style>
+  /* === Reset & Base === */
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+  html { scroll-behavior: smooth; }
+  body {
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+    background: #0f1115;
+    color: #d4d4d8;
+    line-height: 1.7;
+    font-size: 16px;
+    -webkit-font-smoothing: antialiased;
+  }
+
+  /* === Layout === */
+  .page-wrapper {
+    max-width: 920px;
+    margin: 0 auto;
+    padding: 0 24px;
+  }
+
+  /* === Header / Breadcrumb === */
+  .site-header {
+    border-bottom: 1px solid #23262d;
+    padding: 18px 0;
+    margin-bottom: 8px;
+  }
+  .breadcrumb {
+    font-size: 14px;
+    color: #71717a;
+  }
+  .breadcrumb a {
+    color: #0ea5e9;
+    text-decoration: none;
+    transition: color .15s;
+  }
+  .breadcrumb a:hover { color: #38bdf8; }
+  .breadcrumb .sep { margin: 0 8px; color: #3f3f46; }
+
+  /* === Version Badge === */
+  .version-badge {
+    display: inline-block;
+    background: #1e293b;
+    border: 1px solid #334155;
+    border-radius: 6px;
+    padding: 8px 16px;
+    font-size: 13px;
+    color: #94a3b8;
+    margin: 20px 0 4px;
+  }
+  .version-badge strong { color: #e2e8f0; }
+
+  /* === Typography === */
+  h1 {
+    font-size: 2.2rem;
+    font-weight: 700;
+    color: #f0f6fc;
+    margin: 24px 0 8px;
+    letter-spacing: -0.5px;
+  }
+  h2 {
+    font-size: 1.55rem;
+    font-weight: 700;
+    color: #0ea5e9;
+    margin: 56px 0 16px;
+    padding-bottom: 8px;
+    border-bottom: 1px solid #1e293b;
+  }
+  h3 {
+    font-size: 1.2rem;
+    font-weight: 600;
+    color: #e2e8f0;
+    margin: 36px 0 12px;
+  }
+  h4 {
+    font-size: 1.05rem;
+    font-weight: 600;
+    color: #cbd5e1;
+    margin: 24px 0 8px;
+  }
+  p { margin: 0 0 16px; }
+  strong { color: #e2e8f0; }
+  em { color: #a5b4c4; font-style: italic; }
+
+  a {
+    color: #0ea5e9;
+    text-decoration: none;
+    transition: color .15s;
+  }
+  a:hover { color: #38bdf8; text-decoration: underline; }
+
+  hr {
+    border: none;
+    border-top: 1px solid #23262d;
+    margin: 40px 0;
+  }
+
+  /* === Lists === */
+  ul, ol {
+    margin: 0 0 16px 24px;
+  }
+  li { margin-bottom: 6px; }
+  li > ul, li > ol { margin-top: 6px; margin-bottom: 0; }
+
+  /* === Blockquote (tips) === */
+  blockquote {
+    border-left: 4px solid #0ea5e9;
+    background: #0c1a2b;
+    padding: 14px 20px;
+    margin: 16px 0 20px;
+    border-radius: 0 8px 8px 0;
+    font-size: 15px;
+  }
+  blockquote p { margin-bottom: 0; }
+  blockquote strong { color: #38bdf8; }
+
+  /* === Code === */
+  code {
+    font-family: 'Cascadia Code', 'Fira Code', 'JetBrains Mono', 'Consolas', monospace;
+    background: #1a1d23;
+    border: 1px solid #2a2d35;
+    border-radius: 4px;
+    padding: 2px 6px;
+    font-size: 0.88em;
+    color: #e0a4ff;
+  }
+  pre {
+    background: #13161b;
+    border: 1px solid #23262d;
+    border-radius: 8px;
+    padding: 18px 20px;
+    overflow-x: auto;
+    margin: 0 0 20px;
+    line-height: 1.5;
+  }
+  pre code {
+    background: none;
+    border: none;
+    padding: 0;
+    font-size: 0.88em;
+    color: #c9d1d9;
+  }
+
+  /* === Tables === */
+  .table-wrap {
+    overflow-x: auto;
+    margin: 0 0 20px;
+    border-radius: 8px;
+    border: 1px solid #23262d;
+  }
+  table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 15px;
+  }
+  thead {
+    background: #161a22;
+  }
+  th {
+    text-align: left;
+    padding: 12px 16px;
+    font-weight: 600;
+    color: #0ea5e9;
+    border-bottom: 2px solid #23262d;
+    white-space: nowrap;
+  }
+  td {
+    padding: 10px 16px;
+    border-bottom: 1px solid #1c1f27;
+    vertical-align: top;
+  }
+  tr:last-child td { border-bottom: none; }
+  tbody tr:hover { background: #13161b; }
+
+  /* === Table of Contents === */
+  .toc {
+    background: #13161b;
+    border: 1px solid #23262d;
+    border-radius: 10px;
+    padding: 24px 28px;
+    margin: 28px 0 36px;
+  }
+  .toc-title {
+    font-size: 1rem;
+    font-weight: 700;
+    color: #e2e8f0;
+    margin-bottom: 14px;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    font-size: 13px;
+  }
+  .toc ul {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+  }
+  .toc > ul > li {
+    margin-bottom: 6px;
+  }
+  .toc > ul > li > a {
+    font-weight: 600;
+    font-size: 15px;
+    color: #93c5fd;
+  }
+  .toc ul ul {
+    margin-left: 20px;
+    margin-top: 4px;
+  }
+  .toc ul ul li {
+    margin-bottom: 3px;
+  }
+  .toc ul ul li a {
+    font-size: 14px;
+    color: #71717a;
+    font-weight: 400;
+  }
+  .toc a:hover { color: #0ea5e9; }
+
+  /* === Feature List === */
+  .feature-list {
+    columns: 2;
+    column-gap: 24px;
+  }
+  @media (max-width: 640px) {
+    .feature-list { columns: 1; }
+  }
+
+  /* === Footer === */
+  .site-footer {
+    border-top: 1px solid #23262d;
+    margin-top: 64px;
+    padding: 32px 0 48px;
+  }
+  .footer-nav {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 12px 24px;
+    margin-bottom: 20px;
+  }
+  .footer-nav a {
+    display: inline-block;
+    background: #161a22;
+    border: 1px solid #23262d;
+    border-radius: 6px;
+    padding: 8px 16px;
+    font-size: 14px;
+    color: #93c5fd;
+    transition: all .15s;
+  }
+  .footer-nav a:hover {
+    background: #1e293b;
+    border-color: #0ea5e9;
+    color: #0ea5e9;
+    text-decoration: none;
+  }
+  .footer-meta {
+    font-size: 13px;
+    color: #52525b;
+  }
+  .footer-meta a { color: #71717a; }
+  .footer-meta a:hover { color: #0ea5e9; }
+
+  /* === Scroll-to-top anchor style for headings === */
+  h2[id], h3[id] {
+    scroll-margin-top: 20px;
+  }
+
+  /* === Responsive === */
+  @media (max-width: 640px) {
+    h1 { font-size: 1.7rem; }
+    h2 { font-size: 1.3rem; }
+    pre { padding: 14px 12px; font-size: 13px; }
+    th, td { padding: 8px 10px; font-size: 13px; }
+    .toc { padding: 18px 20px; }
+  }
+</style>
+</head>
+<body>
+
+<div class="page-wrapper">
+
+  <!-- Header / Breadcrumb -->
+  <header class="site-header">
+    <nav class="breadcrumb">
+      <a href="index.html">BurbArchitect Docs</a>
+      <span class="sep">›</span>
+      <span>Getting Started</span>
+    </nav>
+  </header>
+
+  <!-- Title -->
+  <h1>BurbArchitect — Getting Started &amp; Overview</h1>
+  <div class="version-badge">
+    <strong>Version:</strong> 1.0 &nbsp;·&nbsp; <strong>Engine:</strong> Unreal Engine 5.7 &nbsp;·&nbsp; <strong>Replication:</strong> Yes (Multiplayer-ready)
+  </div>
+
+  <!-- Table of Contents -->
+  <nav class="toc">
+    <div class="toc-title">Table of Contents</div>
+    <ul>
+      <li><a href="#what-is-burbarchitect">What Is BurbArchitect?</a></li>
+      <li><a href="#prerequisites">Prerequisites</a></li>
+      <li><a href="#installation-project-setup">Installation &amp; Project Setup</a>
+        <ul>
+          <li><a href="#1-install-the-plugin">Install the Plugin</a></li>
+          <li><a href="#2-enable-the-plugin">Enable the Plugin</a></li>
+          <li><a href="#3-add-the-module-dependency">Add the Module Dependency (C++)</a></li>
+          <li><a href="#4-configure-your-game-mode">Configure Your Game Mode</a></li>
+          <li><a href="#5-place-a-lot">Place a Lot</a></li>
+        </ul>
+      </li>
+      <li><a href="#core-classes-overview">Core Classes Overview</a>
+        <ul>
+          <li><a href="#alotmanager-the-lot">ALotManager — The Lot</a></li>
+          <li><a href="#aburbpawn-the-player-camera">ABurbPawn — The Player Camera</a></li>
+          <li><a href="#aburbplayercontroller-input-tool-spawning">ABurbPlayerController — Input &amp; Tool Spawning</a></li>
+          <li><a href="#aburbgamemodebase-game-mode">ABurbGameModeBase — Game Mode</a></li>
+        </ul>
+      </li>
+      <li><a href="#the-lot-grid-system">The Lot &amp; Grid System</a>
+        <ul>
+          <li><a href="#how-the-grid-works">How the Grid Works</a></li>
+          <li><a href="#multi-story-building">Multi-Story Building</a></li>
+          <li><a href="#room-detection">Room Detection</a></li>
+        </ul>
+      </li>
+      <li><a href="#build-mode-vs-live-mode">Build Mode vs Live Mode</a></li>
+      <li><a href="#build-tools">Build Tools</a>
+        <ul>
+          <li><a href="#included-build-tools">Included Build Tools</a></li>
+          <li><a href="#equipping-tools">Equipping Tools</a></li>
+        </ul>
+      </li>
+      <li><a href="#the-catalog-data-asset-system">The Catalog &amp; Data Asset System</a>
+        <ul>
+          <li><a href="#catalog-hierarchy">Catalog Hierarchy</a></li>
+          <li><a href="#creating-a-catalog-category">Creating a Catalog Category</a></li>
+          <li><a href="#creating-a-furniture-item">Creating a Furniture Item</a></li>
+          <li><a href="#creating-a-floor-or-wall-pattern">Creating a Floor or Wall Pattern</a></li>
+          <li><a href="#creating-a-door-or-window-item">Creating a Door or Window Item</a></li>
+          <li><a href="#creating-a-fence-item">Creating a Fence Item</a></li>
+          <li><a href="#activating-catalog-items-at-runtime">Activating Catalog Items at Runtime</a></li>
+        </ul>
+      </li>
+      <li><a href="#wall-cutaway-system">Wall Cutaway System</a></li>
+      <li><a href="#camera-modes">Camera Modes</a>
+        <ul>
+          <li><a href="#perspective-mode-default">Perspective Mode (Default)</a></li>
+          <li><a href="#isometric-mode">Isometric Mode</a></li>
+        </ul>
+      </li>
+      <li><a href="#save-load-system">Save / Load System</a>
+        <ul>
+          <li><a href="#slot-based-saves">Slot-Based Saves (UE SaveGame)</a></li>
+          <li><a href="#json-export-import">JSON Export/Import (File-Based)</a></li>
+          <li><a href="#pre-built-lot-data-assets">Pre-Built Lot Data Assets</a></li>
+        </ul>
+      </li>
+      <li><a href="#configuration-reference">Configuration Reference</a>
+        <ul>
+          <li><a href="#lotmanager-properties">LotManager Properties</a></li>
+          <li><a href="#burbpawn-properties">BurbPawn Properties</a></li>
+          <li><a href="#neighbourhood-properties">Neighbourhood Properties</a></li>
+        </ul>
+      </li>
+      <li><a href="#common-blueprint-workflows">Common Blueprint Workflows</a></li>
+      <li><a href="#multiplayer-notes">Multiplayer Notes</a></li>
+      <li><a href="#next-steps">Next Steps</a></li>
+    </ul>
+  </nav>
+
+  <hr>
+
+  <!-- CONTENT START -->
+
+  <h2 id="what-is-burbarchitect">What Is BurbArchitect?</h2>
+  <p>BurbArchitect is a runtime house-building plugin for Unreal Engine 5 inspired by <em>The Sims</em>. It gives your players the ability to <strong>draw walls, paint floors, place doors and windows, sculpt terrain, add roofs and stairs, and furnish rooms</strong> — all at runtime, with full multiplayer replication out of the box.</p>
+  <p>Drop the plugin into your project, wire up a few base classes, populate a catalog with your art, and you have a complete architectural build mode ready for your game.</p>
+  <p><strong>Key features at a glance:</strong></p>
+  <ul class="feature-list">
+    <li>Grid-based lot system with configurable tile size and lot dimensions</li>
+    <li>Wall drawing with automatic room detection (supports diagonal walls)</li>
+    <li>Multi-story building with floors, basements, and stairs</li>
+    <li>Procedural roof system (gable, hip, shed)</li>
+    <li>Terrain sculpting tools (raise, lower, flatten, smooth)</li>
+    <li>Sims-style wall cutaway camera (Walls Up → Cutaway → Floor Plan)</li>
+    <li>Perspective and Isometric camera modes</li>
+    <li>Data-asset-driven item catalog (furniture, doors, windows, fences, patterns)</li>
+    <li>Save/Load system with slot-based saves and JSON import/export</li>
+    <li>Pre-built lot data assets for shipping default houses</li>
+    <li>Neighbourhood system for world-level lot placement</li>
+    <li>Full network replication — build together in multiplayer</li>
+  </ul>
+
+  <hr>
+
+  <h2 id="prerequisites">Prerequisites</h2>
+  <div class="table-wrap"><table>
+    <thead><tr><th>Requirement</th><th>Details</th></tr></thead>
+    <tbody>
+      <tr><td><strong>Engine</strong></td><td>Unreal Engine 5.7</td></tr>
+      <tr><td><strong>Modules</strong></td><td>The plugin depends on: <code>ProceduralMeshComponent</code>, <code>UMG</code>, <code>GameplayTags</code>, <code>Json</code>, <code>JsonUtilities</code>, <code>Landscape</code>, <code>Foliage</code> — all ship with the engine. No third-party dependencies.</td></tr>
+      <tr><td><strong>Project type</strong></td><td>C++ or Blueprint (plugin is compiled C++ with full Blueprint exposure)</td></tr>
+    </tbody>
+  </table></div>
+
+  <hr>
+
+  <h2 id="installation-project-setup">Installation &amp; Project Setup</h2>
+
+  <h3 id="1-install-the-plugin">1. Install the Plugin</h3>
+  <p>Copy (or install via Fab) the <code>BurbArchitect</code> folder into your project's <code>Plugins/</code> directory:</p>
+  <pre><code>YourProject/
+  Plugins/
+    BurbArchitect/
+      BurbArchitect.uplugin
+      Source/
+      Content/
+      ...</code></pre>
+  <p>Regenerate project files and compile (or simply restart the editor if using a Blueprint-only project with a pre-compiled binary).</p>
+
+  <h3 id="2-enable-the-plugin">2. Enable the Plugin</h3>
+  <p>Open <strong>Edit → Plugins</strong>, search for <strong>BurbArchitect</strong>, and ensure it is enabled. Restart the editor if prompted.</p>
+
+  <h3 id="3-add-the-module-dependency">3. Add the Module Dependency (C++ Projects)</h3>
+  <p>If you need to reference BurbArchitect classes from your own C++ code, add it to your <code>.Build.cs</code>:</p>
+  <pre><code>PublicDependencyModuleNames.Add("BurbArchitect");</code></pre>
+  <p>For Blueprint-only projects this step is not required — all key classes are already exposed to Blueprint.</p>
+
+  <h3 id="4-configure-your-game-mode">4. Configure Your Game Mode</h3>
+  <p>BurbArchitect ships a set of base classes designed to work together. The fastest way to get running is to <strong>create Blueprint children</strong> of each and assign them in your Game Mode.</p>
+  <div class="table-wrap"><table>
+    <thead><tr><th>Base Class</th><th>What It Does</th></tr></thead>
+    <tbody>
+      <tr><td><code>ABurbGameModeBase</code></td><td>Sets the starting gameplay mode (Build or Live) for new players</td></tr>
+      <tr><td><code>ABurbPawn</code></td><td>Camera pawn with spring arm, zoom, rotation, floor-level navigation, cutaway system</td></tr>
+      <tr><td><code>ABurbPlayerController</code></td><td>Cursor tracing, tool spawning, catalog activation, save/load helpers</td></tr>
+      <tr><td><code>ABurbGameStateBase</code></td><td>Game state stub — extend as needed for your game</td></tr>
+    </tbody>
+  </table></div>
+
+  <p><strong>Quick start (Blueprint):</strong></p>
+  <ol>
+    <li><strong>Create child Blueprints:</strong>
+      <ul>
+        <li><code>BP_BurbGameMode</code> (parent: <code>BurbGameModeBase</code>)</li>
+        <li><code>BP_BurbPawn</code> (parent: <code>BurbPawn</code>)</li>
+        <li><code>BP_BurbPlayerController</code> (parent: <code>BurbPlayerController</code>)</li>
+      </ul>
+    </li>
+    <li><strong>In BP_BurbGameMode</strong>, set:
+      <ul>
+        <li><strong>Default Pawn Class</strong> → <code>BP_BurbPawn</code></li>
+        <li><strong>Player Controller Class</strong> → <code>BP_BurbPlayerController</code></li>
+        <li><strong>Starting Burb Mode</strong> → <code>Build</code> (or <code>Live</code>, depending on your game flow)</li>
+      </ul>
+    </li>
+    <li><strong>In World Settings</strong> (or your Project Settings → Maps &amp; Modes), set your default Game Mode to <code>BP_BurbGameMode</code>.</li>
+    <li>Press <strong>Play</strong>. You should spawn with the BurbPawn camera. No lot exists yet — read on to create one.</li>
+  </ol>
+
+  <h3 id="5-place-a-lot">5. Place a Lot</h3>
+  <p>Drag an <code>ALotManager</code> actor into your level (search for "LotManager" in the Place Actors panel). This is the central actor that represents a buildable lot.</p>
+  <p>Configure it in the Details panel:</p>
+  <div class="table-wrap"><table>
+    <thead><tr><th>Property</th><th>Default</th><th>Description</th></tr></thead>
+    <tbody>
+      <tr><td><strong>Lot Name</strong></td><td><em>(empty)</em></td><td>Display name for the lot</td></tr>
+      <tr><td><strong>Grid Size X</strong></td><td><code>20</code></td><td>Number of tiles along X (range: 8–100)</td></tr>
+      <tr><td><strong>Grid Size Y</strong></td><td><code>20</code></td><td>Number of tiles along Y (range: 8–100)</td></tr>
+      <tr><td><strong>Grid Tile Size</strong></td><td><code>100</code></td><td>Size of each tile in Unreal units (cm). 100 = 1 meter</td></tr>
+      <tr><td><strong>Floors</strong></td><td><code>1</code></td><td>Number of above-ground floors</td></tr>
+      <tr><td><strong>Basements</strong></td><td><code>0</code></td><td>Number of basement levels</td></tr>
+      <tr><td><strong>Default Wall Height</strong></td><td><code>300</code></td><td>Wall height in cm per floor</td></tr>
+    </tbody>
+  </table></div>
+  <p>The grid generates automatically on construction. You can also call <code>GenerateGrid()</code> at runtime from Blueprint.</p>
+  <blockquote><p><strong>Tip:</strong> A 20×20 lot at tile size 100 gives you a 20m × 20m buildable area — a comfortable starter home footprint.</p></blockquote>
+
+  <hr>
+
+  <h2 id="core-classes-overview">Core Classes Overview</h2>
+
+  <h3 id="alotmanager-the-lot">ALotManager — The Lot</h3>
+  <p>The LotManager is the <strong>heart of BurbArchitect</strong>. Each lot in your world is one LotManager actor. It owns:</p>
+  <ul>
+    <li><strong>GridComponent</strong> — procedural mesh that renders the tile grid</li>
+    <li><strong>WallComponent / WallGraphComponent</strong> — wall geometry and the graph structure connecting walls</li>
+    <li><strong>FloorComponent</strong> — floor tile geometry</li>
+    <li><strong>TerrainComponent</strong> — sculptable terrain mesh</li>
+    <li><strong>RoomManagerComponent</strong> — automatic room detection from enclosed walls</li>
+    <li><strong>RoofActors</strong> — spawned roof actors (gable, hip, shed)</li>
+    <li><strong>StairsActors</strong> — stairs connecting floors</li>
+    <li><strong>WaterComponent</strong> — pools / water features</li>
+    <li><strong>FenceComponent</strong> — decorative fencing</li>
+  </ul>
+
+  <p><strong>Key Blueprint-callable functions:</strong></p>
+  <div class="table-wrap"><table>
+    <thead><tr><th>Function</th><th>Purpose</th></tr></thead>
+    <tbody>
+      <tr><td><code>GenerateGrid()</code></td><td>Rebuild the entire grid (data + visuals)</td></tr>
+      <tr><td><code>GenerateGridData()</code></td><td>Rebuild tile data only (no visuals — call at BeginPlay for runtime-only grids)</td></tr>
+      <tr><td><code>GenerateGridMesh()</code></td><td>Rebuild just the visual grid mesh</td></tr>
+      <tr><td><code>LocationToTile(Location, Row, Column)</code></td><td>Convert a world position to grid coordinates</td></tr>
+      <tr><td><code>TileToGridLocation(Level, Row, Column, bCenter, Location)</code></td><td>Convert grid coordinates back to world position</td></tr>
+      <tr><td><code>ToggleGrid(bVisible)</code></td><td>Show/hide the grid for the current level</td></tr>
+      <tr><td><code>SetCurrentLevel(NewLevel)</code></td><td>Change the active floor level</td></tr>
+      <tr><td><code>SaveLotToSlot(SlotName)</code> / <code>LoadLotFromSlot(SlotName)</code></td><td>Slot-based save/load</td></tr>
+      <tr><td><code>ExportLotToFile(FilePath)</code> / <code>ImportLotFromFile(FilePath)</code></td><td>JSON file export/import</td></tr>
+      <tr><td><code>LoadDefaultLot(LotDataAsset)</code></td><td>Load a pre-built lot from a data asset</td></tr>
+      <tr><td><code>ClearLot()</code></td><td>Reset the lot to an empty state</td></tr>
+      <tr><td><code>BuildRoomCache()</code></td><td>Force a room detection recalculation</td></tr>
+      <tr><td><code>GetRoomAtTile(Level, Row, Column)</code></td><td>Query which room a tile belongs to</td></tr>
+    </tbody>
+  </table></div>
+
+  <h3 id="aburbpawn-the-player-camera">ABurbPawn — The Player Camera</h3>
+  <p>The BurbPawn is the player's eyes. It provides:</p>
+  <ul>
+    <li><strong>Spring arm + camera</strong> with configurable zoom range, rotation speed, and pitch limits</li>
+    <li><strong>Perspective and Isometric camera modes</strong> — toggle with <code>ToggleCameraMode()</code></li>
+    <li><strong>Floor level navigation</strong> — <code>MoveUpFloor()</code> / <code>MoveDownFloor()</code> smoothly transitions the camera between stories</li>
+    <li><strong>Wall cutaway system</strong> — cycles through four modes (Walls Up → Partial Interiors → Walls Cutaway → Full Cutaway)</li>
+    <li><strong>Current mode tracking</strong> (<code>CurrentMode</code>) and the <code>OnModeChanged</code> delegate</li>
+    <li><strong>Build tool management</strong> — holds a reference to the active <code>ABuildTool</code></li>
+  </ul>
+
+  <p><strong>Important Blueprint properties on BurbPawn:</strong></p>
+  <div class="table-wrap"><table>
+    <thead><tr><th>Property</th><th>Category</th><th>Description</th></tr></thead>
+    <tbody>
+      <tr><td><code>CurrentMode</code></td><td>Mode</td><td>Current gameplay mode (<code>Build</code> or <code>Live</code>)</td></tr>
+      <tr><td><code>CurrentLot</code></td><td>—</td><td>Reference to the lot this pawn is building on</td></tr>
+      <tr><td><code>CurrentLevel</code></td><td>—</td><td>Active floor level</td></tr>
+      <tr><td><code>CutawayMode</code></td><td>Cutaway</td><td>Active wall cutaway mode</td></tr>
+      <tr><td><code>CameraMode</code></td><td>Camera &gt; Mode</td><td><code>Perspective</code> or <code>Isometric</code></td></tr>
+      <tr><td><code>DefaultToolClass</code></td><td>Build Tools</td><td>Default tool spawned when no tool is active (e.g., Selection Tool)</td></tr>
+      <tr><td><code>DeletionToolClass</code></td><td>Build Tools</td><td>Tool spawned for deletion mode</td></tr>
+      <tr><td><code>CameraZoomDefault</code> / <code>CameraMinZoom</code> / <code>CameraMaxZoom</code></td><td>Camera &gt; Zoom</td><td>Zoom range</td></tr>
+      <tr><td><code>CameraMinPitch</code> / <code>CameraMaxPitch</code></td><td>Camera &gt; Rotation</td><td>Pitch clamps</td></tr>
+      <tr><td><code>IsometricCameraPitch</code></td><td>Camera &gt; Isometric</td><td>Fixed pitch angle in isometric mode</td></tr>
+    </tbody>
+  </table></div>
+
+  <p><strong>Delegates:</strong></p>
+  <ul>
+    <li><code>OnModeChanged(OldMode, NewMode)</code> — fires when the player switches between Build and Live mode. Bind to this in your UI to show/hide build panels.</li>
+  </ul>
+
+  <h3 id="aburbplayercontroller-input-tool-spawning">ABurbPlayerController — Input &amp; Tool Spawning</h3>
+  <p>The player controller handles:</p>
+  <ul>
+    <li><strong>Cursor tracing</strong> — performs hit tests each tick and exposes <code>CursorWorldLocation</code> and <code>CursorWorldHitResult</code> to Blueprint</li>
+    <li><strong>Catalog item activation</strong> — <code>HandleCatalogItemActivation(CatalogItem)</code> detects the item type and spawns the correct build tool</li>
+    <li><strong>Build tool creation RPCs</strong> — <code>ServerTryCreateBuildTool()</code> and <code>ServerTryCreateBuildToolWithPattern()</code> handle multiplayer tool spawning</li>
+    <li><strong>Save/Load shortcuts</strong> — <code>QuickSave()</code>, <code>QuickLoad()</code>, <code>SaveLotToSlot()</code>, <code>LoadLotFromSlot()</code>, <code>ExportLotToJSON()</code>, <code>ImportLotFromJSON()</code></li>
+    <li><strong>Deletion</strong> — <code>BroadcastDeleteToSelected()</code> deletes all currently selected objects</li>
+  </ul>
+
+  <h3 id="aburbgamemodebase-game-mode">ABurbGameModeBase — Game Mode</h3>
+  <p>Minimal but important. Its main job is setting <code>StartingBurbMode</code> on newly spawned pawns via <code>RestartPlayer()</code>. Set this to <code>Build</code> if players should enter build mode immediately, or <code>Live</code> if they start in gameplay mode and opt into building.</p>
+
+  <hr>
+
+  <h2 id="the-lot-grid-system">The Lot &amp; Grid System</h2>
+
+  <h3 id="how-the-grid-works">How the Grid Works</h3>
+  <p>Every lot is built on a <strong>2D tile grid</strong> that extends vertically across multiple floor levels. Each tile is a square of <code>GridTileSize</code> units (default 100 cm = 1 meter).</p>
+  <pre><code>Grid Coordinates:
+  Row    → X axis (0 to GridSizeX-1)
+  Column → Y axis (0 to GridSizeY-1)
+  Level  → Z axis (negative for basements, 0 for ground, positive for upper floors)</code></pre>
+  <p>Tiles are stored in a flat <code>TArray&lt;FTileData&gt;</code> on the LotManager, with a spatial hash map (<code>TileIndexMap</code>) for fast O(1) lookups by <code>(Row, Column, Level)</code>.</p>
+  <p>Each <code>FTileData</code> contains:</p>
+  <ul>
+    <li>Grid coordinates and world-space corner/center positions</li>
+    <li><strong>Triangle ownership</strong> — which room each sub-triangle of the tile belongs to (supports tiles split by diagonal walls)</li>
+    <li>Corner height indices for terrain elevation</li>
+  </ul>
+
+  <h3 id="multi-story-building">Multi-Story Building</h3>
+  <ul>
+    <li><strong>Floors</strong> — set via the <code>Floors</code> property on LotManager (number of above-ground stories)</li>
+    <li><strong>Basements</strong> — set via the <code>Basements</code> property (number of below-ground levels)</li>
+    <li><strong>Level numbering</strong> — basements are negative levels, ground floor is 0, upper floors are positive</li>
+    <li>When a room's ceiling is completed, tiles automatically generate on the floor above to support continued building upward</li>
+  </ul>
+
+  <h3 id="room-detection">Room Detection</h3>
+  <p>Rooms are detected automatically when walls form an enclosed area. The system uses flood-fill from the wall graph and supports <strong>diagonal walls</strong> splitting tiles between rooms. You don't need to manually define rooms — just draw walls and the plugin figures it out.</p>
+  <p>Call <code>BuildRoomCache()</code> after bulk wall operations, or <code>InvalidateRoom(RoomID)</code> to refresh a specific room. Query room membership with <code>GetRoomAtTile(Level, Row, Column)</code>.</p>
+
+  <hr>
+
+  <h2 id="build-mode-vs-live-mode">Build Mode vs Live Mode</h2>
+  <p>BurbArchitect defines two gameplay modes via the <code>EBurbMode</code> enum:</p>
+  <div class="table-wrap"><table>
+    <thead><tr><th>Mode</th><th>Description</th></tr></thead>
+    <tbody>
+      <tr><td><strong>Build</strong></td><td>Full construction mode. The grid is visible, build tools are active, and the player can draw walls, place floors, sculpt terrain, place furniture — the full building experience.</td></tr>
+      <tr><td><strong>Live</strong></td><td>Simulation/gameplay mode. The grid and lot boundaries are hidden. Building tools are deactivated. This is where your game's actual gameplay happens (Sim-style living, strategy, etc.).</td></tr>
+    </tbody>
+  </table></div>
+  <p><strong>Switching modes from Blueprint:</strong></p>
+  <pre><code>// On BurbPawn:
+SetMode(EBurbMode::Build)    // Enter build mode
+SetMode(EBurbMode::Live)     // Enter live mode
+ToggleMode()                 // Flip between the two</code></pre>
+  <p>The <code>OnModeChanged</code> delegate fires whenever the mode changes — bind your UI to this to show/hide the build toolbar, catalog panel, etc.</p>
+  <p>When switching to Live mode, the LotManager automatically hides the grid and boundary lines. When switching back to Build, they reappear.</p>
+
+  <hr>
+
+  <h2 id="build-tools">Build Tools</h2>
+  <p>Build tools are the player's instruments for construction. Every tool extends <code>ABuildTool</code> and follows a consistent interaction pattern:</p>
+  <ol>
+    <li><strong>Click</strong> — begin a placement or start a drag operation</li>
+    <li><strong>Move</strong> — update the tool's preview position each frame</li>
+    <li><strong>Drag</strong> — extend a drag operation (walls, rooms, floors)</li>
+    <li><strong>Release</strong> — commit the build operation</li>
+    <li><strong>Delete</strong> — remove placed elements</li>
+    <li><strong>RotateLeft / RotateRight</strong> — rotate the current placement</li>
+  </ol>
+  <p>All of these functions are <code>BlueprintNativeEvent</code> — you can override them in Blueprint child classes for custom behavior. They are also fully replicated (server-authoritative with multicast broadcasts).</p>
+
+  <h3 id="included-build-tools">Included Build Tools</h3>
+  <div class="table-wrap"><table>
+    <thead><tr><th>Tool</th><th>File</th><th>What It Does</th></tr></thead>
+    <tbody>
+      <tr><td><strong>BuildWallTool</strong></td><td><code>BuildTools/BuildWallTool.h</code></td><td>Draw walls between tile corners</td></tr>
+      <tr><td><strong>BuildRoomTool</strong></td><td><code>BuildTools/BuildRoomTool.h</code></td><td>Drag-draw a rectangular room (walls + floor in one operation)</td></tr>
+      <tr><td><strong>BuildDiagonalRoomTool</strong></td><td><code>BuildTools/BuildDiagonalRoomTool.h</code></td><td>Room tool supporting diagonal walls</td></tr>
+      <tr><td><strong>BuildFloorTool</strong></td><td><code>BuildTools/BuildFloorTool.h</code></td><td>Paint floor tiles with patterns</td></tr>
+      <tr><td><strong>BuildDoorTool</strong></td><td><code>BuildTools/BuildDoorTool.h</code></td><td>Place doors in walls</td></tr>
+      <tr><td><strong>BuildWindowTool</strong></td><td><code>BuildTools/BuildWindowTool.h</code></td><td>Place windows in walls</td></tr>
+      <tr><td><strong>BuildRoofTool</strong></td><td><code>BuildTools/BuildRoofTool.h</code></td><td>Place and configure roofs</td></tr>
+      <tr><td><strong>BuildStairsTool</strong></td><td><code>BuildTools/BuildStairsTool.h</code></td><td>Place stairs between floor levels</td></tr>
+      <tr><td><strong>BuildFenceTool</strong></td><td><code>BuildTools/BuildFenceTool.h</code></td><td>Place decorative fences</td></tr>
+      <tr><td><strong>BuildHalfWallTool</strong></td><td><code>BuildTools/BuildHalfWallTool.h</code></td><td>Half-height walls</td></tr>
+      <tr><td><strong>BuildBasementTool</strong></td><td><code>BuildTools/BuildBasementTool.h</code></td><td>Excavate basements</td></tr>
+      <tr><td><strong>BuildPoolTool</strong></td><td><code>BuildTools/BuildPoolTool.h</code></td><td>Create pool areas</td></tr>
+      <tr><td><strong>BuildPortalTool</strong></td><td><code>BuildTools/BuildPortalTool.h</code></td><td>Generic portal placement (base for doors/windows)</td></tr>
+      <tr><td><strong>BuildGateTool</strong></td><td><code>BuildTools/BuildGateTool.h</code></td><td>Place gates in fences</td></tr>
+      <tr><td><strong>BuyObjectTool</strong></td><td><code>BuyTools/BuyObjectTool.h</code></td><td>Place furniture and objects</td></tr>
+      <tr><td><strong>BrushRaiseTool</strong></td><td><code>BrushTools/BrushRaiseTool.h</code></td><td>Raise terrain</td></tr>
+      <tr><td><strong>BrushLowerTool</strong></td><td><code>BrushTools/BrushLowerTool.h</code></td><td>Lower terrain</td></tr>
+      <tr><td><strong>BrushFlattenTool</strong></td><td><code>BrushTools/BrushFlattenTool.h</code></td><td>Flatten terrain to a height</td></tr>
+      <tr><td><strong>BrushFlattenLotTool</strong></td><td><code>BrushTools/BrushFlattenLotTool.h</code></td><td>Flatten entire lot</td></tr>
+      <tr><td><strong>BrushSmoothTool</strong></td><td><code>BrushTools/BrushSmoothTool.h</code></td><td>Smooth terrain edges</td></tr>
+    </tbody>
+  </table></div>
+  <p>Each tool has <code>ValidMaterial</code> and <code>InvalidMaterial</code> properties for placement preview feedback, plus optional sound effects (<code>MoveSound</code>, <code>CreateSound</code>, <code>DeleteSound</code>, <code>FailSound</code>).</p>
+
+  <h3 id="equipping-tools">Equipping Tools</h3>
+  <p>Tools are spawned and assigned via the pawn:</p>
+  <pre><code>// From Blueprint on BurbPawn:
+SetCurrentBuildTool(BuildToolReference)
+
+// Or let the system auto-equip via:
+EnsureToolEquipped()          // Spawns DefaultToolClass if nothing is active
+EnsureDeletionToolEquipped()  // Spawns DeletionToolClass</code></pre>
+  <p>The player controller's <code>HandleCatalogItemActivation()</code> is the primary way tools get equipped — it reads the catalog item type and spawns the right tool automatically.</p>
+
+  <hr>
+
+  <h2 id="the-catalog-data-asset-system">The Catalog &amp; Data Asset System</h2>
+  <p>BurbArchitect uses <strong>UDataAsset</strong> classes to define every item that appears in your build/buy catalog. This makes it easy to add new content without touching code.</p>
+
+  <h3 id="catalog-hierarchy">Catalog Hierarchy</h3>
+  <pre><code>UCatalogCategory          (Root category — e.g., "Comfort", "Surfaces", "Lighting")
+  └─ UCatalogSubcategory  (Nested sub-category — e.g., "Seating" under "Comfort")
+
+UCatalogItem              (Base item — display name, icon, cost, category)
+  ├─ UArchitectureItem    (Build tools — walls, rooms, stairs, roofs)
+  ├─ UFurnitureItem       (Placeable objects — chairs, tables, lamps)
+  ├─ UFloorPattern        (Floor surface materials)
+  ├─ UWallPattern         (Wall surface materials)
+  ├─ UDoorItem            (Doors with portal size, snapping, meshes)
+  ├─ UWindowItem          (Windows with portal size, snapping, meshes)
+  ├─ UFenceItem           (Fences with panel/post meshes and spacing)
+  └─ UGateItem            (Gates for fence openings)</code></pre>
+
+  <h3 id="creating-a-catalog-category">Creating a Catalog Category</h3>
+  <ol>
+    <li>In Content Browser: <strong>Right-click → Miscellaneous → Data Asset</strong></li>
+    <li>Select <code>CatalogCategory</code> as the class</li>
+    <li>Name it (e.g., <code>DA_Cat_Comfort</code>)</li>
+    <li>Set <code>DisplayName</code>, <code>Icon</code>, <code>SortOrder</code>, and optionally <code>Description</code></li>
+  </ol>
+  <p>For subcategories, create a <code>CatalogSubcategory</code> data asset and set its <code>ParentCategory</code> to the root category you created.</p>
+
+  <h3 id="creating-a-furniture-item">Creating a Furniture Item</h3>
+  <ol>
+    <li><strong>Right-click → Miscellaneous → Data Asset → FurnitureItem</strong></li>
+    <li>Fill in the base catalog fields:
+      <ul>
+        <li><strong>DisplayName</strong> — shown in the UI</li>
+        <li><strong>Icon</strong> — thumbnail brush</li>
+        <li><strong>Cost</strong> — in-game price</li>
+        <li><strong>Category</strong> / <strong>Subcategory</strong> — where it appears in the catalog</li>
+      </ul>
+    </li>
+    <li>Set the <strong>ClassToSpawn</strong> to your <code>APlaceableObject</code> Blueprint (the actual actor that gets placed in the world)</li>
+    <li>Configure <strong>PlacementRules</strong>:</li>
+  </ol>
+  <div class="table-wrap"><table>
+    <thead><tr><th>Property</th><th>Description</th></tr></thead>
+    <tbody>
+      <tr><td><code>PlacementMode</code></td><td><code>Floor</code>, <code>WallHanging</code>, <code>CeilingFixture</code>, or <code>Surface</code></td></tr>
+      <tr><td><code>GridSize</code></td><td>Footprint in tiles (e.g., <code>(2, 1, 1)</code> for a couch)</td></tr>
+      <tr><td><code>bMustBeAgainstWall</code></td><td>Requires wall adjacency (beds, toilets)</td></tr>
+      <tr><td><code>bCanPlaceOutdoors</code></td><td>Whether it can be placed outside rooms</td></tr>
+      <tr><td><code>WallMountHeight</code></td><td>Height for wall-hanging items (cm)</td></tr>
+      <tr><td><code>WallOffset</code></td><td>Distance from wall surface (cm)</td></tr>
+      <tr><td><code>CeilingOffset</code></td><td>Distance from ceiling for ceiling fixtures (cm)</td></tr>
+      <tr><td><code>bRequiresFloor</code></td><td>Must have a floor tile underneath</td></tr>
+    </tbody>
+  </table></div>
+
+  <h3 id="creating-a-floor-or-wall-pattern">Creating a Floor or Wall Pattern</h3>
+  <ol>
+    <li><strong>Right-click → Miscellaneous → Data Asset → FloorPattern</strong> (or <code>WallPattern</code>)</li>
+    <li>Set catalog fields (name, icon, cost, category)</li>
+    <li>Set the <strong>BuildToolClass</strong> to your floor/wall painting tool Blueprint</li>
+    <li>Assign textures:
+      <ul>
+        <li><code>BaseTexture</code> — diffuse/albedo</li>
+        <li><code>NormalMap</code> — surface normals</li>
+        <li><code>RoughnessMap</code> — roughness</li>
+        <li><code>DetailNormal</code> (optional) — extra surface detail with intensity control</li>
+        <li><code>BaseMaterial</code> (optional) — material template override</li>
+      </ul>
+    </li>
+    <li>Optionally enable <strong>Color Swatches</strong>:
+      <ul>
+        <li>Set <code>bUseColourSwatches = true</code></li>
+        <li>Add colors to the <code>ColourSwatches</code> array</li>
+        <li>Enable <code>bUseColourMask</code> if your RMA texture has an alpha channel mask for recoloring</li>
+      </ul>
+    </li>
+  </ol>
+
+  <h3 id="creating-a-door-or-window-item">Creating a Door or Window Item</h3>
+  <ol>
+    <li><strong>Right-click → Miscellaneous → Data Asset → DoorItem</strong> (or <code>WindowItem</code>)</li>
+    <li>Set catalog fields and <code>BuildToolClass</code></li>
+    <li>Configure portal properties:
+      <ul>
+        <li><code>PortalSize</code> — width × height of the opening in cm</li>
+        <li><code>PortalOffset</code> — position offset from the wall placement point</li>
+        <li><code>HorizontalSnap</code> / <code>VerticalSnap</code> — snap increments when placing</li>
+        <li><code>bSnapsToFloor</code> — whether the portal anchors to floor level</li>
+      </ul>
+    </li>
+    <li>Set <code>ClassToSpawn</code> to your door/window Blueprint (extends <code>APortalBase</code>)</li>
+    <li>For doors: assign <code>DoorStaticMesh</code> and <code>DoorFrameMesh</code></li>
+    <li>For windows: assign <code>WindowMesh</code></li>
+  </ol>
+
+  <h3 id="creating-a-fence-item">Creating a Fence Item</h3>
+  <ol>
+    <li><strong>Right-click → Miscellaneous → Data Asset → FenceItem</strong></li>
+    <li>Set catalog fields and <code>BuildToolClass</code></li>
+    <li>Assign <code>FencePanelMesh</code> and <code>FencePostMesh</code></li>
+    <li>Configure post placement rules (<code>PostSpacing</code>, <code>bPostsAtCorners</code>, <code>bPostsAtEnds</code>, <code>bPostsAtJunctions</code>)</li>
+    <li>Set <code>FenceHeight</code> and <code>PanelWidth</code> dimensions</li>
+  </ol>
+
+  <h3 id="activating-catalog-items-at-runtime">Activating Catalog Items at Runtime</h3>
+  <p>When the player selects an item from your catalog UI, call:</p>
+  <pre><code>// On BurbPlayerController:
+HandleCatalogItemActivation(CatalogItem)</code></pre>
+  <p>This function inspects the item's type and automatically:</p>
+  <ul>
+    <li>Spawns the correct <code>ABuildTool</code> subclass</li>
+    <li>Assigns pattern data (for floor/wall patterns)</li>
+    <li>Configures the tool for the selected item</li>
+  </ul>
+  <p>Your UI just needs to hold references to your catalog data assets and call this one function.</p>
+
+  <hr>
+
+  <h2 id="wall-cutaway-system">Wall Cutaway System</h2>
+  <p>The cutaway system provides Sims-style wall visibility modes. Cycle through them with <code>NextCutawayMode()</code> / <code>PreviousCutawayMode()</code> on the BurbPawn, or set directly with <code>SetCutawayMode()</code>.</p>
+  <div class="table-wrap"><table>
+    <thead><tr><th>Mode</th><th>Enum Value</th><th>Behavior</th></tr></thead>
+    <tbody>
+      <tr><td><strong>Walls Up</strong></td><td><code>ECutawayMode::WallsUp</code></td><td>All walls and roofs visible</td></tr>
+      <tr><td><strong>Partial Interiors</strong></td><td><code>ECutawayMode::PartialInteriors</code></td><td>Interior walls visible, exterior walls facing camera hidden, roofs hidden</td></tr>
+      <tr><td><strong>Walls Cutaway</strong></td><td><code>ECutawayMode::Partial</code></td><td>All walls facing camera hidden (interior + exterior), roofs hidden</td></tr>
+      <tr><td><strong>Full Cutaway</strong></td><td><code>ECutawayMode::Full</code></td><td>All walls hidden — floor plan view, roofs hidden</td></tr>
+    </tbody>
+  </table></div>
+  <p>The <code>CutawayFacingThreshold</code> property (range: -1.0 to 1.0) controls how aggressively walls are culled based on camera direction. Higher values hide more walls.</p>
+  <p>Cutaway updates automatically as the camera rotates, using a sector-based system (45° sectors) to avoid per-frame recalculations.</p>
+
+  <hr>
+
+  <h2 id="camera-modes">Camera Modes</h2>
+  <p>BurbPawn supports two camera modes:</p>
+
+  <h3 id="perspective-mode-default">Perspective Mode (Default)</h3>
+  <ul>
+    <li>Free mouse rotation (horizontal + vertical)</li>
+    <li>Scroll wheel zoom (adjusts spring arm length)</li>
+    <li>Configurable pitch limits (<code>CameraMinPitch</code> / <code>CameraMaxPitch</code>)</li>
+  </ul>
+
+  <h3 id="isometric-mode">Isometric Mode</h3>
+  <ul>
+    <li>Fixed pitch angle (<code>IsometricCameraPitch</code>)</li>
+    <li>Four cardinal rotation angles (90° increments) — <code>RotateIsometricLeft()</code> / <code>RotateIsometricRight()</code></li>
+    <li>Orthographic projection with zoom via <code>OrthoWidth</code></li>
+    <li>Configurable zoom range (<code>IsometricMinOrthoWidth</code> / <code>IsometricMaxOrthoWidth</code>)</li>
+  </ul>
+  <p>Toggle between modes with <code>ToggleCameraMode()</code> or set directly with <code>SetCameraMode(ECameraMode::Isometric)</code>.</p>
+
+  <hr>
+
+  <h2 id="save-load-system">Save / Load System</h2>
+  <p>BurbArchitect provides multiple ways to persist lot data:</p>
+
+  <h3 id="slot-based-saves">Slot-Based Saves (UE SaveGame)</h3>
+  <pre><code>// Save:
+LotManager-&gt;SaveLotToSlot("MyHouse")
+
+// Load:
+LotManager-&gt;LoadLotFromSlot("MyHouse")
+
+// Or via PlayerController shortcuts:
+PlayerController-&gt;QuickSave()   // saves to "QuickSave" slot
+PlayerController-&gt;QuickLoad()   // loads from "QuickSave" slot</code></pre>
+
+  <h3 id="json-export-import">JSON Export/Import (File-Based)</h3>
+  <p>Useful for sharing lots between players or debugging:</p>
+  <pre><code>LotManager-&gt;ExportLotToFile("C:/MyLots/Mansion.json")
+LotManager-&gt;ImportLotFromFile("C:/MyLots/Mansion.json")</code></pre>
+
+  <h3 id="pre-built-lot-data-assets">Pre-Built Lot Data Assets</h3>
+  <p>Ship default houses with your game using <code>ULotDataAsset</code>:</p>
+  <ol>
+    <li>Build a lot in-editor</li>
+    <li>Use <code>LotManager-&gt;SaveAsDataAsset("DA_StarterHome", "/Game/DefaultLots/")</code> (Editor only, available in the Details panel)</li>
+    <li>At runtime: <code>LotManager-&gt;LoadDefaultLot(MyLotDataAsset)</code></li>
+  </ol>
+  <p><code>ULotDataAsset</code> supports metadata — <code>Category</code>, <code>Tags</code>, <code>Price</code>, and <code>Thumbnail</code> — for building lot selection UIs.</p>
+
+  <hr>
+
+  <h2 id="configuration-reference">Configuration Reference</h2>
+
+  <h3 id="lotmanager-properties">LotManager Properties</h3>
+  <div class="table-wrap"><table>
+    <thead><tr><th>Property</th><th>Category</th><th>Default</th><th>Description</th></tr></thead>
+    <tbody>
+      <tr><td><code>GridSizeX</code> / <code>GridSizeY</code></td><td>—</td><td><code>20</code></td><td>Lot dimensions in tiles (8–100)</td></tr>
+      <tr><td><code>GridTileSize</code></td><td>—</td><td><code>100</code></td><td>Tile size in cm</td></tr>
+      <tr><td><code>DefaultWallHeight</code></td><td>Building</td><td><code>300</code></td><td>Wall height per floor (100–500 cm)</td></tr>
+      <tr><td><code>Floors</code></td><td>—</td><td><code>1</code></td><td>Above-ground floor count</td></tr>
+      <tr><td><code>Basements</code></td><td>—</td><td><code>0</code></td><td>Below-ground level count</td></tr>
+      <tr><td><code>bRemoveTerrainUnderFloors</code></td><td>Building</td><td><code>true</code></td><td>Auto-remove terrain geometry under floor tiles</td></tr>
+      <tr><td><code>bRestoreTerrainOnFloorRemoval</code></td><td>Building</td><td><code>true</code></td><td>Restore terrain when floor tiles are deleted</td></tr>
+      <tr><td><code>bAllowTerrainCeilings</code></td><td>Building</td><td><code>true</code></td><td>Use terrain as basement ceilings (more efficient)</td></tr>
+      <tr><td><code>BasementCeilingOffset</code></td><td>Building</td><td><code>2.0</code></td><td>Z-offset below terrain to prevent z-fighting (0–10)</td></tr>
+      <tr><td><code>bEnableTerrainGeneration</code></td><td>Feature Flags</td><td><code>true</code></td><td>Toggle terrain system on/off</td></tr>
+      <tr><td><code>bEnableRoofGeneration</code></td><td>Feature Flags</td><td><code>true</code></td><td>Toggle roof system on/off</td></tr>
+      <tr><td><code>DefaultWallMaterial</code></td><td>—</td><td>—</td><td>Material applied to new walls</td></tr>
+      <tr><td><code>DefaultFloorMaterial</code></td><td>—</td><td>—</td><td>Material applied to new floors</td></tr>
+      <tr><td><code>DefaultTerrainMaterial</code></td><td>—</td><td>—</td><td>Material applied to terrain</td></tr>
+      <tr><td><code>ValidPreviewMaterial</code></td><td>—</td><td>—</td><td>Green preview material for valid placement</td></tr>
+      <tr><td><code>InvalidPreviewMaterial</code></td><td>—</td><td>—</td><td>Red preview material for invalid placement</td></tr>
+      <tr><td><code>GridMaterial</code></td><td>—</td><td>—</td><td>Material for the grid mesh (renders lines procedurally)</td></tr>
+      <tr><td><code>LineColour</code></td><td>—</td><td>—</td><td>Grid line color</td></tr>
+      <tr><td><code>LineOpacity</code></td><td>—</td><td>—</td><td>Grid line opacity</td></tr>
+    </tbody>
+  </table></div>
+
+  <h3 id="burbpawn-properties">BurbPawn Properties</h3>
+  <div class="table-wrap"><table>
+    <thead><tr><th>Property</th><th>Category</th><th>Default</th><th>Description</th></tr></thead>
+    <tbody>
+      <tr><td><code>DefaultCameraMode</code></td><td>Camera &gt; Mode</td><td><code>Perspective</code></td><td>Starting camera mode</td></tr>
+      <tr><td><code>CameraRotationSpeed</code></td><td>Camera &gt; Rotation</td><td>—</td><td>Mouse rotation speed</td></tr>
+      <tr><td><code>CameraDefaultRotation</code></td><td>Camera &gt; Defaults</td><td>—</td><td>Initial camera rotation</td></tr>
+      <tr><td><code>CameraMaxZoom</code> / <code>CameraMinZoom</code></td><td>Camera &gt; Zoom</td><td>—</td><td>Zoom range (spring arm length)</td></tr>
+      <tr><td><code>CameraZoomDefault</code></td><td>Camera &gt; Defaults</td><td>—</td><td>Starting zoom level</td></tr>
+      <tr><td><code>CameraZoomIncrementValue</code></td><td>Camera &gt; Zoom</td><td>—</td><td>Zoom step per scroll tick</td></tr>
+      <tr><td><code>CameraMinPitch</code> / <code>CameraMaxPitch</code></td><td>Camera &gt; Rotation</td><td>—</td><td>Pitch angle limits</td></tr>
+      <tr><td><code>IsometricCameraPitch</code></td><td>Camera &gt; Isometric</td><td>—</td><td>Fixed pitch in iso mode</td></tr>
+      <tr><td><code>IsometricOrthoWidth</code></td><td>Camera &gt; Isometric</td><td>—</td><td>Starting ortho width</td></tr>
+      <tr><td><code>IsometricMinOrthoWidth</code> / <code>IsometricMaxOrthoWidth</code></td><td>Camera &gt; Isometric</td><td>—</td><td>Ortho zoom range</td></tr>
+      <tr><td><code>CutawayFacingThreshold</code></td><td>Cutaway</td><td><code>-0.3</code></td><td>How aggressively walls are hidden (-1.0 to 1.0)</td></tr>
+      <tr><td><code>ZInterpSpeed</code></td><td>Camera &gt; Movement</td><td>—</td><td>Camera vertical interpolation speed when changing floors</td></tr>
+    </tbody>
+  </table></div>
+
+  <h3 id="neighbourhood-properties">Neighbourhood Properties (on LotManager)</h3>
+  <div class="table-wrap"><table>
+    <thead><tr><th>Property</th><th>Category</th><th>Description</th></tr></thead>
+    <tbody>
+      <tr><td><code>ParentNeighbourhood</code></td><td>Neighbourhood</td><td>Reference to the <code>ANeighbourhoodManager</code> actor</td></tr>
+      <tr><td><code>NeighbourhoodOffsetRow</code> / <code>NeighbourhoodOffsetColumn</code></td><td>Neighbourhood</td><td>Lot position in neighbourhood grid coordinates</td></tr>
+      <tr><td><code>bIsPlacedOnNeighbourhood</code></td><td>Neighbourhood</td><td>Read-only — whether the lot is placed on a neighbourhood</td></tr>
+    </tbody>
+  </table></div>
+
+  <hr>
+
+  <h2 id="common-blueprint-workflows">Common Blueprint Workflows</h2>
+
+  <h3>Switching from Build to Live Mode</h3>
+  <pre><code>Event BeginPlay
+  → Get BurbPawn
+  → Bind Event to OnModeChanged
+    → [Custom Event: UpdateUI]
+      → Branch on NewMode
+        → Build: Show Build Panel, Show Catalog
+        → Live: Hide Build Panel, Hide Catalog</code></pre>
+
+  <h3>Responding to Floor Level Changes</h3>
+  <pre><code>// In your HUD Blueprint:
+Event Tick (or bind to a delegate)
+  → Get BurbPawn → CurrentLevel
+  → Update Floor Indicator Text ("Floor: {Level}")</code></pre>
+
+  <h3>Loading a Default Lot on Game Start</h3>
+  <pre><code>Event BeginPlay
+  → Get LotManager reference
+  → Load Default Lot (DA_StarterHome)
+  → Branch on Return Value
+    → True: Print "Lot loaded!"
+    → False: Print "Failed to load lot"</code></pre>
+
+  <h3>Hooking Up a Catalog Button</h3>
+  <pre><code>// On your catalog button widget:
+Event On Clicked
+  → Get Player Controller (cast to BurbPlayerController)
+  → Handle Catalog Item Activation (pass your UCatalogItem data asset reference)</code></pre>
+
+  <hr>
+
+  <h2 id="multiplayer-notes">Multiplayer Notes</h2>
+  <p>BurbArchitect is built with multiplayer in mind:</p>
+  <ul>
+    <li><strong>LotManager</strong> replicates <code>LotName</code>, <code>GridSizeX/Y</code>, <code>Floors</code>, <code>Basements</code>, and <code>CurrentLevel</code></li>
+    <li><strong>BurbPawn</strong> replicates <code>CurrentMode</code>, <code>CurrentLot</code>, <code>CurrentLevel</code>, <code>CurrentBuildTool</code>, <code>DisplayName</code>, and <code>CameraMode</code></li>
+    <li><strong>BuildTool</strong> operations use Server RPCs (<code>ServerClick</code>, <code>ServerMove</code>, <code>ServerDrag</code>, <code>ServerRelease</code>) with Multicast broadcasts to all clients</li>
+    <li><strong>PlayerController</strong> tool creation uses Server RPCs (<code>ServerTryCreateBuildTool</code>, <code>ServerTryCreateBuildToolWithPattern</code>)</li>
+  </ul>
+  <p>The general pattern: client initiates → server validates and executes → multicast broadcasts the result. You don't need to set up replication yourself — it's handled by the base classes.</p>
+
+  <hr>
+
+  <h2 id="next-steps">Next Steps</h2>
+  <ul>
+    <li><a href="BuildTools.html">Build Tools Deep Dive</a> — detailed guide for each build tool</li>
+    <li><a href="Catalog.html">Catalog System Guide</a> — creating and managing your item catalog</li>
+    <li><a href="Neighbourhoods.html">Neighbourhood System</a> — world-level lot management</li>
+    <li><a href="Customization.html">Customization &amp; Theming</a> — materials, patterns, and visual customization</li>
+    <li><a href="SaveLoad.html">Save/Load &amp; Serialization</a> — in-depth save system guide</li>
+  </ul>
+
+  <hr>
+
+  <p><em>BurbArchitect is developed by Brendan Miller-Young. For support, visit our <a href="https://discord.com/invite/5qQjp9Zyjj">Discord</a> or <a href="https://github.com/Prazon/BurbArchitect">GitHub</a>.</em></p>
+
+  <!-- Footer -->
+  <footer class="site-footer">
+    <div class="footer-nav">
+      <a href="index.html">← Back to Index</a>
+      <a href="WallsAndRooms.html">Walls &amp; Rooms</a>
+      <a href="Roofs.html">Roofs</a>
+      <a href="FloorsAndTerrain.html">Floors &amp; Terrain</a>
+      <a href="DoorsAndWindows.html">Doors &amp; Windows</a>
+      <a href="PoolsFencesStairsObjects.html">Pools / Fences / Stairs / Objects</a>
+    </div>
+    <div class="footer-meta">
+      BurbArchitect v1.0 · <a href="index.html">Documentation Home</a> · © Brendan Miller-Young
+    </div>
+  </footer>
+
+</div>
+
+</body>
+</html>

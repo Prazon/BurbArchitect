@@ -1,0 +1,977 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Doors, Windows &amp; Portals — BurbArchitect Documentation</title>
+<style>
+  :root {
+    --bg: #1a1a2e;
+    --bg-surface: #16213e;
+    --bg-code: #0f0f23;
+    --bg-table-header: #1a1a3e;
+    --bg-table-row: #16213e;
+    --bg-table-row-alt: #1a1a2e;
+    --text: #e2e8f0;
+    --text-muted: #94a3b8;
+    --text-dim: #64748b;
+    --accent: #0ea5e9;
+    --accent-hover: #38bdf8;
+    --border: #2d3a5e;
+    --border-light: #3b4a6b;
+    --green: #22c55e;
+    --yellow: #eab308;
+    --orange: #f97316;
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  html { scroll-behavior: smooth; }
+
+  body {
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+    background: var(--bg);
+    color: var(--text);
+    line-height: 1.7;
+    font-size: 15px;
+  }
+
+  .page-wrapper {
+    max-width: 920px;
+    margin: 0 auto;
+    padding: 0 24px;
+  }
+
+  /* ── Header / Breadcrumb ── */
+  .top-bar {
+    background: var(--bg-surface);
+    border-bottom: 1px solid var(--border);
+    padding: 14px 0;
+    position: sticky;
+    top: 0;
+    z-index: 100;
+    backdrop-filter: blur(8px);
+  }
+
+  .breadcrumb {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-size: 14px;
+    flex-wrap: wrap;
+  }
+
+  .breadcrumb a {
+    color: var(--accent);
+    text-decoration: none;
+    transition: color 0.15s;
+  }
+
+  .breadcrumb a:hover { color: var(--accent-hover); }
+
+  .breadcrumb .sep { color: var(--text-dim); user-select: none; }
+
+  .breadcrumb .current {
+    color: var(--text);
+    font-weight: 600;
+  }
+
+  /* ── Main Content ── */
+  main {
+    padding: 40px 0 60px;
+  }
+
+  h1 {
+    font-size: 2em;
+    font-weight: 700;
+    color: #fff;
+    margin-bottom: 8px;
+    letter-spacing: -0.02em;
+  }
+
+  .subtitle {
+    color: var(--text-muted);
+    font-size: 15px;
+    margin-bottom: 36px;
+    padding-bottom: 24px;
+    border-bottom: 1px solid var(--border);
+  }
+
+  h2 {
+    font-size: 1.5em;
+    font-weight: 700;
+    color: var(--accent);
+    margin: 48px 0 16px;
+    padding-bottom: 8px;
+    border-bottom: 2px solid var(--border);
+    letter-spacing: -0.01em;
+  }
+
+  h2:first-of-type { margin-top: 0; }
+
+  h3 {
+    font-size: 1.15em;
+    font-weight: 600;
+    color: #cbd5e1;
+    margin: 32px 0 12px;
+  }
+
+  p { margin: 0 0 16px; }
+
+  a { color: var(--accent); text-decoration: none; transition: color 0.15s; }
+  a:hover { color: var(--accent-hover); text-decoration: underline; }
+
+  strong { color: #f1f5f9; }
+
+  /* ── Table of Contents ── */
+  .toc {
+    background: var(--bg-surface);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    padding: 24px 28px;
+    margin-bottom: 40px;
+  }
+
+  .toc-title {
+    font-size: 14px;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    color: var(--text-dim);
+    margin-bottom: 12px;
+  }
+
+  .toc ol {
+    counter-reset: toc;
+    list-style: none;
+    padding: 0;
+  }
+
+  .toc > ol > li {
+    counter-increment: toc;
+    margin: 0;
+  }
+
+  .toc > ol > li > a::before {
+    content: counter(toc) ". ";
+    color: var(--text-dim);
+    font-weight: 600;
+    font-variant-numeric: tabular-nums;
+  }
+
+  .toc a {
+    display: block;
+    padding: 4px 0;
+    color: var(--text);
+    font-size: 14px;
+    transition: color 0.15s;
+  }
+
+  .toc a:hover { color: var(--accent); text-decoration: none; }
+
+  .toc .toc-sub {
+    list-style: none;
+    padding-left: 20px;
+  }
+
+  .toc .toc-sub a {
+    color: var(--text-muted);
+    font-size: 13px;
+    padding: 2px 0;
+  }
+
+  .toc .toc-sub a::before {
+    content: "— ";
+    color: var(--border-light);
+  }
+
+  .toc .toc-sub a:hover { color: var(--accent); }
+
+  /* ── Tables ── */
+  .table-wrap {
+    overflow-x: auto;
+    margin: 16px 0 24px;
+    border-radius: 6px;
+    border: 1px solid var(--border);
+  }
+
+  table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 14px;
+  }
+
+  thead th {
+    background: var(--bg-table-header);
+    color: var(--accent);
+    font-weight: 600;
+    text-align: left;
+    padding: 10px 14px;
+    border-bottom: 2px solid var(--border);
+    white-space: nowrap;
+    font-size: 13px;
+    text-transform: uppercase;
+    letter-spacing: 0.04em;
+  }
+
+  tbody td {
+    padding: 9px 14px;
+    border-bottom: 1px solid var(--border);
+    vertical-align: top;
+  }
+
+  tbody tr:nth-child(even) { background: var(--bg-table-row-alt); }
+  tbody tr:nth-child(odd) { background: var(--bg-table-row); }
+  tbody tr:last-child td { border-bottom: none; }
+
+  td code {
+    background: var(--bg-code);
+    padding: 2px 6px;
+    border-radius: 3px;
+    font-size: 13px;
+    color: var(--accent-hover);
+  }
+
+  /* ── Code Blocks ── */
+  pre {
+    background: var(--bg-code);
+    border: 1px solid var(--border);
+    border-radius: 6px;
+    padding: 18px 20px;
+    overflow-x: auto;
+    margin: 16px 0 24px;
+    font-size: 13px;
+    line-height: 1.6;
+  }
+
+  pre code {
+    font-family: 'JetBrains Mono', 'Cascadia Code', 'Fira Code', 'Consolas', monospace;
+    color: #c9d1d9;
+    background: none;
+    padding: 0;
+    border-radius: 0;
+    font-size: inherit;
+  }
+
+  code {
+    font-family: 'JetBrains Mono', 'Cascadia Code', 'Fira Code', 'Consolas', monospace;
+    background: var(--bg-code);
+    padding: 2px 6px;
+    border-radius: 3px;
+    font-size: 13px;
+    color: var(--accent-hover);
+  }
+
+  /* ── Blockquotes / Tips ── */
+  blockquote {
+    background: rgba(14, 165, 233, 0.06);
+    border-left: 4px solid var(--accent);
+    border-radius: 0 6px 6px 0;
+    padding: 14px 18px;
+    margin: 16px 0 24px;
+    color: var(--text-muted);
+    font-size: 14px;
+  }
+
+  blockquote strong { color: var(--accent); }
+
+  blockquote p { margin: 0; }
+  blockquote p + p { margin-top: 8px; }
+
+  /* ── Lists ── */
+  ul, ol {
+    margin: 8px 0 16px 24px;
+  }
+
+  li { margin: 4px 0; }
+  li::marker { color: var(--text-dim); }
+
+  /* ── Horizontal Rule ── */
+  hr {
+    border: none;
+    border-top: 1px solid var(--border);
+    margin: 40px 0;
+  }
+
+  /* ── Footer ── */
+  .footer {
+    border-top: 1px solid var(--border);
+    padding: 32px 0 48px;
+    margin-top: 48px;
+  }
+
+  .footer-nav-title {
+    font-size: 13px;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    color: var(--text-dim);
+    margin-bottom: 16px;
+  }
+
+  .footer-links {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+  }
+
+  .footer-links a {
+    display: inline-block;
+    background: var(--bg-surface);
+    border: 1px solid var(--border);
+    border-radius: 6px;
+    padding: 8px 16px;
+    font-size: 13px;
+    color: var(--text);
+    transition: border-color 0.15s, color 0.15s, background 0.15s;
+  }
+
+  .footer-links a:hover {
+    border-color: var(--accent);
+    color: var(--accent);
+    background: rgba(14, 165, 233, 0.06);
+    text-decoration: none;
+  }
+
+  .footer-links a.active {
+    border-color: var(--accent);
+    color: var(--accent);
+    background: rgba(14, 165, 233, 0.1);
+    font-weight: 600;
+  }
+
+  .footer-copy {
+    margin-top: 24px;
+    font-size: 12px;
+    color: var(--text-dim);
+  }
+
+  /* ── Responsive ── */
+  @media (max-width: 600px) {
+    .page-wrapper { padding: 0 14px; }
+    h1 { font-size: 1.6em; }
+    h2 { font-size: 1.3em; }
+    pre { padding: 12px 14px; font-size: 12px; }
+    table { font-size: 13px; }
+    thead th, tbody td { padding: 7px 10px; }
+    .toc { padding: 16px 18px; }
+    .footer-links { gap: 8px; }
+    .footer-links a { padding: 6px 12px; font-size: 12px; }
+  }
+</style>
+</head>
+<body>
+
+<!-- ── Top Bar ── -->
+<div class="top-bar">
+  <div class="page-wrapper">
+    <nav class="breadcrumb">
+      <a href="index.html">BurbArchitect Docs</a>
+      <span class="sep">›</span>
+      <span class="current">Doors, Windows &amp; Portals</span>
+    </nav>
+  </div>
+</div>
+
+<!-- ── Main Content ── -->
+<div class="page-wrapper">
+<main>
+
+<h1>Doors, Windows &amp; Portals</h1>
+<p class="subtitle">Placing portals on walls, wall cutout rendering, door animation, custom data assets, validation rules, and the Blueprint API.</p>
+
+<!-- ── Table of Contents ── -->
+<div class="toc">
+  <div class="toc-title">Table of Contents</div>
+  <ol>
+    <li>
+      <a href="#portal-system-overview">Portal System Overview</a>
+      <ul class="toc-sub">
+        <li><a href="#how-it-works-at-a-high-level">How it works at a high level</a></li>
+      </ul>
+    </li>
+    <li><a href="#class-hierarchy">Class Hierarchy</a></li>
+    <li>
+      <a href="#placing-doors-on-walls">Placing Doors on Walls</a>
+      <ul class="toc-sub">
+        <li><a href="#what-happens-when-the-player-activates-the-door-tool">What happens when the player activates the door tool</a></li>
+        <li><a href="#door-mesh-architecture-modular-system">Door mesh architecture (modular system)</a></li>
+      </ul>
+    </li>
+    <li>
+      <a href="#placing-windows-on-walls">Placing Windows on Walls</a>
+      <ul class="toc-sub">
+        <li><a href="#vertical-placement">Vertical placement</a></li>
+      </ul>
+    </li>
+    <li>
+      <a href="#wall-cutout-behavior">Wall Cutout Behavior</a>
+      <ul class="toc-sub">
+        <li><a href="#how-cutouts-work">How cutouts work</a></li>
+        <li><a href="#portal-size-and-offset">Portal size and offset</a></li>
+        <li><a href="#live-preview-cutouts">Live preview cutouts</a></li>
+        <li><a href="#multi-section-portals">Multi-section portals</a></li>
+      </ul>
+    </li>
+    <li>
+      <a href="#door-animation-system">Door Animation System</a>
+      <ul class="toc-sub">
+        <li><a href="#component-setup-in-your-adoorbase-blueprint">Component setup (in your ADoorBase Blueprint)</a></li>
+        <li><a href="#door-state-and-rpcs">Door state and RPCs</a></li>
+        <li><a href="#setting-up-the-animation">Setting up the animation</a></li>
+      </ul>
+    </li>
+    <li>
+      <a href="#creating-custom-door-data-assets">Creating Custom Door Data Assets</a>
+      <ul class="toc-sub">
+        <li><a href="#door-step-by-step">Step-by-step</a></li>
+        <li><a href="#configure-the-door-data-asset">Configure the data asset</a></li>
+        <li><a href="#door-mesh-preparation-tips">Mesh preparation tips</a></li>
+      </ul>
+    </li>
+    <li>
+      <a href="#creating-custom-window-data-assets">Creating Custom Window Data Assets</a>
+      <ul class="toc-sub">
+        <li><a href="#window-step-by-step">Step-by-step</a></li>
+        <li><a href="#configure-the-window-data-asset">Configure the data asset</a></li>
+        <li><a href="#window-mesh-preparation-tips">Mesh preparation tips</a></li>
+      </ul>
+    </li>
+    <li>
+      <a href="#portal-validation-and-placement-rules">Portal Validation &amp; Placement Rules</a>
+      <ul class="toc-sub">
+        <li><a href="#validation-rules-in-order-of-evaluation">Validation rules (in order of evaluation)</a></li>
+        <li><a href="#snapping-behavior">Snapping behavior</a></li>
+      </ul>
+    </li>
+    <li>
+      <a href="#deletion-and-wall-restoration">Deletion &amp; Wall Restoration</a>
+      <ul class="toc-sub">
+        <li><a href="#how-deletion-works">How deletion works</a></li>
+        <li><a href="#what-happens-to-the-wall">What happens to the wall</a></li>
+        <li><a href="#ideletable-interface">IDeletable interface</a></li>
+      </ul>
+    </li>
+    <li>
+      <a href="#blueprint-api-reference">Blueprint API Reference</a>
+      <ul class="toc-sub">
+        <li><a href="#aportalbase-shared-by-all-portals">APortalBase</a></li>
+        <li><a href="#adoorbase">ADoorBase</a></li>
+        <li><a href="#awindowbase">AWindowBase</a></li>
+        <li><a href="#ubuildserver-world-subsystem">UBuildServer</a></li>
+      </ul>
+    </li>
+    <li><a href="#multiplayer-notes">Multiplayer Notes</a></li>
+  </ol>
+</div>
+
+<!-- ═══════════════════════════════════════════════ -->
+<h2 id="portal-system-overview">Portal System Overview</h2>
+
+<p>In BurbArchitect, <strong>doors and windows are both "portals."</strong> A portal is any object that gets embedded into a wall and automatically cuts a hole through the wall geometry. The system is designed so that doors and windows share a common placement pipeline and cutout renderer — they differ only in their visual representation and interaction behavior.</p>
+
+<p><strong>Key concepts:</strong></p>
+
+<div class="table-wrap">
+<table>
+  <thead><tr><th>Concept</th><th>Description</th></tr></thead>
+  <tbody>
+    <tr><td><strong>Portal</strong></td><td>An actor placed on a wall that cuts a rectangular hole in the wall mesh.</td></tr>
+    <tr><td><strong>Portal Size</strong></td><td>Width × Height of the cutout, in centimeters (defined per data asset).</td></tr>
+    <tr><td><strong>Portal Offset</strong></td><td>Optional offset of the cutout from the portal's anchor point (X = horizontal, Y = vertical, in cm).</td></tr>
+    <tr><td><strong>Build Tool</strong></td><td>The transient tool actor that handles placement preview, snapping, validation, and spawning. Destroyed after the player finishes placing.</td></tr>
+    <tr><td><strong>Data Asset</strong></td><td>A <code>UDoorItem</code> or <code>UWindowItem</code> that defines everything about a catalog entry — mesh references, portal size, snap increments, and the actor class to spawn.</td></tr>
+    <tr><td><strong>BuildServer</strong></td><td>A <code>UWorldSubsystem</code> that executes portal creation through a command pattern, providing undo/redo support.</td></tr>
+  </tbody>
+</table>
+</div>
+
+<h3 id="how-it-works-at-a-high-level">How it works at a high level</h3>
+
+<ol>
+  <li>The player selects a door or window from the catalog UI.</li>
+  <li>A <strong>Build Tool</strong> (<code>ABuildDoorTool</code> or <code>ABuildWindowTool</code>) is spawned and attached to the cursor.</li>
+  <li>As the cursor moves over walls, the tool snaps to the wall surface, shows a live <strong>preview actor</strong> (with real-time wall cutouts), and validates the placement.</li>
+  <li>On click, the tool asks the <strong>BuildServer</strong> to place the portal. The BuildServer spawns the final actor, registers it with the affected wall sections, and renders the permanent cutout.</li>
+  <li>The build tool is destroyed.</li>
+</ol>
+
+<!-- ═══════════════════════════════════════════════ -->
+<h2 id="class-hierarchy">Class Hierarchy</h2>
+
+<pre><code>UCatalogItem (UDataAsset)
+  └── UArchitectureItem
+        ├── UDoorItem          ← data asset for doors
+        └── UWindowItem        ← data asset for windows
+
+AActor
+  └── ABuildTool
+        └── ABuildPortalTool   ← shared wall-tracing, snapping, validation
+              ├── ABuildDoorTool    ← door preview + placement
+              └── ABuildWindowTool  ← window preview + placement
+
+APlaceableObject (AActor)
+  └── APortalBase              ← shared portal logic (cutout box, selection, IDeletable)
+        ├── ADoorBase          ← skeletal mesh animation + door panel/frame static meshes
+        └── AWindowBase        ← single static mesh for frame/glass
+
+UBoxComponent
+  └── UPortalBoxComponent      ← box that defines the cutout rectangle; extent is driven by PortalSize</code></pre>
+
+<blockquote>
+  <p><strong>Tip:</strong> You will typically create a <strong>Blueprint child</strong> of <code>ADoorBase</code> or <code>AWindowBase</code> to set the skeletal mesh (doors) or tweak default settings. The static meshes for appearance are set at runtime from the data asset — you don't bake them into the Blueprint.</p>
+</blockquote>
+
+<!-- ═══════════════════════════════════════════════ -->
+<h2 id="placing-doors-on-walls">Placing Doors on Walls</h2>
+
+<h3 id="what-happens-when-the-player-activates-the-door-tool">What happens when the player activates the door tool</h3>
+
+<ol>
+  <li><strong>Tool spawns</strong> — <code>ABuildDoorTool</code> is instantiated. It reads its configuration from the selected <code>UDoorItem</code> data asset:
+    <ul>
+      <li><code>ClassToSpawn</code> → which <code>ADoorBase</code> Blueprint to spawn</li>
+      <li><code>PortalSize</code> → cutout dimensions</li>
+      <li><code>PortalOffset</code> → cutout offset</li>
+      <li><code>HorizontalSnap</code> / <code>VerticalSnap</code> → grid increments</li>
+      <li><code>bSnapsToFloor</code> → <code>true</code> for doors (locks Z to the wall's base)</li>
+      <li><code>DoorStaticMesh</code> / <code>DoorFrameMesh</code> → mesh assets for panel and frame</li>
+    </ul>
+  </li>
+  <li><strong>Preview door</strong> — A live <code>ADoorBase</code> actor is spawned and attached to the tool. It follows the cursor and shows the door's actual meshes. Wall cutouts are rendered in real time as you hover.</li>
+  <li><strong>Snapping</strong> — The door snaps along the wall direction in <code>HorizontalSnap</code> increments (default 50 cm). Because <code>bSnapsToFloor = true</code>, the door's Z position is locked to the bottom of the wall segment.</li>
+  <li><strong>Validation</strong> — The tool checks placement rules (see <a href="#portal-validation-and-placement-rules">Portal Validation</a>). Invalid placements tint the preview with <code>InvalidMaterial</code>.</li>
+  <li><strong>Placement</strong> — On click, the tool calls <code>UBuildServer::BuildPortal(...)</code> with the class, transform, affected wall indices, portal size/offset, and mesh references. The server spawns the final <code>ADoorBase</code>, registers it with the wall, and re-renders the cutout.</li>
+</ol>
+
+<h3 id="door-mesh-architecture-modular-system">Door mesh architecture (modular system)</h3>
+
+<p>Doors use a <strong>skeleton + skin</strong> pattern:</p>
+
+<ul>
+  <li><strong>Skeletal Mesh</strong> (<code>DoorSkeletalMesh</code>) — Set in your Blueprint subclass. Provides the animation skeleton (bones for the door panel and frame). The skeletal mesh itself is invisible at runtime.</li>
+  <li><strong>Door Panel Static Mesh</strong> (<code>DoorStaticMesh</code>) — Attached to a bone on the skeletal mesh. Set from the <code>UDoorItem</code> data asset at runtime.</li>
+  <li><strong>Door Frame Static Mesh</strong> (<code>DoorFrameMesh</code>) — Attached to a bone on the skeletal mesh. Set from the <code>UDoorItem</code> data asset at runtime.</li>
+</ul>
+
+<p>This means you create <strong>one</strong> Blueprint with the animation skeleton, and many <code>UDoorItem</code> data assets that swap in different panel/frame meshes. Different visual styles share the same open/close animation.</p>
+
+<!-- ═══════════════════════════════════════════════ -->
+<h2 id="placing-windows-on-walls">Placing Windows on Walls</h2>
+
+<p>Windows follow the same pipeline as doors with these differences:</p>
+
+<div class="table-wrap">
+<table>
+  <thead><tr><th></th><th>Doors</th><th>Windows</th></tr></thead>
+  <tbody>
+    <tr><td>Base class</td><td><code>ADoorBase</code></td><td><code>AWindowBase</code></td></tr>
+    <tr><td>Build tool</td><td><code>ABuildDoorTool</code></td><td><code>ABuildWindowTool</code></td></tr>
+    <tr><td>Data asset</td><td><code>UDoorItem</code></td><td><code>UWindowItem</code></td></tr>
+    <tr><td>Snaps to floor</td><td>Yes (<code>bSnapsToFloor = true</code>)</td><td>No — floats freely on the wall</td></tr>
+    <tr><td>Vertical movement</td><td>Locked to wall base Z</td><td>Slides vertically, snapped by <code>VerticalSnap</code>, clamped to wall bounds</td></tr>
+    <tr><td>Mesh setup</td><td>Skeletal mesh + 2 static meshes (panel + frame)</td><td>Single static mesh (frame + glass)</td></tr>
+    <tr><td>Animation</td><td>Open/close via skeletal anim</td><td>None (static)</td></tr>
+    <tr><td>Pool walls</td><td><strong>Not allowed</strong></td><td>Allowed</td></tr>
+  </tbody>
+</table>
+</div>
+
+<h3 id="vertical-placement">Vertical placement</h3>
+
+<p>Windows can be placed anywhere on the wall surface vertically. The tool:</p>
+
+<ol>
+  <li>Takes the cursor's impact point Z on the wall.</li>
+  <li>Snaps it to <code>VerticalSnap</code> increments.</li>
+  <li>Clamps the result so the entire portal rectangle stays within the wall's vertical bounds (base Z + half-height to top Z − half-height).</li>
+</ol>
+
+<p>This means a window can never poke above or below the wall.</p>
+
+<!-- ═══════════════════════════════════════════════ -->
+<h2 id="wall-cutout-behavior">Wall Cutout Behavior</h2>
+
+<p>When a portal is placed on (or previewed against) a wall, BurbArchitect automatically cuts a rectangular hole in the wall's procedural mesh.</p>
+
+<h3 id="how-cutouts-work">How cutouts work</h3>
+
+<ol>
+  <li>Each wall segment (<code>FWallSegmentData</code>) maintains a <code>PortalArray</code> — a list of <code>APortalBase*</code> actors attached to that wall.</li>
+  <li>When the wall is rendered (or re-rendered), the <code>WallComponent</code> iterates through each portal in the array.</li>
+  <li>For each portal, it calls <code>APortalBase::DrawPortal()</code>, which stamps an opaque white rectangle onto the wall's render texture at the portal's position.</li>
+  <li>The wall mesh generator uses this texture as a mask to cut geometry out of the wall.</li>
+</ol>
+
+<h3 id="portal-size-and-offset">Portal size and offset</h3>
+
+<p>The cutout rectangle is defined by two properties on the portal actor:</p>
+
+<ul>
+  <li><strong><code>PortalSize</code></strong> (<code>FVector2D</code>) — Width (X) and height (Y) in centimeters.</li>
+  <li><strong><code>PortalOffset</code></strong> (<code>FVector2D</code>) — Shifts the cutout rectangle from the portal's anchor point. X shifts horizontally, Y shifts vertically. Useful for doors where the cutout starts at floor level but the door's origin is at its center.</li>
+</ul>
+
+<p>These values flow from the data asset → build tool → spawned portal actor.</p>
+
+<h3 id="live-preview-cutouts">Live preview cutouts</h3>
+
+<p>During placement, the preview actor is temporarily registered with the wall's <code>PortalArray</code>. The wall sections are re-rendered each time the preview moves, giving the player real-time feedback of the hole being cut. When the tool is deactivated, the preview is unregistered and walls are restored.</p>
+
+<h3 id="multi-section-portals">Multi-section portals</h3>
+
+<p>Large portals can span multiple wall sections (e.g., a wide picture window bridging two wall segments). The system uses <code>WallComponent::GetMultiSectionIDFromHitResult()</code> to determine all affected sections by checking the portal's bounding box against every wall segment. All affected sections receive the portal in their <code>PortalArray</code> and are re-rendered together.</p>
+
+<!-- ═══════════════════════════════════════════════ -->
+<h2 id="door-animation-system">Door Animation System</h2>
+
+<p>Doors use a <strong>bone-driven animation</strong> approach:</p>
+
+<h3 id="component-setup-in-your-adoorbase-blueprint">Component setup (in your ADoorBase Blueprint)</h3>
+
+<pre><code>ADoorBase
+  └── RootSceneComponent
+        └── PortalBoxComponent (defines cutout, hidden in game)
+        └── DoorSkeletalMesh (invisible skeleton — has bones for panel + frame)
+              ├── DoorStaticMesh (attached to panel bone)
+              └── DoorFrameMesh (attached to frame bone)</code></pre>
+
+<ul>
+  <li>The <strong>skeletal mesh</strong> is set in the Blueprint and is invisible at runtime (<code>SetVisibility(false)</code>). It exists solely to provide bones and play animations.</li>
+  <li>The <strong>static meshes</strong> are attached to specific bones on the skeleton. When the skeleton plays an open animation, the bones drive the static meshes.</li>
+</ul>
+
+<h3 id="door-state-and-rpcs">Door state and RPCs</h3>
+
+<p><code>ADoorBase</code> tracks an <code>bIsOpen</code> boolean that is replicated to all clients:</p>
+
+<pre><code>// Toggle the door (works from any client or server)
+DoorActor-&gt;ToggleDoor();
+
+// Explicit open/close
+DoorActor-&gt;OpenDoor();
+DoorActor-&gt;CloseDoor();</code></pre>
+
+<p>These functions handle authority checks internally:</p>
+
+<ul>
+  <li><strong>On server:</strong> Sets <code>bIsOpen</code> directly; replication pushes the new state to clients.</li>
+  <li><strong>On client:</strong> Sends a <code>Server_OpenDoor</code> / <code>Server_CloseDoor</code> RPC to the server.</li>
+</ul>
+
+<p>When <code>bIsOpen</code> replicates, <code>OnRep_IsOpen()</code> fires on clients — this is where you play the animation.</p>
+
+<h3 id="setting-up-the-animation">Setting up the animation</h3>
+
+<p>In your <code>ADoorBase</code> Blueprint subclass:</p>
+
+<ol>
+  <li>Assign a <code>USkeletalMesh</code> to <code>DoorSkeletalMesh</code> that has bones for the panel and frame.</li>
+  <li>Create an <code>UAnimMontage</code> or <code>UAnimationAsset</code> for open and close.</li>
+  <li>In the Blueprint Event Graph, override or extend <code>OnRep_IsOpen</code> (or use the C++ hook) to call <code>PlayAnimation</code> on the skeletal mesh component based on <code>bIsOpen</code>.</li>
+  <li>Attach <code>DoorStaticMesh</code> to the panel bone and <code>DoorFrameMesh</code> to the frame bone in the Blueprint's component tree.</li>
+</ol>
+
+<blockquote>
+  <p><strong>Note:</strong> The static meshes assigned in the Blueprint's component tree are <strong>defaults</strong>. At runtime, the <code>UDoorItem</code> data asset overrides them via <code>ApplyDoorMesh()</code> and <code>ApplyDoorFrameMesh()</code>. This lets one Blueprint serve many visual styles.</p>
+</blockquote>
+
+<!-- ═══════════════════════════════════════════════ -->
+<h2 id="creating-custom-door-data-assets">Creating Custom Door Data Assets</h2>
+
+<h3 id="door-step-by-step">Step-by-step</h3>
+
+<ol>
+  <li><strong>Right-click in Content Browser</strong> → <strong>Miscellaneous</strong> → <strong>Data Asset</strong>.</li>
+  <li>Select <strong>DoorItem</strong> as the class.</li>
+  <li>Name it descriptively (e.g., <code>DA_Door_SingleWood</code>).</li>
+</ol>
+
+<h3 id="configure-the-door-data-asset">Configure the data asset</h3>
+
+<div class="table-wrap">
+<table>
+  <thead><tr><th>Property</th><th>Category</th><th>Description</th></tr></thead>
+  <tbody>
+    <tr><td><code>DisplayName</code></td><td>Catalog</td><td>Name shown in the build catalog UI.</td></tr>
+    <tr><td><code>Icon</code></td><td>Catalog</td><td>Thumbnail brush for the catalog.</td></tr>
+    <tr><td><code>Cost</code></td><td>Catalog</td><td>Simoleon cost.</td></tr>
+    <tr><td><code>Category</code></td><td>Catalog</td><td>Root catalog category (e.g., "Doors").</td></tr>
+    <tr><td><code>Subcategory</code></td><td>Catalog</td><td>Optional subcategory (e.g., "Interior Doors").</td></tr>
+    <tr><td><code>BuildToolClass</code></td><td>Catalog</td><td>Set to <code>ABuildDoorTool</code> (or your subclass).</td></tr>
+    <tr><td><strong><code>PortalSize</code></strong></td><td>Portal | Shape</td><td>Width × Height of the wall cutout in cm (e.g., <code>100 × 210</code>).</td></tr>
+    <tr><td><strong><code>PortalOffset</code></strong></td><td>Portal | Shape</td><td>Offset of the cutout from the placement point in cm. Use <code>(0, 0)</code> if the door origin is centered on the cutout.</td></tr>
+    <tr><td><strong><code>HorizontalSnap</code></strong></td><td>Portal | Snapping</td><td>Snap increment along the wall (cm). Default: <code>50</code>.</td></tr>
+    <tr><td><strong><code>VerticalSnap</code></strong></td><td>Portal | Snapping</td><td>Snap increment vertically (cm). Default: <code>25</code>.</td></tr>
+    <tr><td><strong><code>bSnapsToFloor</code></strong></td><td>Portal | Snapping</td><td>Should be <code>true</code> for doors. Locks the door to the wall's base Z.</td></tr>
+    <tr><td><strong><code>ClassToSpawn</code></strong></td><td>Portal | Spawning</td><td>The <code>ADoorBase</code> Blueprint class to instantiate (e.g., <code>BP_Door_Standard</code>).</td></tr>
+    <tr><td><strong><code>DoorStaticMesh</code></strong></td><td>Portal | Mesh</td><td>Static mesh for the door panel (swinging part).</td></tr>
+    <tr><td><strong><code>DoorFrameMesh</code></strong></td><td>Portal | Mesh</td><td>Static mesh for the door frame (stationary surround).</td></tr>
+  </tbody>
+</table>
+</div>
+
+<h3 id="door-mesh-preparation-tips">Mesh preparation tips</h3>
+
+<ul>
+  <li>Model the door panel and frame as <strong>separate static meshes</strong>.</li>
+  <li>The panel mesh pivot should be at the hinge edge so bone-driven rotation looks correct.</li>
+  <li>Both meshes will be attached to bones on the skeletal mesh defined in your <code>ADoorBase</code> Blueprint — make sure the bone names and transforms match your mesh origins.</li>
+  <li>Portal size should match the hole you want, not the mesh bounding box. A door with a 100 cm wide frame might need a <code>PortalSize</code> of <code>(90, 200)</code> if the frame overlaps the wall.</li>
+</ul>
+
+<!-- ═══════════════════════════════════════════════ -->
+<h2 id="creating-custom-window-data-assets">Creating Custom Window Data Assets</h2>
+
+<h3 id="window-step-by-step">Step-by-step</h3>
+
+<ol>
+  <li><strong>Right-click in Content Browser</strong> → <strong>Miscellaneous</strong> → <strong>Data Asset</strong>.</li>
+  <li>Select <strong>WindowItem</strong> as the class.</li>
+  <li>Name it descriptively (e.g., <code>DA_Window_DoublePaned</code>).</li>
+</ol>
+
+<h3 id="configure-the-window-data-asset">Configure the data asset</h3>
+
+<div class="table-wrap">
+<table>
+  <thead><tr><th>Property</th><th>Category</th><th>Description</th></tr></thead>
+  <tbody>
+    <tr><td><code>DisplayName</code></td><td>Catalog</td><td>Name shown in the build catalog UI.</td></tr>
+    <tr><td><code>Icon</code></td><td>Catalog</td><td>Thumbnail brush for the catalog.</td></tr>
+    <tr><td><code>Cost</code></td><td>Catalog</td><td>Simoleon cost.</td></tr>
+    <tr><td><code>Category</code></td><td>Catalog</td><td>Root catalog category (e.g., "Windows").</td></tr>
+    <tr><td><code>Subcategory</code></td><td>Catalog</td><td>Optional subcategory.</td></tr>
+    <tr><td><code>BuildToolClass</code></td><td>Catalog</td><td>Set to <code>ABuildWindowTool</code> (or your subclass).</td></tr>
+    <tr><td><strong><code>PortalSize</code></strong></td><td>Portal | Shape</td><td>Width × Height of the wall cutout in cm (e.g., <code>120 × 80</code>).</td></tr>
+    <tr><td><strong><code>PortalOffset</code></strong></td><td>Portal | Shape</td><td>Offset of the cutout from the placement point. Useful to shift the cutout up from the window mesh's origin.</td></tr>
+    <tr><td><strong><code>HorizontalSnap</code></strong></td><td>Portal | Snapping</td><td>Snap increment along the wall (cm). Default: <code>50</code>.</td></tr>
+    <tr><td><strong><code>VerticalSnap</code></strong></td><td>Portal | Snapping</td><td>Snap increment vertically (cm). Default: <code>25</code>.</td></tr>
+    <tr><td><strong><code>bSnapsToFloor</code></strong></td><td>Portal | Snapping</td><td>Typically <code>false</code> for windows (lets them float vertically). Set to <code>true</code> if you want a floor-level window.</td></tr>
+    <tr><td><strong><code>ClassToSpawn</code></strong></td><td>Portal | Spawning</td><td>The <code>AWindowBase</code> Blueprint class to instantiate (e.g., <code>BP_Window_Standard</code>).</td></tr>
+    <tr><td><strong><code>WindowMesh</code></strong></td><td>Portal | Mesh</td><td>Static mesh for the window frame and glass (single mesh).</td></tr>
+  </tbody>
+</table>
+</div>
+
+<h3 id="window-mesh-preparation-tips">Mesh preparation tips</h3>
+
+<ul>
+  <li>Windows use a <strong>single static mesh</strong> — combine the frame and glass into one asset.</li>
+  <li>The mesh pivot point should be at the center of the window. The system positions the actor at the portal's anchor point on the wall.</li>
+  <li>Glass should use a translucent material on its own material slot.</li>
+</ul>
+
+<!-- ═══════════════════════════════════════════════ -->
+<h2 id="portal-validation-and-placement-rules">Portal Validation &amp; Placement Rules</h2>
+
+<p>The portal placement system enforces several rules to prevent invalid placements. When a rule fails, the preview turns to the <code>InvalidMaterial</code> (typically a red translucent material) and clicks are rejected.</p>
+
+<h3 id="validation-rules-in-order-of-evaluation">Validation rules (in order of evaluation)</h3>
+
+<div class="table-wrap">
+<table>
+  <thead><tr><th>Rule</th><th>Description</th></tr></thead>
+  <tbody>
+    <tr><td><strong>Must hit a wall</strong></td><td>The cursor trace must hit a <code>UWallComponent</code>. If it hits open ground or another actor type, placement is invalid. The preview follows the cursor at ground level with the invalid material.</td></tr>
+    <tr><td><strong>Valid wall section</strong></td><td>The hit must resolve to a valid wall array index via <code>GetWallArrayIndexFromHitLocation()</code>.</td></tr>
+    <tr><td><strong>Correct level</strong></td><td>The wall section must be on the same level the player is currently building on.</td></tr>
+    <tr><td><strong>Full-height walls only</strong></td><td>The wall must have a <code>WallEdgeID</code> linked to the WallGraph. Decorative walls (half walls, fences) return <code>EdgeID == -1</code> and are rejected.</td></tr>
+    <tr><td><strong>No basement exterior walls</strong></td><td>If the wall is on a basement level and one of its adjacent rooms is the outside (Room ID 0), portals are rejected. Underground exterior walls cannot have doors or windows.</td></tr>
+    <tr><td><strong>No doors on pool walls</strong></td><td>Pool walls (<code>bIsPoolWall == true</code>) reject door placement. Windows are allowed on pool walls. The system uses <code>bSnapsToFloor</code> as a proxy to distinguish doors from windows.</td></tr>
+    <tr><td><strong>Junction clearance</strong></td><td>The portal position must be at least <strong>15 cm</strong> away from any wall junction where 3 or more walls meet (<code>IsPositionNearJunction()</code>).</td></tr>
+    <tr><td><strong>Within wall bounds</strong></td><td>The portal's bounding box (derived from <code>PortalBoxComponent</code>) must fit entirely within the wall segment's horizontal extent (<code>IsPortalWithinWallBounds()</code>). A portal cannot hang off the end of a wall.</td></tr>
+    <tr><td><strong>Vertical bounds</strong></td><td>For doors: the top of the portal cannot exceed the wall's top. For windows: both top and bottom are clamped so the portal stays within the wall's vertical extent.</td></tr>
+  </tbody>
+</table>
+</div>
+
+<h3 id="snapping-behavior">Snapping behavior</h3>
+
+<ul>
+  <li><strong>Horizontal:</strong> The cursor position is projected onto the wall's line direction and snapped to <code>HorizontalSnap</code> increments, then clamped to <code>[0, WallLength]</code>.</li>
+  <li><strong>Vertical (windows):</strong> The impact Z is snapped to <code>VerticalSnap</code> increments, then clamped so the full portal stays within <code>[WallBaseZ + HalfHeight, WallTopZ - HalfHeight]</code>.</li>
+  <li><strong>Vertical (doors):</strong> Z is locked to <code>WallBaseZ</code> (the wall's start Z).</li>
+</ul>
+
+<!-- ═══════════════════════════════════════════════ -->
+<h2 id="deletion-and-wall-restoration">Deletion &amp; Wall Restoration</h2>
+
+<h3 id="how-deletion-works">How deletion works</h3>
+
+<p>Both <code>ABuildDoorTool</code> and <code>ABuildWindowTool</code> implement <code>Delete_Implementation()</code>:</p>
+
+<ol>
+  <li>The tool enters deletion mode (triggered by your UI).</li>
+  <li>As the player hovers over walls, the tool identifies the wall section under the cursor.</li>
+  <li>It searches the wall section's <code>PortalArray</code> for a portal within 100 cm of the cursor's snapped position.</li>
+  <li>When found and clicked:
+    <ul>
+      <li>The portal is removed from the wall's <code>PortalArray</code>.</li>
+      <li>The portal actor is destroyed.</li>
+      <li><code>WallComponent::RegenerateWallSection()</code> is called, which re-renders the wall <strong>without</strong> the portal's cutout — the wall is seamlessly restored.</li>
+    </ul>
+  </li>
+</ol>
+
+<h3 id="what-happens-to-the-wall">What happens to the wall</h3>
+
+<p>Since walls are procedurally generated, restoring a wall after portal deletion is automatic. The wall simply re-renders without the portal in its <code>PortalArray</code>, producing a solid wall again. There is no residual damage or hole.</p>
+
+<h3 id="ideletable-interface">IDeletable interface</h3>
+
+<p>All portals implement <code>IDeletable</code>, providing:</p>
+
+<ul>
+  <li><code>CanBeDeleted()</code> — Returns <code>true</code> (portals can always be deleted once placed).</li>
+  <li><code>OnDeleted()</code> — Cleans up selection state (disables custom depth highlighting).</li>
+  <li><code>IsSelected()</code> — Returns the portal's current selection state.</li>
+</ul>
+
+<!-- ═══════════════════════════════════════════════ -->
+<h2 id="blueprint-api-reference">Blueprint API Reference</h2>
+
+<h3 id="aportalbase-shared-by-all-portals">APortalBase (shared by all portals)</h3>
+
+<div class="table-wrap">
+<table>
+  <thead><tr><th>Function</th><th>Category</th><th>Description</th></tr></thead>
+  <tbody>
+    <tr><td><code>Select()</code></td><td>Selection</td><td>Highlights the portal (enables custom depth stencil on all mesh components).</td></tr>
+    <tr><td><code>Unselect()</code></td><td>Selection</td><td>Removes selection highlight.</td></tr>
+    <tr><td><code>ToggleSelection()</code></td><td>Selection</td><td>Toggles between selected/unselected.</td></tr>
+    <tr><td><code>DrawPortal(UCanvas*, FVector2D)</code></td><td>—</td><td>Draws the portal's cutout rectangle onto a canvas at the given texture position. Called internally by the wall renderer.</td></tr>
+  </tbody>
+</table>
+</div>
+
+<div class="table-wrap">
+<table>
+  <thead><tr><th>Property</th><th>Type</th><th>Description</th></tr></thead>
+  <tbody>
+    <tr><td><code>PortalSize</code></td><td><code>FVector2D</code></td><td>Width (X) and height (Y) of the cutout in cm. Replicated.</td></tr>
+    <tr><td><code>PortalOffset</code></td><td><code>FVector2D</code></td><td>Offset of the cutout from the actor origin. Replicated.</td></tr>
+    <tr><td><code>Box</code></td><td><code>UPortalBoxComponent*</code></td><td>The box component that defines the cutout volume. Read-only.</td></tr>
+    <tr><td><code>CurrentLot</code></td><td><code>ALotManager*</code></td><td>The lot this portal belongs to.</td></tr>
+    <tr><td><code>CurrentWallComponent</code></td><td><code>UWallComponent*</code></td><td>The wall component this portal is placed on.</td></tr>
+    <tr><td><code>bIsSelected</code></td><td><code>bool</code></td><td>Whether the portal is currently selected. Read-only.</td></tr>
+  </tbody>
+</table>
+</div>
+
+<h3 id="adoorbase">ADoorBase</h3>
+
+<div class="table-wrap">
+<table>
+  <thead><tr><th>Function</th><th>Category</th><th>Description</th></tr></thead>
+  <tbody>
+    <tr><td><code>OpenDoor()</code></td><td>Door</td><td>Opens the door. Handles client→server RPC automatically.</td></tr>
+    <tr><td><code>CloseDoor()</code></td><td>Door</td><td>Closes the door. Handles client→server RPC automatically.</td></tr>
+    <tr><td><code>ToggleDoor()</code></td><td>Door</td><td>Toggles between open and closed.</td></tr>
+    <tr><td><code>ApplyDoorMesh()</code></td><td>Door</td><td>Loads and applies the <code>DoorMeshAsset</code> to the <code>DoorStaticMesh</code> component.</td></tr>
+    <tr><td><code>ApplyDoorFrameMesh()</code></td><td>Door</td><td>Loads and applies the <code>DoorFrameMeshAsset</code> to the <code>DoorFrameMesh</code> component.</td></tr>
+  </tbody>
+</table>
+</div>
+
+<div class="table-wrap">
+<table>
+  <thead><tr><th>Property</th><th>Type</th><th>Description</th></tr></thead>
+  <tbody>
+    <tr><td><code>DoorSkeletalMesh</code></td><td><code>USkeletalMeshComponent*</code></td><td>Animation skeleton (set in Blueprint).</td></tr>
+    <tr><td><code>DoorStaticMesh</code></td><td><code>UStaticMeshComponent*</code></td><td>Door panel mesh component.</td></tr>
+    <tr><td><code>DoorFrameMesh</code></td><td><code>UStaticMeshComponent*</code></td><td>Door frame mesh component.</td></tr>
+    <tr><td><code>DoorMeshAsset</code></td><td><code>TSoftObjectPtr&lt;UStaticMesh&gt;</code></td><td>Replicated soft reference to the door panel mesh.</td></tr>
+    <tr><td><code>DoorFrameMeshAsset</code></td><td><code>TSoftObjectPtr&lt;UStaticMesh&gt;</code></td><td>Replicated soft reference to the door frame mesh.</td></tr>
+    <tr><td><code>bIsOpen</code></td><td><code>bool</code></td><td>Current door state. Replicated. Read-only (use <code>OpenDoor()</code>/<code>CloseDoor()</code>).</td></tr>
+  </tbody>
+</table>
+</div>
+
+<h3 id="awindowbase">AWindowBase</h3>
+
+<div class="table-wrap">
+<table>
+  <thead><tr><th>Function</th><th>Category</th><th>Description</th></tr></thead>
+  <tbody>
+    <tr><td><code>ApplyWindowMesh()</code></td><td>Window</td><td>Loads and applies the <code>WindowMeshAsset</code> to the <code>WindowMesh</code> component.</td></tr>
+  </tbody>
+</table>
+</div>
+
+<div class="table-wrap">
+<table>
+  <thead><tr><th>Property</th><th>Type</th><th>Description</th></tr></thead>
+  <tbody>
+    <tr><td><code>WindowMesh</code></td><td><code>UStaticMeshComponent*</code></td><td>Window frame/glass mesh component.</td></tr>
+    <tr><td><code>WindowMeshAsset</code></td><td><code>TSoftObjectPtr&lt;UStaticMesh&gt;</code></td><td>Replicated soft reference to the window mesh.</td></tr>
+  </tbody>
+</table>
+</div>
+
+<h3 id="ubuildserver-world-subsystem">UBuildServer (World Subsystem)</h3>
+
+<div class="table-wrap">
+<table>
+  <thead><tr><th>Function</th><th>Category</th><th>Description</th></tr></thead>
+  <tbody>
+    <tr><td><code>BuildPortal(...)</code></td><td>Build Server | Portals</td><td>Places a portal on a wall with full undo/redo support.</td></tr>
+  </tbody>
+</table>
+</div>
+
+<p><strong><code>BuildPortal</code> signature:</strong></p>
+
+<pre><code>void BuildPortal(
+    TSubclassOf&lt;APortalBase&gt; PortalClass,    // Blueprint class to spawn
+    const FVector&amp; Location,                  // World position on the wall
+    const FRotator&amp; Rotation,                 // Wall-aligned rotation
+    const TArray&lt;int32&gt;&amp; WallArrayIndices,    // Affected wall section indices
+    const FVector2D&amp; PortalSize,              // Cutout dimensions (cm)
+    const FVector2D&amp; PortalOffset,            // Cutout offset (cm)
+    TSoftObjectPtr&lt;UStaticMesh&gt; WindowMesh,   // Window mesh (nullptr for doors)
+    TSoftObjectPtr&lt;UStaticMesh&gt; DoorStaticMesh, // Door panel mesh (nullptr for windows)
+    TSoftObjectPtr&lt;UStaticMesh&gt; DoorFrameMesh   // Door frame mesh (nullptr for windows)
+);</code></pre>
+
+<blockquote>
+  <p><strong>Usage from Blueprint:</strong> Access the BuildServer via <code>GetWorld()-&gt;GetSubsystem&lt;UBuildServer&gt;()</code> in C++ or the <strong>Get Subsystem</strong> node in Blueprint (select <code>BuildServer</code>).</p>
+</blockquote>
+
+<!-- ═══════════════════════════════════════════════ -->
+<h2 id="multiplayer-notes">Multiplayer Notes</h2>
+
+<p>The portal system is fully replicated for listen-server multiplayer:</p>
+
+<ul>
+  <li><strong>Build tools</strong> replicate <code>TargetLocation</code>, <code>TargetRotation</code>, <code>bValidPlacementLocation</code>, and all portal configuration properties so all clients see the same preview state.</li>
+  <li><strong>Preview actors</strong> are replicated (<code>PreviewDoor</code>/<code>PreviewWindow</code> are <code>UPROPERTY(Replicated)</code>), so all players see the preview door/window as it's being placed.</li>
+  <li><strong>Portal actors</strong> replicate their mesh assets via <code>OnRep</code> callbacks (<code>OnRep_DoorMeshAsset</code>, <code>OnRep_WindowMeshAsset</code>, etc.) and their size/offset via <code>OnRep_PortalSize</code>/<code>OnRep_PortalOffset</code>. <code>PostNetInit()</code> ensures all properties are applied on late-joining clients.</li>
+  <li><strong>Door state</strong> (<code>bIsOpen</code>) is replicated with <code>OnRep_IsOpen</code>. Door open/close uses Server RPCs (<code>Server_OpenDoor</code>, <code>Server_CloseDoor</code>), so any client can interact with doors.</li>
+  <li><strong>Placement validation</strong> runs on the server (authority) for doors. The server's validated position is replicated to clients. Windows run validation on all machines using replicated <code>PortalSize</code> to avoid needing the preview actor.</li>
+</ul>
+
+<hr>
+
+<p><em>This document covers BurbArchitect's portal system as of the current source revision. For wall construction, floors, roofs, and terrain, see the corresponding user guide sections.</em></p>
+
+</main>
+
+<!-- ── Footer Navigation ── -->
+<footer class="footer">
+  <div class="footer-nav-title">Documentation Sections</div>
+  <div class="footer-links">
+    <a href="index.html">← Index</a>
+    <a href="GettingStarted.html">Getting Started</a>
+    <a href="WallsAndRooms.html">Walls &amp; Rooms</a>
+    <a class="active" href="DoorsAndWindows.html">Doors &amp; Windows</a>
+    <a href="Roofs.html">Roofs</a>
+    <a href="FloorsAndTerrain.html">Floors &amp; Terrain</a>
+    <a href="PoolsFencesStairsObjects.html">Pools, Fences, Stairs &amp; Objects</a>
+  </div>
+  <div class="footer-copy">BurbArchitect Plugin Documentation</div>
+</footer>
+</div>
+
+</body>
+</html>

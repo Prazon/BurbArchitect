@@ -1,0 +1,1444 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Floors, Terrain &amp; Basements — BurbArchitect Documentation</title>
+<style>
+  :root {
+    --bg-primary: #1a1a2e;
+    --bg-secondary: #16213e;
+    --bg-tertiary: #0f3460;
+    --bg-code: #0d1117;
+    --bg-table-row: #1e2a45;
+    --bg-table-header: #0f3460;
+    --bg-card: #1e253a;
+    --text-primary: #e0e6ed;
+    --text-secondary: #a0aec0;
+    --text-muted: #718096;
+    --accent: #0ea5e9;
+    --accent-hover: #38bdf8;
+    --accent-dim: #0c4a6e;
+    --border: #2d3748;
+    --border-light: #3a4a5e;
+    --code-text: #e2e8f0;
+    --code-keyword: #c678dd;
+    --code-string: #98c379;
+    --code-comment: #5c6370;
+    --code-number: #d19a66;
+    --success: #48bb78;
+    --warning: #ed8936;
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  html {
+    scroll-behavior: smooth;
+    scroll-padding-top: 80px;
+  }
+
+  body {
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+    background-color: var(--bg-primary);
+    color: var(--text-primary);
+    line-height: 1.7;
+    font-size: 16px;
+    min-height: 100vh;
+  }
+
+  /* Top bar */
+  .topbar {
+    background: var(--bg-secondary);
+    border-bottom: 1px solid var(--border);
+    padding: 12px 0;
+    position: sticky;
+    top: 0;
+    z-index: 100;
+    backdrop-filter: blur(10px);
+    background: rgba(22, 33, 62, 0.95);
+  }
+
+  .topbar-inner {
+    max-width: 940px;
+    margin: 0 auto;
+    padding: 0 20px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+  }
+
+  .breadcrumb {
+    font-size: 14px;
+    color: var(--text-secondary);
+  }
+
+  .breadcrumb a {
+    color: var(--accent);
+    text-decoration: none;
+    transition: color 0.2s;
+  }
+
+  .breadcrumb a:hover {
+    color: var(--accent-hover);
+  }
+
+  .breadcrumb .sep {
+    margin: 0 8px;
+    color: var(--text-muted);
+  }
+
+  .breadcrumb .current {
+    color: var(--text-primary);
+    font-weight: 600;
+  }
+
+  .topbar-badge {
+    font-size: 11px;
+    background: var(--accent-dim);
+    color: var(--accent);
+    padding: 3px 10px;
+    border-radius: 12px;
+    font-weight: 600;
+    letter-spacing: 0.5px;
+    text-transform: uppercase;
+  }
+
+  /* Main container */
+  .container {
+    max-width: 940px;
+    margin: 0 auto;
+    padding: 40px 20px 60px;
+  }
+
+  /* Hero header */
+  .hero {
+    margin-bottom: 40px;
+    padding-bottom: 30px;
+    border-bottom: 1px solid var(--border);
+  }
+
+  .hero h1 {
+    font-size: 2.2em;
+    font-weight: 700;
+    color: #fff;
+    margin-bottom: 16px;
+    letter-spacing: -0.5px;
+  }
+
+  .hero h1 .accent {
+    color: var(--accent);
+  }
+
+  .hero .subtitle {
+    background: var(--bg-card);
+    border-left: 3px solid var(--accent);
+    padding: 14px 18px;
+    border-radius: 0 6px 6px 0;
+    font-size: 14px;
+    color: var(--text-secondary);
+    line-height: 1.6;
+  }
+
+  .hero .subtitle strong {
+    color: var(--text-primary);
+  }
+
+  /* Table of Contents */
+  .toc {
+    background: var(--bg-card);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    padding: 24px 28px;
+    margin-bottom: 40px;
+  }
+
+  .toc-title {
+    font-size: 13px;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    color: var(--accent);
+    margin-bottom: 14px;
+  }
+
+  .toc ol {
+    list-style: none;
+    counter-reset: toc-counter;
+  }
+
+  .toc > ol > li {
+    counter-increment: toc-counter;
+    margin-bottom: 6px;
+  }
+
+  .toc > ol > li::before {
+    content: counter(toc-counter) ".";
+    color: var(--accent);
+    font-weight: 600;
+    margin-right: 8px;
+    font-size: 14px;
+  }
+
+  .toc a {
+    color: var(--text-secondary);
+    text-decoration: none;
+    font-size: 14px;
+    transition: color 0.2s;
+  }
+
+  .toc a:hover {
+    color: var(--accent-hover);
+  }
+
+  .toc .toc-sub {
+    margin-left: 28px;
+    margin-top: 4px;
+  }
+
+  .toc .toc-sub li {
+    margin-bottom: 3px;
+    position: relative;
+    padding-left: 14px;
+  }
+
+  .toc .toc-sub li::before {
+    content: "–";
+    position: absolute;
+    left: 0;
+    color: var(--text-muted);
+  }
+
+  /* Headings */
+  h2 {
+    font-size: 1.6em;
+    font-weight: 700;
+    color: #fff;
+    margin-top: 56px;
+    margin-bottom: 20px;
+    padding-bottom: 12px;
+    border-bottom: 2px solid var(--accent-dim);
+    letter-spacing: -0.3px;
+  }
+
+  h2 .num {
+    color: var(--accent);
+    margin-right: 4px;
+  }
+
+  h3 {
+    font-size: 1.2em;
+    font-weight: 600;
+    color: var(--accent);
+    margin-top: 36px;
+    margin-bottom: 14px;
+  }
+
+  h4 {
+    font-size: 1.05em;
+    font-weight: 600;
+    color: var(--text-primary);
+    margin-top: 28px;
+    margin-bottom: 10px;
+  }
+
+  /* Paragraphs and text */
+  p {
+    margin-bottom: 16px;
+    color: var(--text-secondary);
+  }
+
+  strong {
+    color: var(--text-primary);
+    font-weight: 600;
+  }
+
+  em {
+    color: var(--text-secondary);
+    font-style: italic;
+  }
+
+  a {
+    color: var(--accent);
+    text-decoration: none;
+    transition: color 0.2s;
+  }
+
+  a:hover {
+    color: var(--accent-hover);
+    text-decoration: underline;
+  }
+
+  hr {
+    border: none;
+    border-top: 1px solid var(--border);
+    margin: 40px 0;
+  }
+
+  /* Lists */
+  ul, ol {
+    margin-bottom: 16px;
+    padding-left: 24px;
+  }
+
+  li {
+    margin-bottom: 6px;
+    color: var(--text-secondary);
+  }
+
+  li strong {
+    color: var(--text-primary);
+  }
+
+  /* Tables */
+  .table-wrap {
+    overflow-x: auto;
+    margin-bottom: 20px;
+    border-radius: 8px;
+    border: 1px solid var(--border);
+  }
+
+  table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 14px;
+  }
+
+  thead th {
+    background: var(--bg-table-header);
+    color: var(--accent);
+    font-weight: 600;
+    text-align: left;
+    padding: 12px 16px;
+    border-bottom: 2px solid var(--accent-dim);
+    white-space: nowrap;
+    font-size: 13px;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+  }
+
+  tbody td {
+    padding: 10px 16px;
+    border-bottom: 1px solid var(--border);
+    color: var(--text-secondary);
+    vertical-align: top;
+  }
+
+  tbody tr:last-child td {
+    border-bottom: none;
+  }
+
+  tbody tr:nth-child(even) {
+    background: var(--bg-table-row);
+  }
+
+  tbody tr:hover {
+    background: rgba(14, 165, 233, 0.05);
+  }
+
+  td code, th code {
+    background: var(--bg-code);
+    padding: 2px 6px;
+    border-radius: 4px;
+    font-size: 13px;
+    color: var(--code-text);
+    font-family: 'JetBrains Mono', 'Fira Code', 'Cascadia Code', 'Consolas', monospace;
+  }
+
+  /* Inline code */
+  p code, li code, .hero code {
+    background: var(--bg-code);
+    padding: 2px 7px;
+    border-radius: 4px;
+    font-size: 0.9em;
+    color: var(--accent);
+    font-family: 'JetBrains Mono', 'Fira Code', 'Cascadia Code', 'Consolas', monospace;
+    border: 1px solid var(--border);
+  }
+
+  /* Code blocks */
+  pre {
+    background: var(--bg-code);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    padding: 20px 24px;
+    margin-bottom: 20px;
+    overflow-x: auto;
+    font-size: 13px;
+    line-height: 1.6;
+    position: relative;
+  }
+
+  pre code {
+    background: none;
+    border: none;
+    padding: 0;
+    color: var(--code-text);
+    font-family: 'JetBrains Mono', 'Fira Code', 'Cascadia Code', 'Consolas', monospace;
+    font-size: 13px;
+  }
+
+  /* ASCII art blocks */
+  .ascii-art {
+    background: var(--bg-code);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    padding: 20px 24px;
+    margin-bottom: 20px;
+    overflow-x: auto;
+    font-family: 'JetBrains Mono', 'Fira Code', 'Cascadia Code', 'Consolas', monospace;
+    font-size: 13px;
+    line-height: 1.5;
+    color: var(--text-muted);
+    white-space: pre;
+  }
+
+  /* Callout / blockquote */
+  blockquote {
+    background: var(--bg-card);
+    border-left: 3px solid var(--accent);
+    padding: 14px 18px;
+    margin-bottom: 20px;
+    border-radius: 0 6px 6px 0;
+  }
+
+  blockquote p {
+    margin-bottom: 0;
+    color: var(--text-secondary);
+    font-size: 14px;
+  }
+
+  /* Tip boxes */
+  .tip {
+    background: rgba(14, 165, 233, 0.08);
+    border: 1px solid var(--accent-dim);
+    border-radius: 8px;
+    padding: 16px 20px;
+    margin-bottom: 20px;
+  }
+
+  .tip-title {
+    font-weight: 700;
+    color: var(--accent);
+    font-size: 13px;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    margin-bottom: 6px;
+  }
+
+  /* Footer navigation */
+  .footer {
+    margin-top: 80px;
+    border-top: 1px solid var(--border);
+    padding-top: 40px;
+  }
+
+  .footer-title {
+    font-size: 13px;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    color: var(--text-muted);
+    margin-bottom: 20px;
+  }
+
+  .footer-nav {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+    gap: 12px;
+    margin-bottom: 30px;
+  }
+
+  .footer-nav a {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    background: var(--bg-card);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    padding: 14px 18px;
+    color: var(--text-secondary);
+    text-decoration: none;
+    font-size: 14px;
+    font-weight: 500;
+    transition: all 0.2s;
+  }
+
+  .footer-nav a:hover {
+    border-color: var(--accent);
+    color: var(--accent);
+    background: rgba(14, 165, 233, 0.05);
+    text-decoration: none;
+    transform: translateY(-1px);
+  }
+
+  .footer-nav a .icon {
+    font-size: 18px;
+    flex-shrink: 0;
+  }
+
+  .footer-bottom {
+    text-align: center;
+    padding: 20px 0;
+    border-top: 1px solid var(--border);
+    font-size: 13px;
+    color: var(--text-muted);
+  }
+
+  .footer-bottom a {
+    color: var(--accent);
+    font-weight: 600;
+  }
+
+  /* Utility */
+  .section {
+    margin-bottom: 20px;
+  }
+
+  /* Example box label */
+  .example-label {
+    font-size: 12px;
+    font-weight: 600;
+    color: var(--text-muted);
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    margin-bottom: 6px;
+  }
+
+  /* Responsive */
+  @media (max-width: 768px) {
+    .hero h1 {
+      font-size: 1.6em;
+    }
+
+    h2 {
+      font-size: 1.3em;
+    }
+
+    pre {
+      padding: 14px 16px;
+      font-size: 12px;
+    }
+
+    table {
+      font-size: 13px;
+    }
+
+    thead th, tbody td {
+      padding: 8px 12px;
+    }
+
+    .footer-nav {
+      grid-template-columns: 1fr;
+    }
+
+    .topbar-badge {
+      display: none;
+    }
+  }
+
+  /* Scrollbar */
+  ::-webkit-scrollbar {
+    width: 8px;
+    height: 8px;
+  }
+
+  ::-webkit-scrollbar-track {
+    background: var(--bg-primary);
+  }
+
+  ::-webkit-scrollbar-thumb {
+    background: var(--border-light);
+    border-radius: 4px;
+  }
+
+  ::-webkit-scrollbar-thumb:hover {
+    background: var(--text-muted);
+  }
+</style>
+</head>
+<body>
+
+<!-- Top Bar / Breadcrumb -->
+<nav class="topbar">
+  <div class="topbar-inner">
+    <div class="breadcrumb">
+      <a href="index.html">BurbArchitect Docs</a>
+      <span class="sep">›</span>
+      <span class="current">Floors &amp; Terrain</span>
+    </div>
+    <span class="topbar-badge">UE5 Plugin</span>
+  </div>
+</nav>
+
+<!-- Main Content -->
+<div class="container">
+
+  <!-- Hero -->
+  <div class="hero">
+    <h1>BurbArchitect — <span class="accent">Floors, Terrain &amp; Basements</span></h1>
+    <div class="subtitle">
+      <strong>Audience:</strong> Game developers integrating BurbArchitect into an Unreal Engine 5 project.<br>
+      <strong>Prerequisite:</strong> You should already have a <code>LotManager</code> placed in your level with a valid grid. See the <em>Getting Started</em> guide if you haven't done that yet.
+    </div>
+  </div>
+
+  <!-- Table of Contents -->
+  <div class="toc">
+    <div class="toc-title">Table of Contents</div>
+    <ol>
+      <li><a href="#concepts-overview">Concepts Overview</a></li>
+      <li>
+        <a href="#the-grid-system">The Grid System</a>
+        <ul class="toc-sub">
+          <li><a href="#how-the-grid-works">How the Grid Works</a></li>
+          <li><a href="#per-level-grid-visibility">Per-Level Grid Visibility</a></li>
+          <li><a href="#tile-coordinates">Tile Coordinates</a></li>
+          <li><a href="#the-triangle-subdivision">The Triangle Subdivision</a></li>
+        </ul>
+      </li>
+      <li>
+        <a href="#the-level-system">The Level System</a>
+        <ul class="toc-sub">
+          <li><a href="#level-indexing">Level Indexing</a></li>
+          <li><a href="#switching-levels">Switching Levels</a></li>
+          <li><a href="#basement-view">Basement View</a></li>
+        </ul>
+      </li>
+      <li>
+        <a href="#floor-placement-tool">Floor Placement Tool</a>
+        <ul class="toc-sub">
+          <li><a href="#basic-placement">Basic Placement (Drag-to-Paint)</a></li>
+          <li><a href="#placement-modes">Placement Modes</a></li>
+          <li><a href="#room-auto-fill">Room Auto-Fill (Shift+Click)</a></li>
+          <li><a href="#deletion-mode">Deletion Mode</a></li>
+          <li><a href="#drag-boundary-enforcement">Drag Boundary Enforcement</a></li>
+          <li><a href="#repainting-existing-floors">Repainting Existing Floors</a></li>
+          <li><a href="#multiplayer-support">Multiplayer Support</a></li>
+        </ul>
+      </li>
+      <li>
+        <a href="#floor-patterns-materials">Floor Patterns &amp; Materials</a>
+        <ul class="toc-sub">
+          <li><a href="#what-is-a-floor-pattern">What Is a Floor Pattern?</a></li>
+          <li><a href="#creating-a-custom-floor-pattern">Creating a Custom Floor Pattern</a></li>
+          <li><a href="#how-patterns-are-applied">How Patterns Are Applied to Materials</a></li>
+          <li><a href="#color-swatches">Color Swatches</a></li>
+          <li><a href="#flood-fill-pattern-detection">Flood-Fill Pattern Detection</a></li>
+        </ul>
+      </li>
+      <li>
+        <a href="#terrain-tools">Terrain Tools</a>
+        <ul class="toc-sub">
+          <li><a href="#terrain-architecture">Terrain Architecture</a></li>
+          <li><a href="#terrain-constraints">Terrain Constraints</a></li>
+          <li><a href="#raise-tool">Raise Tool</a></li>
+          <li><a href="#lower-tool">Lower Tool</a></li>
+          <li><a href="#smooth-tool">Smooth Tool</a></li>
+          <li><a href="#flatten-tool">Flatten Tool</a></li>
+          <li><a href="#flatten-lot-tool">Flatten Lot Tool</a></li>
+          <li><a href="#brush-visualization">Brush Visualization</a></li>
+          <li><a href="#automatic-terrain-flattening">Automatic Terrain Flattening</a></li>
+          <li><a href="#batch-operations">Batch Operations</a></li>
+        </ul>
+      </li>
+      <li>
+        <a href="#basement-creation-tool">Basement Creation Tool</a>
+        <ul class="toc-sub">
+          <li><a href="#how-it-works">How It Works</a></li>
+          <li><a href="#basement-usage">Usage</a></li>
+          <li><a href="#level-targeting-logic">Level Targeting Logic</a></li>
+          <li><a href="#basement-view-system">Basement View System</a></li>
+        </ul>
+      </li>
+      <li>
+        <a href="#blueprint-api-reference">Blueprint API Reference</a>
+        <ul class="toc-sub">
+          <li><a href="#floor-operations">Floor Operations</a></li>
+          <li><a href="#terrain-operations">Terrain Operations</a></li>
+          <li><a href="#grid-operations">Grid Operations</a></li>
+        </ul>
+      </li>
+      <li>
+        <a href="#tips-troubleshooting">Tips &amp; Troubleshooting</a>
+        <ul class="toc-sub">
+          <li><a href="#floor-z-fighting">Floor Z-Fighting</a></li>
+          <li><a href="#custom-terrain-manipulation">Custom Terrain Manipulation</a></li>
+          <li><a href="#terrain-tools-ground-floor">Terrain Tools Only Work on Ground Floor</a></li>
+          <li><a href="#per-triangle-floor-data">Per-Triangle Floor Data</a></li>
+          <li><a href="#material-parameter-names">Material Parameter Names</a></li>
+          <li><a href="#spatial-key-packing">Spatial Key Packing</a></li>
+          <li><a href="#undo-redo">Undo/Redo</a></li>
+          <li><a href="#multiplayer-considerations">Multiplayer Considerations</a></li>
+        </ul>
+      </li>
+    </ol>
+  </div>
+
+  <!-- Section 1: Concepts Overview -->
+  <h2 id="concepts-overview"><span class="num">1.</span> Concepts Overview</h2>
+
+  <p>BurbArchitect uses a <strong>tile-based grid</strong> where every surface — floors, terrain, rooms — is defined on a uniform grid of square tiles. Each tile is further subdivided into <strong>four triangles</strong> (Top, Right, Bottom, Left) which allows the system to handle diagonal walls, partial floors, and per-triangle pattern assignment.</p>
+
+  <p>The key components you'll interact with:</p>
+
+  <div class="table-wrap">
+    <table>
+      <thead>
+        <tr><th>Component</th><th>Role</th></tr>
+      </thead>
+      <tbody>
+        <tr><td><code>UGridComponent</code></td><td>Renders the visual build grid. One draw call per level.</td></tr>
+        <tr><td><code>UFloorComponent</code></td><td>Manages all floor geometry as merged procedural meshes.</td></tr>
+        <tr><td><code>UTerrainComponent</code></td><td>Manages terrain surface geometry and height maps.</td></tr>
+        <tr><td><code>ABuildFloorTool</code></td><td>Player-facing tool for placing and painting floors.</td></tr>
+        <tr><td><code>ABuildBasementTool</code></td><td>Specialized room tool for building below ground.</td></tr>
+        <tr><td><code>ABrushRaiseTool</code> / <code>ABrushLowerTool</code> / etc.</td><td>Terrain sculpting brush tools.</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <p>All of these live on or are spawned by the <strong>LotManager</strong> actor (<code>ALotManager</code>).</p>
+
+  <!-- Section 2: The Grid System -->
+  <h2 id="the-grid-system"><span class="num">2.</span> The Grid System</h2>
+
+  <h3 id="how-the-grid-works">How the Grid Works</h3>
+
+  <p>The grid is defined by three properties on your <code>LotManager</code>:</p>
+
+  <div class="table-wrap">
+    <table>
+      <thead>
+        <tr><th>Property</th><th>Type</th><th>Description</th></tr>
+      </thead>
+      <tbody>
+        <tr><td><code>GridSizeX</code></td><td><code>int32</code></td><td>Number of tiles along the X axis.</td></tr>
+        <tr><td><code>GridSizeY</code></td><td><code>int32</code></td><td>Number of tiles along the Y axis.</td></tr>
+        <tr><td><code>GridTileSize</code></td><td><code>float</code></td><td>World-unit size of each square tile (default: 100 cm).</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <p>The <code>UGridComponent</code> renders this grid as a <strong>merged procedural mesh</strong> — one mesh section per level — driven by a material that draws grid lines procedurally. This keeps draw calls minimal even on large lots.</p>
+
+  <h3 id="per-level-grid-visibility">Per-Level Grid Visibility</h3>
+
+  <p>Each floor level has its own grid mesh section. You can show/hide individual levels:</p>
+
+  <pre><code>// Show only the current level's grid
+GridComponent-&gt;SetLevelVisibility(2, true);   // Show level 2
+GridComponent-&gt;SetLevelVisibility(1, false);  // Hide level 1</code></pre>
+
+  <p>Or toggle the entire grid:</p>
+
+  <pre><code>GridComponent-&gt;SetGridVisibility(false);                 // Hide grid (keep boundary lines)
+GridComponent-&gt;SetGridVisibility(false, true);           // Hide grid AND boundary lines (live mode)</code></pre>
+
+  <h3 id="tile-coordinates">Tile Coordinates</h3>
+
+  <p>Every tile is addressed by <strong>(Row, Column, Level)</strong>. Conversion between world positions and tile coordinates goes through the <code>LotManager</code>:</p>
+
+  <pre><code>int32 Row, Column;
+bool bFound = LotManager-&gt;LocationToTile(WorldPosition, Row, Column);
+
+FVector TileCenter;
+LotManager-&gt;TileToGridLocation(Level, Row, Column, /*bCenter=*/true, TileCenter);</code></pre>
+
+  <h3 id="the-triangle-subdivision">The Triangle Subdivision</h3>
+
+  <p>Each tile is divided into four triangles by its diagonals. This is fundamental to how BurbArchitect handles diagonal walls — a single tile can be split between two rooms, with each triangle independently assigned to a room, floor pattern, or state.</p>
+
+  <div class="ascii-art">     TopLeft -------- TopRight
+         |  \  Top  /  |
+         |   \     /   |
+         | L  \ C /  R |      C = center vertex
+         |     \ /     |      T/R/B/L = triangle quadrants
+         |     / \     |
+         |   / Bot \   |
+         |  /       \  |
+     BotLeft -------- BotRight</div>
+
+  <p>Triangle types are defined in <code>ETriangleType</code>: <code>Top</code>, <code>Right</code>, <code>Bottom</code>, <code>Left</code>.</p>
+
+  <p>From the user's perspective, this subdivision is mostly invisible — floors look like solid tiles. It becomes relevant when diagonal walls split a tile or when you use the <strong>Single Triangle</strong> placement mode.</p>
+
+  <!-- Section 3: The Level System -->
+  <h2 id="the-level-system"><span class="num">3.</span> The Level System</h2>
+
+  <p>BurbArchitect uses an integer-based level system where the <strong>ground floor</strong> is at index equal to the number of basements.</p>
+
+  <h3 id="level-indexing">Level Indexing</h3>
+
+  <pre><code>Level 0          → Bottom-most basement (if Basements ≥ 1)
+Level 1          → Second basement (if Basements ≥ 2)
+...
+Level Basements  → Ground floor
+Level Basements+1 → Second storey
+Level Basements+2 → Third storey
+...up to Basements + Floors</code></pre>
+
+  <p><strong>Example:</strong> If <code>Basements = 1</code> and <code>Floors = 2</code>:</p>
+  <ul>
+    <li>Level 0 = Basement</li>
+    <li>Level 1 = Ground floor</li>
+    <li>Level 2 = Second storey</li>
+    <li>Level 3 = Third storey</li>
+  </ul>
+
+  <h3 id="switching-levels">Switching Levels</h3>
+
+  <p>Level switching is controlled through <code>LotManager-&gt;SetCurrentLevel(NewLevel)</code> and is typically driven by your game's UI. The <code>CurrentLevel</code> property on <code>LotManager</code> tracks the active level.</p>
+
+  <p>When a player switches levels:</p>
+  <ul>
+    <li>The grid updates to show only the current level's tiles.</li>
+    <li>Floor meshes for other levels can be hidden/shown via <code>UFloorComponent::SetMeshSectionVisible</code>.</li>
+    <li>The terrain is always ground-level only — it doesn't change with level.</li>
+  </ul>
+
+  <h3 id="basement-view">Basement View</h3>
+
+  <p>When viewing basements, the <code>UBurbBasementViewSubsystem</code> automatically hides non-lot actors (trees, props, landscape) while preserving their shadow casting. This gives players a clean underground view while maintaining correct lighting.</p>
+
+  <pre><code>UBurbBasementViewSubsystem* BasementView = GetWorld()-&gt;GetSubsystem&lt;UBurbBasementViewSubsystem&gt;();
+BasementView-&gt;SetBasementViewEnabled(true);   // Enter basement view
+BasementView-&gt;SetBasementViewEnabled(false);  // Exit basement view</code></pre>
+
+  <p><strong>Keep actors visible in basement view</strong> by adding the gameplay tag <code>BasementView.AlwaysVisible</code> to any actor. Light actors and anything owned by the LotManager are automatically kept visible.</p>
+
+  <!-- Section 4: Floor Placement Tool -->
+  <h2 id="floor-placement-tool"><span class="num">4.</span> Floor Placement Tool</h2>
+
+  <p><code>ABuildFloorTool</code> is the primary tool for placing, replacing, and deleting floor tiles.</p>
+
+  <h3 id="basic-placement">Basic Placement (Drag-to-Paint)</h3>
+
+  <ol>
+    <li><strong>Click</strong> on a tile to start placing.</li>
+    <li><strong>Drag</strong> to paint a rectangular area of floor tiles.</li>
+    <li><strong>Release</strong> to commit all tiles.</li>
+  </ol>
+
+  <p>The tool creates preview meshes during the drag operation that show exactly what will be placed. Previews are rendered with a slight Z-offset (5 cm) to prevent Z-fighting with existing terrain or floors.</p>
+
+  <h3 id="placement-modes">Placement Modes</h3>
+
+  <p>The tool supports two modes, toggled via the <code>PlacementMode</code> property:</p>
+
+  <div class="table-wrap">
+    <table>
+      <thead>
+        <tr><th>Mode</th><th>Enum Value</th><th>Behavior</th></tr>
+      </thead>
+      <tbody>
+        <tr><td><strong>Full Tile</strong></td><td><code>EFloorPlacementMode::FullTile</code></td><td>Places all 4 triangles per tile (default).</td></tr>
+        <tr><td><strong>Single Triangle</strong></td><td><code>EFloorPlacementMode::SingleTriangle</code></td><td>Places only the triangle under the cursor.</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <p>Toggle from Blueprint (for example, bind to Ctrl+F):</p>
+
+  <pre><code>FloorTool-&gt;PlacementMode = (FloorTool-&gt;PlacementMode == EFloorPlacementMode::FullTile)
+    ? EFloorPlacementMode::SingleTriangle
+    : EFloorPlacementMode::FullTile;</code></pre>
+
+  <p>In Single Triangle mode, the tool tracks <code>CurrentHoveredTriangle</code> — which of the four triangles the cursor is over — and only places that triangle.</p>
+
+  <h3 id="room-auto-fill">Room Auto-Fill (Shift+Click)</h3>
+
+  <p>Hold <strong>Shift</strong> while hovering over a room to see a preview of the entire room filled with the current floor pattern. <strong>Shift+Click</strong> commits the fill.</p>
+
+  <p>The auto-fill is room-aware: it respects diagonal wall boundaries and only fills triangles that are geometrically inside the room polygon (using centroid-based polygon testing for each triangle).</p>
+
+  <h3 id="deletion-mode">Deletion Mode</h3>
+
+  <p>Set <code>bDeletionMode = true</code> to switch the tool to deletion. In this mode, clicking/dragging removes floor tiles instead of placing them. The tool queries which triangles exist at each location and deletes all of them.</p>
+
+  <h3 id="drag-boundary-enforcement">Drag Boundary Enforcement</h3>
+
+  <p>When dragging within a room, floor placement is constrained to that room. The <code>DragStartRoomID</code> is captured on click, and only tiles belonging to the same room are included during the drag.</p>
+
+  <h3 id="repainting-existing-floors">Repainting Existing Floors</h3>
+
+  <p>Dragging over tiles that already have floors will <strong>update</strong> their pattern rather than creating duplicate geometry. The system distinguishes between "create" and "update" operations internally and routes them through appropriate commands.</p>
+
+  <h3 id="multiplayer-support">Multiplayer Support</h3>
+
+  <p>All floor operations are replicated:</p>
+  <ul>
+    <li><code>Server_BuildFloors</code> / <code>Multicast_BuildFloors</code> — for creation and update</li>
+    <li><code>Server_DeleteFloors</code> / <code>Multicast_DeleteFloors</code> — for deletion</li>
+  </ul>
+
+  <p>The local client creates preview meshes, then on release sends authoritative RPCs through the server to all clients.</p>
+
+  <!-- Section 5: Floor Patterns & Materials -->
+  <h2 id="floor-patterns-materials"><span class="num">5.</span> Floor Patterns &amp; Materials</h2>
+
+  <h3 id="what-is-a-floor-pattern">What Is a Floor Pattern?</h3>
+
+  <p><code>UFloorPattern</code> is a data asset (inheriting from <code>UArchitectureItem</code> → <code>UCatalogItem</code>) that defines the visual appearance of a floor tile. Each pattern contains:</p>
+
+  <div class="table-wrap">
+    <table>
+      <thead>
+        <tr><th>Property</th><th>Type</th><th>Description</th></tr>
+      </thead>
+      <tbody>
+        <tr><td><code>BaseTexture</code></td><td><code>UTexture*</code></td><td>The diffuse/albedo texture.</td></tr>
+        <tr><td><code>NormalMap</code></td><td><code>UTexture*</code></td><td>Normal map for surface detail.</td></tr>
+        <tr><td><code>bUseDetailNormal</code></td><td><code>bool</code></td><td>Enable a secondary detail normal layer.</td></tr>
+        <tr><td><code>DetailNormal</code></td><td><code>UTexture*</code></td><td>Detail normal map texture.</td></tr>
+        <tr><td><code>DetailNormalIntensity</code></td><td><code>float</code></td><td>Strength of detail normals (0–32).</td></tr>
+        <tr><td><code>RoughnessMap</code></td><td><code>UTexture*</code></td><td>Roughness/smoothness map.</td></tr>
+        <tr><td><code>BaseMaterial</code></td><td><code>UMaterialInstance*</code></td><td>Optional per-pattern base material override.</td></tr>
+        <tr><td><code>bUseColourSwatches</code></td><td><code>bool</code></td><td>Enable color swatch recoloring.</td></tr>
+        <tr><td><code>bUseColourMask</code></td><td><code>bool</code></td><td>Use RMA alpha channel as color mask.</td></tr>
+        <tr><td><code>ColourSwatches</code></td><td><code>TArray&lt;FLinearColor&gt;</code></td><td>Array of available recolor tints.</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <h3 id="creating-a-custom-floor-pattern">Creating a Custom Floor Pattern</h3>
+
+  <ol>
+    <li><strong>Create a new Data Asset</strong> of type <code>FloorPattern</code> in the Content Browser.</li>
+    <li>Assign your textures (<code>BaseTexture</code>, <code>NormalMap</code>, <code>RoughnessMap</code>).</li>
+    <li>Optionally configure the detail normal layer.</li>
+    <li>Optionally set up color swatches for recoloring support.</li>
+    <li>Assign the pattern to the floor tool's <code>DefaultFloorPattern</code> or add it to your catalog UI.</li>
+  </ol>
+
+  <h3 id="how-patterns-are-applied">How Patterns Are Applied to Materials</h3>
+
+  <p>When a floor is placed, the tool creates a <code>UMaterialInstanceDynamic</code> from the base material and sets these parameters:</p>
+
+  <div class="table-wrap">
+    <table>
+      <thead>
+        <tr><th>Material Parameter</th><th>Type</th><th>Source</th></tr>
+      </thead>
+      <tbody>
+        <tr><td><code>FloorMaterial</code></td><td>Texture</td><td><code>Pattern-&gt;BaseTexture</code></td></tr>
+        <tr><td><code>FloorNormal</code></td><td>Texture</td><td><code>Pattern-&gt;NormalMap</code></td></tr>
+        <tr><td><code>FloorRoughness</code></td><td>Texture</td><td><code>Pattern-&gt;RoughnessMap</code></td></tr>
+        <tr><td><code>bUseColourSwatches</code></td><td>Scalar (0/1)</td><td>Whether swatch tinting is active</td></tr>
+        <tr><td><code>bUseColourMask</code></td><td>Scalar (0/1)</td><td>Whether color mask channel is used</td></tr>
+        <tr><td><code>FloorColour</code></td><td>Vector (Linear Color)</td><td>The selected swatch color</td></tr>
+        <tr><td><code>ShowGrid</code></td><td>Scalar (0/1)</td><td>Grid line overlay visibility</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <p><strong>Your base material must expose these parameter names</strong> for patterns to work correctly.</p>
+
+  <h3 id="color-swatches">Color Swatches</h3>
+
+  <p>The swatch system allows players to recolor a pattern:</p>
+
+  <ul>
+    <li><strong>Index 0</strong> = default (no tint applied).</li>
+    <li><strong>Index 1+</strong> = maps to <code>ColourSwatches[Index - 1]</code>.</li>
+  </ul>
+
+  <p>Set <code>SelectedSwatchIndex</code> on the floor tool to control which swatch is applied:</p>
+
+  <pre><code>FloorTool-&gt;SelectedSwatchIndex = 3;  // Use the third color swatch</code></pre>
+
+  <p>When <code>bUseColourMask</code> is enabled, only the regions defined by the RMA texture's alpha channel are tinted — useful for patterns like hardwood where you want to recolor the wood but not the grout.</p>
+
+  <h3 id="flood-fill-pattern-detection">Flood-Fill Pattern Detection</h3>
+
+  <p>The floor tool includes <strong>paint-bucket-style</strong> pattern detection:</p>
+
+  <ul>
+    <li><code>GetDominantPatternAtTile()</code> — Returns the most common pattern at a tile.</li>
+    <li><code>FloodFillPatternRegion()</code> — Finds all contiguous tiles with the same pattern (tile-level).</li>
+    <li><code>FloodFillPatternRegionTriangles()</code> — Triangle-level flood fill that correctly handles diagonal walls.</li>
+  </ul>
+
+  <p>These are used internally for intelligent fill operations and are available for Blueprint use.</p>
+
+  <!-- Section 6: Terrain Tools -->
+  <h2 id="terrain-tools"><span class="num">6.</span> Terrain Tools</h2>
+
+  <p>BurbArchitect includes five terrain sculpting tools. All terrain tools operate only on the <strong>ground floor level</strong> and use the <code>UTerrainComponent</code>'s height map system.</p>
+
+  <h3 id="terrain-architecture">Terrain Architecture</h3>
+
+  <p>Terrain uses a <strong>corner-based height map</strong> (<code>FTerrainHeightMap</code>) where heights are stored at tile intersections (corners), not tile centers. This means:</p>
+
+  <ul>
+    <li>A 10×10 tile grid has an 11×11 corner grid.</li>
+    <li>Adjacent tiles share corner vertices, ensuring seamless terrain.</li>
+    <li>Heights are stored <strong>relative to the lot's BaseZ</strong> position.</li>
+  </ul>
+
+  <p>The terrain mesh uses exactly two mesh sections:</p>
+  <ul>
+    <li><strong>Section 0:</strong> Top surface (grass/terrain material, editable heights)</li>
+    <li><strong>Section 1:</strong> Sides + Bottom (cliff/dirt material, static geometry)</li>
+  </ul>
+
+  <h3 id="terrain-constraints">Terrain Constraints</h3>
+
+  <div class="table-wrap">
+    <table>
+      <thead>
+        <tr><th>Property</th><th>Default</th><th>Description</th></tr>
+      </thead>
+      <tbody>
+        <tr><td><code>TerrainThickness</code></td><td>600</td><td>Downward extrusion depth (cm).</td></tr>
+        <tr><td><code>MaxTerrainHeight</code></td><td>900</td><td>Maximum height above lot base (cm).</td></tr>
+        <tr><td><code>MinTerrainHeight</code></td><td>-(Thickness - 10)</td><td>Maximum depth below lot base.</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <h3 id="raise-tool">Raise Tool (<code>ABrushRaiseTool</code>)</h3>
+
+  <p>Raises terrain within a circular brush. Click-and-hold to continuously raise.</p>
+
+  <div class="table-wrap">
+    <table>
+      <thead>
+        <tr><th>Property</th><th>Default</th><th>Description</th></tr>
+      </thead>
+      <tbody>
+        <tr><td><code>Radius</code></td><td>500</td><td>Brush radius in world units.</td></tr>
+        <tr><td><code>TimerDelay</code></td><td>0.1s</td><td>Interval between terrain updates while held.</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <p>The raise amount per tick uses a <strong>span-based falloff</strong> calculated from the 9 surrounding tile centers, creating a smooth, natural-looking raise profile rather than hard edges.</p>
+
+  <h3 id="lower-tool">Lower Tool (<code>ABrushLowerTool</code>)</h3>
+
+  <p>Identical to the Raise Tool but pushes terrain downward. Same properties and brush behavior.</p>
+
+  <div class="table-wrap">
+    <table>
+      <thead>
+        <tr><th>Property</th><th>Default</th><th>Description</th></tr>
+      </thead>
+      <tbody>
+        <tr><td><code>Radius</code></td><td>500</td><td>Brush radius in world units.</td></tr>
+        <tr><td><code>TimerDelay</code></td><td>0.1s</td><td>Interval between terrain updates while held.</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <h3 id="smooth-tool">Smooth Tool (<code>ABrushSmoothTool</code>)</h3>
+
+  <p>Uses <strong>Laplacian smoothing</strong> to blend terrain heights toward the average of their neighbors. Great for softening harsh terrain edits.</p>
+
+  <div class="table-wrap">
+    <table>
+      <thead>
+        <tr><th>Property</th><th>Default</th><th>Description</th></tr>
+      </thead>
+      <tbody>
+        <tr><td><code>Radius</code></td><td>500</td><td>Brush radius in world units.</td></tr>
+        <tr><td><code>SmoothingStrength</code></td><td>0.5</td><td>Blend factor: 0.0 = no change, 1.0 = full average.</td></tr>
+        <tr><td><code>TimerDelay</code></td><td>0.1s</td><td>Interval between smoothing passes while held.</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <p>The smoothing operates on the <strong>corner grid</strong>, not the tile grid, giving sub-tile precision.</p>
+
+  <h3 id="flatten-tool">Flatten Tool (<code>ABrushFlattenTool</code>)</h3>
+
+  <p>Flattens terrain within a brush radius to a <strong>sampled target height</strong>. On click, the tool samples the terrain height at the cursor position, then all corners within the radius are set to that height as you hold/drag.</p>
+
+  <div class="table-wrap">
+    <table>
+      <thead>
+        <tr><th>Property</th><th>Default</th><th>Description</th></tr>
+      </thead>
+      <tbody>
+        <tr><td><code>Radius</code></td><td>200</td><td>Brush radius in world units.</td></tr>
+        <tr><td><code>TimerDelay</code></td><td>0.1s</td><td>Interval between flatten updates while held.</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <p>This is useful for creating flat building pads — click on the height you want, then paint the surrounding area flat.</p>
+
+  <h3 id="flatten-lot-tool">Flatten Lot Tool (<code>ABrushFlattenLotTool</code>)</h3>
+
+  <p>A one-click tool that flattens the <strong>entire lot</strong> to a specified height. Inherits from <code>ABrushFlattenTool</code> but operates on every tile simultaneously.</p>
+
+  <div class="table-wrap">
+    <table>
+      <thead>
+        <tr><th>Property</th><th>Default</th><th>Description</th></tr>
+      </thead>
+      <tbody>
+        <tr><td><code>DefaultHeight</code></td><td>0.0</td><td>Target height relative to lot BaseZ.</td></tr>
+        <tr><td><code>bHideDecal</code></td><td>true</td><td>Hides the brush circle (not needed for whole-lot ops).</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <p>Use this as a "reset terrain" button or to establish a baseline height.</p>
+
+  <h3 id="brush-visualization">Brush Visualization</h3>
+
+  <p>All brush tools use a <code>UDecalComponent</code> projected downward to show the brush radius. The decal follows the cursor in real-time. Brush radius and visual size are linked — changing <code>Radius</code> automatically scales the decal.</p>
+
+  <h3 id="automatic-terrain-flattening">Automatic Terrain Flattening</h3>
+
+  <p>The system automatically flattens terrain under placed floors and along wall segments. This prevents Z-fighting between terrain and floors and ensures clean building foundations:</p>
+
+  <pre><code>// These are called automatically by the build pipeline:
+TerrainComponent-&gt;FlattenTerrainUnderFloor(Level, Row, Column, TileSectionState, TargetHeight);
+TerrainComponent-&gt;FlattenTerrainAlongWall(Level, StartRow, StartCol, EndRow, EndCol, TargetHeight);</code></pre>
+
+  <h3 id="batch-operations">Batch Operations</h3>
+
+  <p>When sculpting terrain, the system uses batch operations to avoid per-tile mesh rebuilds:</p>
+
+  <pre><code>TerrainComponent-&gt;BeginBatchOperation();
+// ... make many terrain changes ...
+TerrainComponent-&gt;EndBatchOperation();  // Single rebuild for all changes</code></pre>
+
+  <p>All built-in brush tools handle this automatically. If you write custom terrain manipulation, wrap your changes in batch operations for performance.</p>
+
+  <!-- Section 7: Basement Creation Tool -->
+  <h2 id="basement-creation-tool"><span class="num">7.</span> Basement Creation Tool</h2>
+
+  <p><code>ABuildBasementTool</code> extends <code>ABuildRoomTool</code> (the standard room drawing tool) to support building underground levels.</p>
+
+  <h3 id="how-it-works">How It Works</h3>
+
+  <p>The basement tool behaves contextually based on which level you're viewing:</p>
+
+  <div class="table-wrap">
+    <table>
+      <thead>
+        <tr><th>Viewing Level</th><th>Build Target</th><th>Behavior</th></tr>
+      </thead>
+      <tbody>
+        <tr><td>Ground floor (<code>Basements</code>)</td><td>One level below (top basement)</td><td>Draws basement walls while viewing the ground floor above.</td></tr>
+        <tr><td>Any basement level</td><td>Current level</td><td>Behaves as a normal room tool.</td></tr>
+        <tr><td>Upper floors</td><td>Current level</td><td>Behaves as a normal room tool.</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <p>This means you can draw a basement layout <strong>while looking at the ground floor</strong>, which is more intuitive than switching to an empty underground view first.</p>
+
+  <h3 id="basement-usage">Usage</h3>
+
+  <ol>
+    <li>Select the Basement Tool.</li>
+    <li>While on the ground floor, <strong>click and drag</strong> to define a rectangular room.</li>
+    <li>On release, walls are created at the basement level.</li>
+    <li>Switch to the basement level to add floors, doors, and furnishings.</li>
+  </ol>
+
+  <p>The tool snaps to the basement-level grid (offset by the level height) but renders wall previews that are visible from the ground floor perspective.</p>
+
+  <h3 id="level-targeting-logic">Level Targeting Logic</h3>
+
+  <p>The <code>GetTargetLevel()</code> helper determines where to build:</p>
+
+  <pre><code>Ground floor level = LotManager-&gt;Basements (e.g., 1 if one basement configured)
+If CurrentLevel == GroundFloorLevel → target = GroundFloorLevel - 1
+Else → target = CurrentLevel</code></pre>
+
+  <h3 id="basement-view-system">Basement View System</h3>
+
+  <p>When switching to view a basement level, enable the <code>UBurbBasementViewSubsystem</code> to get a clean underground view:</p>
+
+  <pre><code>auto* Sub = GetWorld()-&gt;GetSubsystem&lt;UBurbBasementViewSubsystem&gt;();
+Sub-&gt;SetBasementViewEnabled(true);</code></pre>
+
+  <p><strong>Actor filtering rules</strong> (what stays visible in basement view):</p>
+  <ol>
+    <li>LotManager and all BuildTool actors → always visible</li>
+    <li>Light actors (directional, point, spot, sky) → always visible</li>
+    <li>Actors with light components (lamps, fixtures) → always visible</li>
+    <li>Actors tagged with <code>BasementView.AlwaysVisible</code> → always visible</li>
+    <li>Everything else → hidden (but still casts shadows)</li>
+  </ol>
+
+  <!-- Section 8: Blueprint API Reference -->
+  <h2 id="blueprint-api-reference"><span class="num">8.</span> Blueprint API Reference</h2>
+
+  <h3 id="floor-operations">Floor Operations</h3>
+
+  <h4>UFloorComponent</h4>
+
+  <pre><code>// Place a floor triangle
+UFUNCTION(BlueprintCallable)
+void AddFloorTile(const FFloorTileData&amp; TileData, UMaterialInstance* Material);
+
+// Remove a floor triangle
+void RemoveFloorTile(int32 Level, int32 Row, int32 Column, ETriangleType Triangle);
+
+// Check if any floor exists at a tile
+bool HasAnyFloorTile(int32 Level, int32 Row, int32 Column) const;
+
+// Get which triangles exist at a tile
+FTileSectionState GetExistingTriangles(int32 Level, int32 Row, int32 Column) const;
+
+// Find a specific floor triangle (returns nullptr if not found)
+FFloorTileData* FindFloorTile(int32 Level, int32 Row, int32 Column, ETriangleType Triangle) const;
+
+// Get all triangles at a tile (up to 4)
+TArray&lt;FFloorTileData*&gt; GetAllTrianglesAtTile(int32 Level, int32 Row, int32 Column);
+
+// Batch operations (wrap bulk edits for performance)
+UFUNCTION(BlueprintCallable)
+void BeginBatchOperation();
+
+UFUNCTION(BlueprintCallable)
+void EndBatchOperation();</code></pre>
+
+  <h4>ABuildFloorTool</h4>
+
+  <pre><code>// Change placement mode
+UPROPERTY(BlueprintReadWrite, EditAnywhere)
+EFloorPlacementMode PlacementMode;
+
+// Set the active pattern
+UPROPERTY(BlueprintReadWrite, EditDefaultsOnly)
+UFloorPattern* DefaultFloorPattern;
+
+// Set the active swatch (0 = default, 1+ = swatch index)
+UPROPERTY(BlueprintReadWrite)
+int32 SelectedSwatchIndex;
+
+// Toggle deletion mode
+UPROPERTY(BlueprintReadWrite, EditAnywhere)
+bool bDeletionMode;
+
+// Query tiles in a room
+UFUNCTION(BlueprintCallable)
+TArray&lt;FTileData&gt; GetTilesInRoom(int32 RoomID, int32 Level);
+
+// Get dominant pattern at a tile
+UFUNCTION(BlueprintCallable)
+UFloorPattern* GetDominantPatternAtTile(int32 Level, int32 Row, int32 Column);
+
+// Flood-fill to find all tiles with matching pattern
+UFUNCTION(BlueprintCallable)
+TArray&lt;FIntVector&gt; FloodFillPatternRegion(int32 Level, int32 StartRow, int32 StartColumn,
+                                          UFloorPattern* TargetPattern, int32 RoomID);
+
+// Create a patterned dynamic material
+UFUNCTION(BlueprintCallable)
+UMaterialInstanceDynamic* CreatePatternedMaterial(UMaterialInstance* BaseMaterial, UFloorPattern* Pattern);</code></pre>
+
+  <h3 id="terrain-operations">Terrain Operations</h3>
+
+  <h4>UTerrainComponent</h4>
+
+  <pre><code>// Sample terrain height at a tile position
+UFUNCTION(BlueprintCallable)
+float SampleTerrainElevation(int32 Level, int32 Row, int32 Column);
+
+// Flatten a rectangular region
+UFUNCTION(BlueprintCallable)
+void FlattenRegion(int32 FromRow, int32 FromCol, int32 ToRow, int32 ToCol,
+                   float TargetHeight, int32 Level);
+
+// Smooth a circular region (Laplacian)
+UFUNCTION(BlueprintCallable)
+void SmoothCornerRegion(int32 Level, int32 CenterRow, int32 CenterCol,
+                        float Radius, float Strength);
+
+// Flatten terrain under a floor tile
+UFUNCTION(BlueprintCallable)
+void FlattenTerrainUnderFloor(int32 Level, int32 Row, int32 Column,
+                              const FTileSectionState&amp; TileSectionState,
+                              float TargetHeight, bool bBypassLock = false);
+
+// Flatten terrain along a wall
+UFUNCTION(BlueprintCallable)
+void FlattenTerrainAlongWall(int32 Level, int32 StartRow, int32 StartColumn,
+                             int32 EndRow, int32 EndColumn,
+                             float TargetHeight, bool bBypassLock = false);
+
+// Remove terrain tiles (for stairs, openings)
+UFUNCTION(BlueprintCallable)
+void RemoveTerrainTile(int32 Level, int32 Row, int32 Column);
+
+UFUNCTION(BlueprintCallable)
+void RemoveTerrainRegion(int32 Level, int32 FromRow, int32 FromCol, int32 ToRow, int32 ToCol);
+
+// Reset entire lot terrain
+UFUNCTION(BlueprintCallable)
+void DestroyAllTerrain();
+
+// Apply a material to all terrain
+UFUNCTION(BlueprintCallable)
+void ApplySharedTerrainMaterial(UMaterialInstance* Material);
+
+// Batch operations
+UFUNCTION(BlueprintCallable)
+void BeginBatchOperation();
+
+UFUNCTION(BlueprintCallable)
+void EndBatchOperation();</code></pre>
+
+  <h4>Height Map Access</h4>
+
+  <pre><code>// Get/create height map for a level
+FTerrainHeightMap* GetOrCreateHeightMap(int32 Level);
+
+// Update a single corner height
+void UpdateCornerHeight(int32 Level, int32 CornerRow, int32 CornerColumn,
+                        float NewHeight, bool bBypassLock = false);</code></pre>
+
+  <p>The <code>FTerrainHeightMap</code> struct provides direct corner manipulation:</p>
+
+  <pre><code>FTerrainHeightMap* HeightMap = TerrainComponent-&gt;GetOrCreateHeightMap(Level);
+float Height = HeightMap-&gt;GetCornerHeight(CornerRow, CornerColumn);
+HeightMap-&gt;SetCornerHeight(CornerRow, CornerColumn, NewHeight);
+HeightMap-&gt;AdjustCornerHeight(CornerRow, CornerColumn, DeltaHeight);
+float CenterHeight = HeightMap-&gt;GetTileCenterHeight(TileRow, TileColumn);</code></pre>
+
+  <h3 id="grid-operations">Grid Operations</h3>
+
+  <h4>UGridComponent</h4>
+
+  <pre><code>// Generate the full grid mesh
+UFUNCTION(BlueprintCallable)
+void GenerateGridMesh(const TArray&lt;FTileData&gt;&amp; GridData, int32 GridSizeX, int32 GridSizeY,
+                      float GridTileSize, UMaterialInterface* GridMaterial, int32 ExcludeLevel = -1);
+
+// Rebuild a single level's grid
+UFUNCTION(BlueprintCallable)
+void RebuildGridLevel(int32 Level, const TArray&lt;FTileData&gt;&amp; GridData,
+                      UMaterialInterface* GridMaterial, int32 ExcludeLevel = -1);
+
+// Show/hide the grid
+UFUNCTION(BlueprintCallable)
+void SetGridVisibility(bool bShowGrid, bool bHideBoundaryLines = false);
+
+// Show/hide a specific level's grid
+UFUNCTION(BlueprintCallable)
+void SetLevelVisibility(int32 Level, bool bShow);
+
+// Debug: color tiles by room ID
+UFUNCTION(BlueprintCallable)
+void UpdateAllTileColorsFromRoomIDs(const TArray&lt;FTileData&gt;&amp; GridData);</code></pre>
+
+  <!-- Section 9: Tips & Troubleshooting -->
+  <h2 id="tips-troubleshooting"><span class="num">9.</span> Tips &amp; Troubleshooting</h2>
+
+  <h3 id="floor-z-fighting">Floor Z-Fighting</h3>
+
+  <p>If you see flickering between floors and terrain, verify that:</p>
+  <ul>
+    <li><code>FloorTopOffset</code> on <code>UFloorComponent</code> is set to a small positive value (default: 0.1 cm).</li>
+    <li>Terrain auto-flattening is working (<code>LotManager-&gt;bRemoveTerrainUnderFloors</code> should be <code>true</code>).</li>
+    <li>Preview floors use the built-in <code>PreviewZOffset</code> (5 cm) — don't set this to zero.</li>
+  </ul>
+
+  <h3 id="custom-terrain-manipulation">Custom Terrain Manipulation</h3>
+
+  <p>When writing custom terrain code, <strong>always</strong> wrap changes in batch operations:</p>
+
+  <pre><code>TerrainComponent-&gt;BeginBatchOperation();
+
+for (/* each tile */)
+{
+    TerrainComponent-&gt;UpdateCornerHeight(Level, Row, Col, NewHeight);
+}
+
+TerrainComponent-&gt;EndBatchOperation();  // Rebuilds mesh once</code></pre>
+
+  <p>Without batch operations, each corner change triggers a full mesh rebuild.</p>
+
+  <h3 id="terrain-tools-ground-floor">Terrain Tools Only Work on Ground Floor</h3>
+
+  <p>All brush tools enforce <code>CurrentLevel == Basements</code> before operating. This is by design — terrain exists only at the ground floor. If you need to modify terrain from a different level context, call <code>TerrainComponent</code> methods directly with the correct level parameter (usually <code>LotManager-&gt;Basements</code>).</p>
+
+  <h3 id="per-triangle-floor-data">Per-Triangle Floor Data</h3>
+
+  <p>The <code>FFloorTileData</code> struct stores data per-triangle, not per-tile. When iterating floor data, remember that one visual "tile" can have up to 4 entries in the spatial map. Use <code>GetAllTrianglesAtTile()</code> to retrieve all triangles at a grid position.</p>
+
+  <h3 id="material-parameter-names">Material Parameter Names</h3>
+
+  <p>If your custom base material doesn't respond to pattern changes, ensure it exposes these exact parameter names:</p>
+  <ul>
+    <li><code>FloorMaterial</code> (Texture2D)</li>
+    <li><code>FloorNormal</code> (Texture2D)</li>
+    <li><code>FloorRoughness</code> (Texture2D)</li>
+    <li><code>FloorColour</code> (Vector/LinearColor)</li>
+    <li><code>bUseColourSwatches</code> (Scalar)</li>
+    <li><code>bUseColourMask</code> (Scalar)</li>
+    <li><code>ShowGrid</code> (Scalar)</li>
+  </ul>
+
+  <h3 id="spatial-key-packing">Spatial Key Packing</h3>
+
+  <p>Floor and terrain components use packed integer keys for O(1) spatial lookups:</p>
+
+  <pre><code>// Floor: 8 bits level | 10 bits row | 10 bits column | 2 bits triangle
+int32 Key = UFloorComponent::MakeGridKey(Level, Row, Column, Triangle);
+
+// Terrain: 8 bits level | 12 bits row | 12 bits column
+int32 Key = UTerrainComponent::MakeGridKey(Level, Row, Column);</code></pre>
+
+  <p>This means floor grids support up to 1024×1024 tiles per level, and terrain supports up to 4096×4096. These limits are more than sufficient for typical lot sizes.</p>
+
+  <h3 id="undo-redo">Undo/Redo</h3>
+
+  <p>All floor and terrain operations go through the <strong>Command</strong> system (<code>UFloorCommand</code>, <code>UTerrainCommand</code>) via <code>UBuildServer</code>. Operations are undoable by default when committed through the standard tool pipeline. If you build floors or modify terrain through <code>BuildServer</code>, undo/redo is handled automatically.</p>
+
+  <h3 id="multiplayer-considerations">Multiplayer Considerations</h3>
+
+  <p>Floor tool operations are replicated via Server → Multicast RPCs. The pattern goes:</p>
+  <ol>
+    <li>Local client creates preview meshes (visual only, not replicated).</li>
+    <li>On release, client sends <code>Server_BuildFloors</code> or <code>Server_DeleteFloors</code>.</li>
+    <li>Server multicasts to all clients, where <code>BuildServer</code> executes the actual commands.</li>
+  </ol>
+
+  <p>Terrain brush tools currently execute locally. If you need replicated terrain, route through your own server RPCs calling the same <code>BuildServer</code> methods.</p>
+
+  <!-- Footer -->
+  <div class="footer">
+    <div class="footer-title">Documentation Sections</div>
+    <div class="footer-nav">
+      <a href="GettingStarted.html">
+        <span class="icon">🚀</span>
+        Getting Started
+      </a>
+      <a href="WallsAndRooms.html">
+        <span class="icon">🧱</span>
+        Walls &amp; Rooms
+      </a>
+      <a href="FloorsAndTerrain.html">
+        <span class="icon">🏗️</span>
+        Floors &amp; Terrain
+      </a>
+      <a href="Roofs.html">
+        <span class="icon">🏠</span>
+        Roofs
+      </a>
+      <a href="DoorsAndWindows.html">
+        <span class="icon">🚪</span>
+        Doors &amp; Windows
+      </a>
+      <a href="PoolsFencesStairsObjects.html">
+        <span class="icon">🏊</span>
+        Pools, Fences, Stairs &amp; Objects
+      </a>
+    </div>
+    <div class="footer-bottom">
+      <a href="index.html">← Back to Index</a> &nbsp;·&nbsp; BurbArchitect Documentation
+    </div>
+  </div>
+
+</div>
+
+</body>
+</html>

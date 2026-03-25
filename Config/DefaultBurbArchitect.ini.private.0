@@ -1,0 +1,5 @@
+﻿[CoreRedirects]
++PropertyRedirects=(OldName="/Script/BurbArchitect.DiagonalWallPresence.TTCTriangle",NewName="/Script/BurbArchitect.DiagonalWallPresence.bTtcTriangle")
++PropertyRedirects=(OldName="/Script/BurbArchitect.DiagonalWallPresence.TBCTriangle",NewName="/Script/BurbArchitect.DiagonalWallPresence.bTbcTriangle")
++PropertyRedirects=(OldName="/Script/BurbArchitect.DiagonalWallPresence.BBCTriangle",NewName="/Script/BurbArchitect.DiagonalWallPresence.bBbcTriangle")
++PropertyRedirects=(OldName="/Script/BurbArchitect.DiagonalWallPresence.BTCTriangle",NewName="/Script/BurbArchitect.DiagonalWallPresence.bBtcTriangle")

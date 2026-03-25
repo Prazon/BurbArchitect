@@ -4,7 +4,7 @@ An intuitive building system plugin for Unreal Engine 5.7. Grid-based constructi
 
 Built for community-driven life simulation games.
 
-** THIS IS HEAVILY WORK-IN-PROGRESS, MULTI-FLOOR FEATURES LIKE STAIRS, ROOFS ARE INCOMPLETE. **
+** THIS IS HEAVILY WORK-IN-PROGRESS, MANY FEATURES LIKE STAIRS, ROOFS, SAVE/LOAD ARE INCOMPLETE. **
 
 ## Features
 

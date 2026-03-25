@@ -12,6 +12,7 @@ Built for community-driven life simulation games.
 - **Wall system** with dual-component architecture (graph logic + procedural mesh rendering)
 - **Floor system** with merged mesh optimization (one draw call per level)
 - **Roof generation** with configurable pitch and automatic gable ends
+- **Ceiling generation** upon room detection to maintain interior lighting conditions
 - **Staircase placement** between levels
 - **Terrain sculpting** with raise, lower, and flatten brushes
 - **Portal system** for doors and windows with automatic wall cutouts
